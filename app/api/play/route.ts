@@ -69,6 +69,29 @@ export async function POST(request: Request) {
             },
         })
 
+        // Update Daily Stats (Async, non-blocking for user response ideally, but here we await for safety)
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        await prisma.dailyStat.upsert({
+            where: {
+                restaurantId_date: {
+                    restaurantId,
+                    date: today,
+                },
+            },
+            update: {
+                participations: { increment: 1 },
+                wins: selectedReward.isWin ? { increment: 1 } : undefined,
+            },
+            create: {
+                restaurantId,
+                date: today,
+                participations: 1,
+                wins: selectedReward.isWin ? 1 : 0,
+            },
+        })
+
         return NextResponse.json(participation)
     } catch (error) {
         console.error("Error creating participation:", error)

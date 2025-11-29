@@ -32,6 +32,21 @@ model Restaurant {
 
   rewards         Reward[]
   participations  Participation[]
+  dailyStats      DailyStat[]
+}
+
+model DailyStat {
+  id            String     @id @default(cuid())
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId  String
+  date          DateTime   // The day concerned (midnight)
+
+  participations Int       @default(0) // Total games played
+  wins           Int       @default(0) // Total prizes won
+  redeemed       Int       @default(0) // Total prizes redeemed
+  reviews        Int       @default(0) // Total reviews (clicks on Google button)
+  
+  @@unique([restaurantId, date])
 }
 
 enum RestaurantCategory {

@@ -40,6 +40,27 @@ export async function POST(request: Request) {
             },
         })
 
+        // Update Daily Stats
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+
+        await prisma.dailyStat.upsert({
+            where: {
+                restaurantId_date: {
+                    restaurantId: participation.restaurantId,
+                    date: today,
+                },
+            },
+            update: {
+                redeemed: { increment: 1 },
+            },
+            create: {
+                restaurantId: participation.restaurantId,
+                date: today,
+                redeemed: 1,
+            },
+        })
+
         return NextResponse.json({ success: true, redeemedAt: updated.redeemedAt })
     } catch (error) {
         console.error("Redemption error:", error)
