@@ -210,12 +210,12 @@ function AdminContent() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <Tabs defaultValue="overview" className="space-y-6">
                     <TabsList className="bg-white p-1 border border-gray-200 rounded-xl shadow-sm w-full md:w-auto grid grid-cols-4 md:flex">
-                        <TabsTrigger value="overview" className="data-[state=active]:bg-gray-100">Overview</TabsTrigger>
-                        <TabsTrigger value="customers" className="data-[state=active]:bg-gray-100">
-                            Customers <Badge variant="secondary" className="ml-2 hidden md:inline-flex">{uniqueCustomers.length}</Badge>
+                        <TabsTrigger value="overview" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Overview</TabsTrigger>
+                        <TabsTrigger value="customers" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">
+                            Customers <Badge variant="secondary" className="ml-2 hidden md:inline-flex bg-gray-200 text-black">{uniqueCustomers.length}</Badge>
                         </TabsTrigger>
-                        <TabsTrigger value="rewards" className="data-[state=active]:bg-gray-100">Rewards</TabsTrigger>
-                        <TabsTrigger value="settings" className="data-[state=active]:bg-gray-100">Settings</TabsTrigger>
+                        <TabsTrigger value="rewards" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Rewards</TabsTrigger>
+                        <TabsTrigger value="settings" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Settings</TabsTrigger>
                     </TabsList>
 
                     {/* OVERVIEW TAB */}
@@ -227,7 +227,7 @@ function AdminContent() {
                                     <CardTitle className="text-sm font-bold text-black">Total Plays</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold">{stats.totalParticipations}</div>
+                                    <div className="text-3xl font-black text-black">{stats.totalParticipations}</div>
                                 </CardContent>
                             </Card>
                             <Card>
@@ -235,7 +235,7 @@ function AdminContent() {
                                     <CardTitle className="text-sm font-bold text-black">Winners</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold text-green-600">{stats.totalWins}</div>
+                                    <div className="text-3xl font-black text-green-600">{stats.totalWins}</div>
                                     <p className="text-xs text-gray-500 mt-1">
                                         {stats.totalParticipations > 0 ? Math.round((stats.totalWins / stats.totalParticipations) * 100) : 0}% win rate
                                     </p>
@@ -246,7 +246,7 @@ function AdminContent() {
                                     <CardTitle className="text-sm font-bold text-black">Pending Prizes</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold text-orange-600">
+                                    <div className="text-3xl font-black text-orange-600">
                                         {stats.pending}
                                     </div>
                                 </CardContent>
@@ -256,7 +256,7 @@ function AdminContent() {
                                     <CardTitle className="text-sm font-bold text-black">Customers Collected</CardTitle>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold text-blue-600">{uniqueCustomers.length}</div>
+                                    <div className="text-3xl font-black text-blue-600">{uniqueCustomers.length}</div>
                                 </CardContent>
                             </Card>
                         </div>
@@ -264,7 +264,7 @@ function AdminContent() {
                         {/* Recent Activity */}
                         <Card>
                             <CardHeader>
-                                <CardTitle>Recent Activity</CardTitle>
+                                <CardTitle className="text-xl font-black text-black">Recent Activity</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
@@ -285,7 +285,7 @@ function AdminContent() {
                                                 <div className="text-right flex flex-col items-end gap-2">
                                                     <p className="text-sm text-gray-500">{new Date(p.createdAt).toLocaleDateString()}</p>
                                                     <div className="flex items-center gap-2">
-                                                        <Badge variant={p.status === "REDEEMED" ? "secondary" : p.reward.isWin ? "default" : "outline"}>
+                                                        <Badge variant={p.status === "REDEEMED" ? "secondary" : p.reward.isWin ? "default" : "outline"} className="font-bold border-gray-300 text-black">
                                                             {p.status}
                                                         </Badge>
                                                         {p.status === "PENDING" && p.reward.isWin && (
