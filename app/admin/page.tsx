@@ -323,7 +323,7 @@ function AdminContent() {
                             <CardHeader className="flex flex-row items-center justify-between">
                                 <div>
                                     <CardTitle>Customer Database</CardTitle>
-                                    <CardDescription>All customers who have played the game.</CardDescription>
+                                    <CardDescription className="text-black font-medium">All customers who have played the game.</CardDescription>
                                 </div>
                                 <Button onClick={handleExportCSV} variant="outline" className="gap-2">
                                     <Download className="h-4 w-4" />
@@ -334,11 +334,11 @@ function AdminContent() {
                                 <Table>
                                     <TableHeader>
                                         <TableRow>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Total Plays</TableHead>
-                                            <TableHead>Wins</TableHead>
-                                            <TableHead>Last Visit</TableHead>
+                                            <TableHead className="text-black font-bold">Name</TableHead>
+                                            <TableHead className="text-black font-bold">Email</TableHead>
+                                            <TableHead className="text-black font-bold">Total Plays</TableHead>
+                                            <TableHead className="text-black font-bold">Wins</TableHead>
+                                            <TableHead className="text-black font-bold">Last Visit</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -351,11 +351,11 @@ function AdminContent() {
                                         ) : (
                                             uniqueCustomers.map((customer) => (
                                                 <TableRow key={customer.email}>
-                                                    <TableCell className="font-medium">{customer.name}</TableCell>
-                                                    <TableCell>{customer.email}</TableCell>
-                                                    <TableCell>{customer.totalPlays}</TableCell>
-                                                    <TableCell>{customer.totalWins}</TableCell>
-                                                    <TableCell>{new Date(customer.lastVisit).toLocaleDateString()}</TableCell>
+                                                    <TableCell className="font-bold text-black">{customer.name}</TableCell>
+                                                    <TableCell className="text-black">{customer.email}</TableCell>
+                                                    <TableCell className="text-black font-bold">{customer.totalPlays}</TableCell>
+                                                    <TableCell className="text-black font-bold">{customer.totalWins}</TableCell>
+                                                    <TableCell className="text-black">{new Date(customer.lastVisit).toLocaleDateString()}</TableCell>
                                                 </TableRow>
                                             ))
                                         )}
@@ -370,7 +370,7 @@ function AdminContent() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>Gestion des Récompenses</CardTitle>
-                                <CardDescription>Modifiez les cadeaux et leurs probabilités.</CardDescription>
+                                <CardDescription className="text-black font-medium">Modifiez les cadeaux et leurs probabilités.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
@@ -410,7 +410,7 @@ function AdminContent() {
                                                             setRestaurant({ ...restaurant, rewards: newRewards })
                                                         }}
                                                     />
-                                                    <span className="absolute right-2 top-2 text-gray-400 text-xs">%</span>
+                                                    <span className="absolute right-2 top-2 text-black font-bold text-xs">%</span>
                                                 </div>
                                             </div>
 
@@ -425,7 +425,7 @@ function AdminContent() {
                                                         newRewards[index].isWin = !newRewards[index].isWin
                                                         setRestaurant({ ...restaurant, rewards: newRewards })
                                                     }}
-                                                    className={reward.isWin ? "bg-green-600 hover:bg-green-700" : "bg-gray-200 text-gray-500 hover:bg-gray-300"}
+                                                    className={reward.isWin ? "bg-green-600 hover:bg-green-700" : "bg-gray-200 text-black font-bold hover:bg-gray-300"}
                                                 >
                                                     {reward.isWin ? "OUI" : "NON"}
                                                 </Button>
@@ -464,7 +464,7 @@ function AdminContent() {
                     <TabsContent value="settings">
                         <Card>
                             <CardHeader>
-                                <CardTitle>QR Code & Links</CardTitle>
+                                <CardTitle className="text-black font-bold">QR Code & Links</CardTitle>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl">
