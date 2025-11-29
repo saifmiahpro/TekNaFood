@@ -130,11 +130,6 @@ export default function PlayPage() {
         const wonReward = restaurant?.rewards.find(r => r.id === winningSegment.id)
 
         if (wonReward) {
-            setParticipation({
-                id: 'temp-' + Date.now(), // Temporary ID
-                reward: wonReward
-            })
-
             // Trigger confetti if they won
             if (wonReward.isWin) {
                 triggerConfetti()
