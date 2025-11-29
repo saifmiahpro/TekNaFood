@@ -127,6 +127,7 @@ export function PrizeWheel({
         let winningSegmentId: string | null = null
         if (onStartSpin) {
             winningSegmentId = await onStartSpin()
+            console.log('Server determined winner ID:', winningSegmentId)
             if (!winningSegmentId) {
                 setIsSpinning(false)
                 return // API call failed
@@ -140,8 +141,14 @@ export function PrizeWheel({
         if (winningSegmentId) {
             // Find the segment in displaySegments that matches the ID
             winningIndex = displaySegments.findIndex(seg => seg.id === winningSegmentId)
-            if (winningIndex === -1) winningIndex = 0 // Fallback
+            console.log('Found winner at index:', winningIndex, 'in', displaySegments.length, 'segments')
+            console.log('Display segments:', displaySegments.map(s => ({ id: s.id, label: s.label })))
+            if (winningIndex === -1) {
+                console.error('Winner ID not found in display segments! Using fallback index 0')
+                winningIndex = 0 // Fallback
+            }
             winningSegment = displaySegments[winningIndex]
+            console.log('Will spin to segment:', winningSegment.label)
         } else {
             // Random fallback (if no onStartSpin)
             winningIndex = Math.floor(Math.random() * displaySegments.length)
@@ -154,6 +161,9 @@ export function PrizeWheel({
 
         const randomOffset = (Math.random() - 0.5) * (segmentAngle * 0.8) // Add some randomness within the segment
         const targetRotation = 360 * spins + (360 - (winningIndex * segmentAngle)) + randomOffset
+
+        console.log('Segment angle:', segmentAngle)
+        console.log('Target rotation:', targetRotation)
 
         setRotation(targetRotation)
 
