@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Star, ThumbsUp, MessageSquare, ArrowRight, Mail, MapPin, Users } from "lucide-react"
+import { Star, ThumbsUp, MessageSquare, ArrowRight, Mail, MapPin, Users, Gift, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -90,7 +90,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             </div>
 
                             <div className="space-y-4">
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-widest">Notez votre expérience</p>
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-widest">Comment s'est passé votre moment ?</p>
                                 <div className="flex justify-center gap-2">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
@@ -119,10 +119,12 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                         >
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Star className="h-8 w-8 text-blue-600 fill-blue-600" />
+                                    <Gift className="h-8 w-8 text-blue-600" />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">Wow, merci ! 🌟</h2>
-                                <p className="text-gray-600 mb-6 text-sm">Votre avis nous aide énormément. Partagez-le sur Google pour débloquer votre cadeau !</p>
+                                <h2 className="text-xl font-bold mb-2">Un cadeau vous attend ! 🎁</h2>
+                                <p className="text-gray-600 mb-6 text-sm">
+                                    Merci pour cette super note ! Partagez votre expérience sur Google en 2 clics pour <strong>lancer la roue magique</strong>.
+                                </p>
 
                                 <Button
                                     onClick={handleGoogleClick}
@@ -130,9 +132,9 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     style={{ backgroundColor: restaurant.primaryColor }}
                                 >
                                     <MapPin className="mr-2 h-5 w-5" />
-                                    Laisser un avis Google
+                                    Poster mon avis & Jouer
                                 </Button>
-                                <p className="text-xs text-gray-400 mt-4">La roue tournera juste après...</p>
+                                <p className="text-xs text-gray-400 mt-4">Ça ne prend que 10 secondes !</p>
                             </div>
                         </motion.div>
                     )}
@@ -150,13 +152,15 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
                                     <MessageSquare className="h-8 w-8 text-orange-600" />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">Dites-nous tout</h2>
-                                <p className="text-gray-600 mb-6 text-sm">Comment pouvons-nous nous améliorer ? Votre message restera privé.</p>
+                                <h2 className="text-xl font-bold mb-2">Aidez-nous à nous améliorer</h2>
+                                <p className="text-gray-600 mb-6 text-sm">
+                                    Désolé que tout n'ait pas été parfait. Votre avis compte énormément pour nous (et restera privé).
+                                </p>
 
                                 <textarea
                                     className="w-full p-4 border border-gray-200 rounded-xl mb-4 focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none bg-gray-50"
                                     rows={4}
-                                    placeholder="Votre message..."
+                                    placeholder="Dites-nous ce qui n'a pas été..."
                                     value={feedback}
                                     onChange={(e) => setFeedback(e.target.value)}
                                 />
@@ -165,7 +169,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     onClick={handleSubmitFeedback}
                                     className="w-full py-6 text-lg font-bold bg-black text-white hover:bg-gray-800"
                                 >
-                                    Envoyer
+                                    Envoyer mes remarques
                                 </Button>
                             </div>
                         </motion.div>
@@ -181,10 +185,13 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                         >
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                                 <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Users className="h-8 w-8 text-purple-600" />
+                                    <Sparkles className="h-8 w-8 text-purple-600" />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">Dernière étape !</h2>
-                                <p className="text-gray-600 mb-6 text-sm">Entrez vos infos pour recevoir votre cadeau par email.</p>
+                                <h2 className="text-xl font-bold mb-2">C'est le moment de vérité !</h2>
+                                <p className="text-gray-600 mb-6 text-sm">
+                                    Où devons-nous envoyer votre gain si vous gagnez ?
+                                    <br /><span className="text-xs text-gray-400">(Promis, zéro spam. Juste votre cadeau.)</span>
+                                </p>
 
                                 <div className="space-y-4 text-left">
                                     <div>
@@ -214,7 +221,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     className="w-full mt-8 py-6 text-lg font-bold shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
                                     style={{ backgroundColor: restaurant.primaryColor }}
                                 >
-                                    Je tente ma chance ! 🎲
+                                    LANCER LA ROUE ! 🎰
                                 </Button>
                             </div>
                         </motion.div>

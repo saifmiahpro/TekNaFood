@@ -190,7 +190,7 @@ export default function PlayPage() {
             <div className="w-full max-w-md md:max-w-2xl relative z-10">
                 {!hasSpun ? (
                     <>
-                        {/* Header - Compact on mobile */}
+                        {/* Header / Hype Section */}
                         <div className="text-center mb-4 md:mb-8 relative z-10">
                             <motion.div
                                 initial={{ y: -20, opacity: 0 }}
@@ -203,10 +203,10 @@ export default function PlayPage() {
                             </motion.div>
 
                             <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white drop-shadow-2xl mb-2 md:mb-4 tracking-tight">
-                                Tournez & <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Gagnez</span>
+                                Moment de <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Vérité</span>
                             </h1>
                             <p className="text-base md:text-xl text-white/80 font-medium max-w-lg mx-auto leading-relaxed px-4">
-                                Merci pour votre avis ! La chance vous sourit...
+                                Tournez la roue pour découvrir votre surprise exclusive !
                             </p>
                         </div>
 
@@ -220,7 +220,7 @@ export default function PlayPage() {
                                     {/* Win Rate Badge - Smaller on mobile */}
                                     <div className="absolute top-3 md:top-6 right-3 md:right-6 rotate-12 animate-pulse z-20">
                                         <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-black text-[10px] md:text-xs px-2 md:px-3 py-1 rounded-full shadow-lg border-2 border-white transform scale-100 md:scale-110">
-                                            80% GAGNANTS !
+                                            100% GAGNANT !
                                         </div>
                                     </div>
 
@@ -234,7 +234,7 @@ export default function PlayPage() {
 
                                     <div className="mt-4 md:mt-8 text-white/40 text-xs md:text-sm font-medium flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                        Jeu gratuit sans obligation
+                                        Jeu gratuit & sans engagement
                                     </div>
                                 </div>
                             </CardContent>
@@ -259,11 +259,11 @@ export default function PlayPage() {
                                     </motion.div>
 
                                     <div className="space-y-2">
-                                        <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-600">
-                                            FÉLICITATIONS !
+                                        <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-600 uppercase">
+                                            BOOM ! GAGNÉ ! 🎉
                                         </h1>
-                                        <p className="text-2xl font-bold text-gray-800">
-                                            Vous avez gagné :
+                                        <p className="text-xl font-bold text-gray-800">
+                                            Vous repartez avec :
                                         </p>
                                     </div>
 
@@ -275,7 +275,7 @@ export default function PlayPage() {
                                         <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-300 opacity-20 rounded-full blur-2xl"></div>
                                         <div className="flex items-center justify-center gap-4">
                                             <Gift className="h-8 w-8 text-orange-500 animate-bounce" />
-                                            <span className="text-3xl md:text-4xl font-black text-gray-800 uppercase tracking-tight">
+                                            <span className="text-2xl md:text-4xl font-black text-gray-800 uppercase tracking-tight">
                                                 {participation?.reward.label}
                                             </span>
                                             <Gift className="h-8 w-8 text-orange-500 animate-bounce delay-100" />
@@ -287,26 +287,26 @@ export default function PlayPage() {
                                         <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm text-left">
                                             <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                                                 <CheckCircle className="h-5 w-5 text-green-500" />
-                                                Comment utiliser votre gain :
+                                                Comment profiter de votre cadeau :
                                             </h3>
 
                                             <div className="space-y-4">
                                                 {/* Option 1: Instant Use */}
-                                                <div className="p-3 bg-green-50 rounded-lg border border-green-100">
-                                                    <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Option 1 : Sur Place</p>
-                                                    <p className="text-sm text-green-900">Montrez cet écran au serveur <strong>maintenant</strong>.</p>
-                                                    <div className="mt-2 flex items-center gap-2 text-xs text-green-700 bg-white/50 p-2 rounded">
+                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100">
+                                                    <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Option 1 : Maintenant</p>
+                                                    <p className="text-sm text-green-900 font-medium">Montrez cet écran au serveur <strong>tout de suite</strong> !</p>
+                                                    <div className="mt-3 flex items-center justify-center gap-2 text-sm text-green-800 bg-white p-3 rounded-lg border border-green-200 shadow-sm">
                                                         <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                                        Code valide : <span className="font-mono font-bold">{participation?.id.slice(-6).toUpperCase()}</span>
+                                                        CODE : <span className="font-mono font-black text-lg">{participation?.id.slice(-6).toUpperCase()}</span>
                                                     </div>
                                                 </div>
 
                                                 <div className="text-center text-xs text-gray-400 font-medium">- OU -</div>
 
                                                 {/* Option 2: Save for Later */}
-                                                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                                <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
                                                     <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Option 2 : Plus Tard</p>
-                                                    <p className="text-sm text-blue-900 mb-2">Recevez votre coupon par email pour votre prochaine visite.</p>
+                                                    <p className="text-sm text-blue-900 mb-3">On vous a envoyé le coupon par email pour la prochaine fois.</p>
                                                     <Button
                                                         size="sm"
                                                         variant="outline"
@@ -314,7 +314,7 @@ export default function PlayPage() {
                                                         onClick={() => alert("Coupon envoyé à " + JSON.parse(decodeURIComponent(dataParam || "{}")).customerEmail)}
                                                     >
                                                         <Mail className="w-3 h-3 mr-2" />
-                                                        Envoyer par Email
+                                                        Vérifier mes emails
                                                     </Button>
                                                 </div>
                                             </div>
@@ -331,32 +331,26 @@ export default function PlayPage() {
                                     {/* No Win - Very Clear */}
                                     <div className="relative">
                                         <div className="h-32 w-32 mx-auto bg-gray-100 rounded-full flex items-center justify-center shadow-inner">
-                                            <span className="text-6xl grayscale opacity-80">😊</span>
+                                            <span className="text-6xl grayscale opacity-80">😢</span>
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <h1 className="text-4xl font-bold text-gray-800">
-                                            Pas de gain cette fois
+                                        <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+                                            Pas de chance cette fois...
                                         </h1>
-                                        <p className="text-xl text-gray-600">
-                                            Mais merci pour votre avis !
+                                        <p className="text-lg text-gray-600">
+                                            Mais ce n'est que partie remise !
                                         </p>
                                     </div>
 
                                     <div className="bg-blue-50 border border-blue-100 rounded-2xl p-6 max-w-md mx-auto">
                                         <p className="text-blue-900 font-bold mb-2 flex items-center justify-center gap-2">
-                                            💙 Votre avis compte énormément
+                                            💙 Merci pour votre avis !
                                         </p>
                                         <p className="text-blue-800/80 text-sm leading-relaxed">
-                                            Grâce à vos retours, nous pouvons continuer à améliorer notre service.
-                                            Revenez nous voir bientôt !
-                                        </p>
-                                    </div>
-
-                                    <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mx-auto max-w-sm">
-                                        <p className="text-sm text-purple-900 font-medium">
-                                            ✨ <strong>Astuce :</strong> Tentez votre chance à nouveau lors de votre prochaine visite !
+                                            Grâce à vous, nous allons pouvoir nous améliorer.
+                                            Revenez vite nous voir pour retenter votre chance !
                                         </p>
                                     </div>
 
@@ -367,7 +361,7 @@ export default function PlayPage() {
                                         variant="outline"
                                         style={{ borderColor: restaurant.primaryColor, color: restaurant.primaryColor }}
                                     >
-                                        Terminé
+                                        Retour à l'accueil
                                     </Button>
                                 </div>
                             )}
