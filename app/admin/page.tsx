@@ -210,12 +210,12 @@ function AdminContent() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <Tabs defaultValue="overview" className="space-y-6">
                     <TabsList className="bg-white p-1 border border-gray-200 rounded-xl shadow-sm w-full md:w-auto grid grid-cols-4 md:flex">
-                        <TabsTrigger value="overview" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Overview</TabsTrigger>
-                        <TabsTrigger value="customers" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">
-                            Customers <Badge variant="secondary" className="ml-2 hidden md:inline-flex bg-gray-200 text-black">{uniqueCustomers.length}</Badge>
+                        <TabsTrigger value="overview" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Overview</TabsTrigger>
+                        <TabsTrigger value="customers" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">
+                            Customers <Badge variant="secondary" className="ml-2 hidden md:inline-flex bg-black text-white">{uniqueCustomers.length}</Badge>
                         </TabsTrigger>
-                        <TabsTrigger value="rewards" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Rewards</TabsTrigger>
-                        <TabsTrigger value="settings" className="text-gray-600 data-[state=active]:text-black data-[state=active]:bg-gray-100 font-bold">Settings</TabsTrigger>
+                        <TabsTrigger value="rewards" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Rewards</TabsTrigger>
+                        <TabsTrigger value="settings" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Settings</TabsTrigger>
                     </TabsList>
 
                     {/* OVERVIEW TAB */}
@@ -236,7 +236,7 @@ function AdminContent() {
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-black text-green-600">{stats.totalWins}</div>
-                                    <p className="text-xs text-gray-500 mt-1">
+                                    <p className="text-xs text-black font-medium mt-1">
                                         {stats.totalParticipations > 0 ? Math.round((stats.totalWins / stats.totalParticipations) * 100) : 0}% win rate
                                     </p>
                                 </CardContent>
@@ -269,7 +269,7 @@ function AdminContent() {
                             <CardContent>
                                 <div className="space-y-4">
                                     {restaurant.participations.length === 0 ? (
-                                        <p className="text-center text-gray-500 py-4">No activity yet.</p>
+                                        <p className="text-center text-black font-bold py-4">No activity yet.</p>
                                     ) : (
                                         restaurant.participations.slice(0, 10).map((p) => (
                                             <div key={p.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
@@ -283,7 +283,7 @@ function AdminContent() {
                                                     </div>
                                                 </div>
                                                 <div className="text-right flex flex-col items-end gap-2">
-                                                    <p className="text-sm text-gray-500">{new Date(p.createdAt).toLocaleDateString()}</p>
+                                                    <p className="text-sm text-black font-bold">{new Date(p.createdAt).toLocaleDateString()}</p>
                                                     <div className="flex items-center gap-2">
                                                         <Badge variant={p.status === "REDEEMED" ? "secondary" : p.reward.isWin ? "default" : "outline"} className="font-bold border-gray-300 text-black">
                                                             {p.status}
@@ -344,7 +344,7 @@ function AdminContent() {
                                     <TableBody>
                                         {uniqueCustomers.length === 0 ? (
                                             <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
+                                                <TableCell colSpan={5} className="text-center py-8 text-black font-bold">
                                                     No customers yet.
                                                 </TableCell>
                                             </TableRow>
