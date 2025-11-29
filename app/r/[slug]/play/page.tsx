@@ -315,17 +315,23 @@ export default function PlayPage() {
                                             </h3>
 
                                             {/* Validity Info */}
-                                            {participation?.validFrom && (
-                                                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-                                                    <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide">📅 Période de validité</p>
+                                            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                                                <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide">📅 Période de validité</p>
+                                                {participation?.validFrom ? (
+                                                    <>
+                                                        <p className="text-sm font-medium text-yellow-900 mt-1">
+                                                            Du {new Date(participation.validFrom).toLocaleDateString()} au {new Date(participation.expiresAt!).toLocaleDateString()}
+                                                        </p>
+                                                        <p className="text-[10px] text-yellow-700 mt-1 italic">
+                                                            (Utilisable dès demain)
+                                                        </p>
+                                                    </>
+                                                ) : (
                                                     <p className="text-sm font-medium text-yellow-900 mt-1">
-                                                        Du {new Date(participation.validFrom).toLocaleDateString()} au {new Date(participation.expiresAt!).toLocaleDateString()}
+                                                        Valable pendant 1 an
                                                     </p>
-                                                    <p className="text-[10px] text-yellow-700 mt-1 italic">
-                                                        (Utilisable dès demain)
-                                                    </p>
-                                                </div>
-                                            )}
+                                                )}
+                                            </div>
 
                                             {/* Validation System - QR Code */}
                                             {!isRedeemed ? (
@@ -337,10 +343,10 @@ export default function PlayPage() {
                                                         </p>
                                                     </div>
 
-                                                    <div className="flex justify-center">
+                                                    <div className="flex justify-center bg-white p-2 rounded-xl shadow-sm inline-block mx-auto">
                                                         <ValidationQRCode
                                                             url={`${typeof window !== 'undefined' ? window.location.origin : ''}/verify/${participation?.id}`}
-                                                            color={restaurant.primaryColor}
+                                                            color={restaurant?.primaryColor || "#000000"}
                                                         />
                                                     </div>
 
@@ -348,6 +354,7 @@ export default function PlayPage() {
                                                         <Receipt className="w-4 h-4" />
                                                         <span>Preuve d'achat requise</span>
                                                     </div>
+                                                    <p className="text-[10px] text-gray-400 font-mono">{participation?.id}</p>
                                                 </div>
                                             ) : (
                                                 <div className="p-6 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 text-center">
