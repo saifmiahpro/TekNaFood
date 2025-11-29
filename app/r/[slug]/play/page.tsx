@@ -192,21 +192,11 @@ export default function PlayPage() {
                     <>
                         {/* Header / Hype Section */}
                         <div className="text-center mb-4 md:mb-8 relative z-10">
-                            <motion.div
-                                initial={{ y: -20, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                className="inline-block bg-white/10 backdrop-blur-md px-4 md:px-6 py-1.5 md:py-2 rounded-full shadow-lg mb-3 md:mb-6 border border-white/20"
-                            >
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400 font-black text-sm md:text-lg uppercase tracking-wide flex items-center gap-2">
-                                    🔥 Déjà 124 gagnants !
-                                </span>
-                            </motion.div>
-
                             <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white drop-shadow-2xl mb-2 md:mb-4 tracking-tight">
-                                Moment de <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Vérité</span>
+                                Tournez & <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Gagnez</span>
                             </h1>
                             <p className="text-base md:text-xl text-white/80 font-medium max-w-lg mx-auto leading-relaxed px-4">
-                                Tournez la roue pour découvrir votre surprise exclusive !
+                                Pour vous remercier de votre avis, voici une petite surprise...
                             </p>
                         </div>
 
@@ -217,12 +207,7 @@ export default function PlayPage() {
 
                             <CardContent className="pt-6 md:pt-12 pb-6 md:pb-12 px-3 md:px-12">
                                 <div className="flex flex-col items-center">
-                                    {/* Win Rate Badge - Smaller on mobile */}
-                                    <div className="absolute top-3 md:top-6 right-3 md:right-6 rotate-12 animate-pulse z-20">
-                                        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-black text-[10px] md:text-xs px-2 md:px-3 py-1 rounded-full shadow-lg border-2 border-white transform scale-100 md:scale-110">
-                                            100% GAGNANT !
-                                        </div>
-                                    </div>
+                                    {/* Win Rate Badge - Removed for cleaner look */}
 
                                     <PrizeWheelV2
                                         segments={wheelSegments}
@@ -260,10 +245,10 @@ export default function PlayPage() {
 
                                     <div className="space-y-2">
                                         <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-600 uppercase">
-                                            BOOM ! GAGNÉ ! 🎉
+                                            Félicitations ! 🎉
                                         </h1>
                                         <p className="text-xl font-bold text-gray-800">
-                                            Vous repartez avec :
+                                            Vous avez gagné :
                                         </p>
                                     </div>
 
