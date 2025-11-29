@@ -372,7 +372,7 @@ export default function PlayPage() {
 
                                     <div className="text-center">
                                         <p className="text-xs text-gray-400 mb-2">Besoin d'aide ? Montrez ce code au manager</p>
-                                        <p className="font-mono text-xs text-gray-300">{participation?.id}</p>
+                                        <p className="font-mono text-xs text-gray-300">{participation?.id} • v2.1</p>
                                     </div>
                                 </div>
                             ) : (
