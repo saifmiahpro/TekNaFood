@@ -2,25 +2,29 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { QRCodeGenerator } from "@/components/qr-code-generator"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
     Trophy,
     Users,
     Gift,
     CheckCircle,
-    Clock,
     ExternalLink,
-    TrendingUp,
-    Calendar,
+    Download,
+    LogOut,
+    Menu,
+    X,
+    Settings,
+    Activity,
     QrCode,
-    Download
+    LayoutDashboard,
+    Store,
+    Sparkles
 } from "lucide-react"
 
 interface Restaurant {
@@ -28,7 +32,6 @@ interface Restaurant {
     name: string
     slug: string
     category: string
-    googleMapsUrl: string
     primaryColor: string
     secondaryColor: string
     rewards: Array<{
@@ -38,13 +41,11 @@ interface Restaurant {
         isWin: boolean
         isActive: boolean
         colorHex?: string
-        icon?: string
     }>
     participations: Array<{
         id: string
         customerName: string
         customerEmail: string
-        googleName?: string
         createdAt: string
         status: string
         reward: {
@@ -62,12 +63,14 @@ function AdminContent() {
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
+    const [activeTab, setActiveTab] = useState("overview")
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     useEffect(() => {
         if (token) {
             fetchAdminData()
         } else {
-            setError("Missing admin token")
+            setError("Token manquant")
             setLoading(false)
         }
     }, [token])
@@ -75,10 +78,7 @@ function AdminContent() {
     const fetchAdminData = async () => {
         try {
             const res = await fetch(`/api/admin?token=${token}`)
-            if (!res.ok) {
-                const data = await res.json()
-                throw new Error(data.error || "Failed to fetch data")
-            }
+            if (!res.ok) throw new Error("Erreur de chargement")
             const data = await res.json()
             setRestaurant(data)
         } catch (err: any) {
@@ -95,48 +95,26 @@ function AdminContent() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ status, token }),
             })
-
-            if (!res.ok) throw new Error("Failed to update")
-
-            // Refresh data
+            if (!res.ok) throw new Error("Erreur mise à jour")
             fetchAdminData()
         } catch (err) {
-            alert("Failed to update participation")
+            alert("Erreur lors de la mise à jour")
         }
     }
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading admin panel...</p>
-                </div>
-            </div>
-        )
-    }
+    if (loading) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div></div>
+    if (error || !restaurant) return <div className="min-h-screen flex items-center justify-center bg-gray-50"><p className="text-xl font-bold text-red-600">{error || "Accès refusé"}</p></div>
 
-    if (error || !restaurant) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <Card className="max-w-md">
-                    <CardHeader>
-                        <CardTitle className="text-red-600">Access Denied</CardTitle>
-                        <CardDescription>{error || "Invalid admin token"}</CardDescription>
-                    </CardHeader>
-                </Card>
-            </div>
-        )
-    }
-
+    // Stats Calculation
     const stats = {
         totalParticipations: restaurant.participations.length,
         totalWins: restaurant.participations.filter((p) => p.reward.isWin).length,
         pending: restaurant.participations.filter((p) => p.status === "PENDING").length,
         redeemed: restaurant.participations.filter((p) => p.status === "REDEEMED").length,
+        winRate: restaurant.participations.length > 0 ? Math.round((restaurant.participations.filter((p) => p.reward.isWin).length / restaurant.participations.length) * 100) : 0
     }
 
-    // Calculate unique customers for the CRM view
+    // Unique Customers Logic
     const uniqueCustomers = Array.from(new Set(restaurant.participations.map(p => p.customerEmail)))
         .map(email => {
             const customerParticipations = restaurant.participations.filter(p => p.customerEmail === email)
@@ -151,7 +129,7 @@ function AdminContent() {
         })
 
     const handleExportCSV = () => {
-        const headers = ["Name", "Email", "Total Plays", "Total Wins", "Last Visit"]
+        const headers = ["Nom", "Email", "Total Jeux", "Gains", "Dernière Visite"]
         const rows = uniqueCustomers.map(c => [
             c.name,
             c.email,
@@ -159,247 +137,253 @@ function AdminContent() {
             c.totalWins,
             new Date(c.lastVisit).toLocaleDateString()
         ])
-
-        const csvContent = "data:text/csv;charset=utf-8,"
-            + headers.join(",") + "\n"
-            + rows.map(e => e.join(",")).join("\n")
-
-        const encodedUri = encodeURI(csvContent)
+        const csvContent = "data:text/csv;charset=utf-8," + headers.join(",") + "\n" + rows.map(e => e.join(",")).join("\n")
         const link = document.createElement("a")
-        link.setAttribute("href", encodedUri)
-        link.setAttribute("download", `${restaurant.slug}_customers.csv`)
+        link.setAttribute("href", encodeURI(csvContent))
+        link.setAttribute("download", `${restaurant.slug}_clients.csv`)
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
     }
 
+    const NavItem = ({ value, label, icon: Icon, count }: any) => (
+        <Button
+            variant="ghost"
+            className={`w-full justify-start mb-1 ${activeTab === value ? 'bg-slate-800 text-purple-400' : 'text-slate-400 hover:text-white hover:bg-slate-800'}`}
+            onClick={() => {
+                setActiveTab(value)
+                setMobileMenuOpen(false)
+            }}
+        >
+            <Icon className="mr-3 h-5 w-5" />
+            {label}
+            {count !== undefined && (
+                <span className="ml-auto bg-slate-700 text-white text-xs px-2 py-0.5 rounded-full">
+                    {count}
+                </span>
+            )}
+        </Button>
+    )
+
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                            <div
-                                className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg"
-                                style={{ backgroundColor: restaurant.primaryColor }}
-                            >
-                                {restaurant.name.charAt(0)}
-                            </div>
-                            <div>
-                                <h1 className="text-xl font-bold text-gray-900">{restaurant.name}</h1>
-                                <p className="text-xs text-black font-bold">Admin Dashboard</p>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-3">
-                            <Button variant="outline" size="sm" onClick={() => window.open(`/r/${restaurant.slug}`, '_blank')}>
-                                <ExternalLink className="mr-2 h-4 w-4" />
-                                View Game
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => {
-                                // In a real app we would clear a cookie, but here we just redirect
-                                router.push("/")
-                            }}>
-                                Logout
-                            </Button>
-                        </div>
+        <div className="min-h-screen bg-gray-50 flex font-sans">
+            {/* MOBILE HEADER */}
+            <div className="md:hidden fixed top-0 left-0 right-0 bg-slate-900 z-50 px-4 py-3 flex items-center justify-between border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-black text-sm" style={{ backgroundColor: restaurant.primaryColor }}>
+                        {restaurant.name.charAt(0)}
                     </div>
+                    <span className="text-white font-bold">{restaurant.name}</span>
+                </div>
+                <Button variant="ghost" size="icon" className="text-white" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
+                    {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                </Button>
+            </div>
+
+            {/* SIDEBAR (Desktop: Fixed, Mobile: Overlay) */}
+            <div className={`
+                fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-white transition-transform duration-300 ease-in-out transform 
+                ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'} 
+                md:translate-x-0 md:static md:flex md:flex-col
+            `}>
+                <div className="p-6 border-b border-slate-800 hidden md:block">
+                    <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-lg flex items-center justify-center text-white font-black text-lg shadow-lg shadow-purple-900/20" style={{ backgroundColor: restaurant.primaryColor }}>
+                            {restaurant.name.charAt(0)}
+                        </div>
+                        <span className="text-lg font-bold tracking-tight truncate">{restaurant.name}</span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-2 uppercase tracking-widest">Admin Dashboard</p>
+                </div>
+
+                <div className="mt-16 md:mt-0 flex-1 p-4 overflow-y-auto">
+                    <div className="space-y-1">
+                        <NavItem value="overview" label="Vue d'ensemble" icon={LayoutDashboard} />
+                        <NavItem value="customers" label="Clients" icon={Users} count={uniqueCustomers.length} />
+                        <NavItem value="rewards" label="Récompenses" icon={Gift} />
+                        <NavItem value="settings" label="Paramètres & QR" icon={Settings} />
+                    </div>
+                </div>
+
+                <div className="p-4 border-t border-slate-800">
+                    <Button variant="ghost" className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-slate-800" onClick={() => router.push("/")}>
+                        <LogOut className="mr-3 h-5 w-5" />
+                        Déconnexion
+                    </Button>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <Tabs defaultValue="overview" className="space-y-6">
-                    <TabsList className="bg-white p-1 border border-gray-200 rounded-xl shadow-sm w-full md:w-auto grid grid-cols-4 md:flex">
-                        <TabsTrigger value="overview" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Overview</TabsTrigger>
-                        <TabsTrigger value="customers" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">
-                            Customers <Badge variant="secondary" className="ml-2 hidden md:inline-flex bg-black text-white">{uniqueCustomers.length}</Badge>
-                        </TabsTrigger>
-                        <TabsTrigger value="rewards" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Rewards</TabsTrigger>
-                        <TabsTrigger value="settings" className="text-black data-[state=active]:text-black data-[state=active]:bg-gray-200 font-bold border border-transparent data-[state=active]:border-black">Settings</TabsTrigger>
-                    </TabsList>
+            {/* MAIN CONTENT */}
+            <div className="flex-1 flex flex-col min-w-0 pt-16 md:pt-0 h-screen overflow-y-auto">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
 
-                    {/* OVERVIEW TAB */}
-                    <TabsContent value="overview" className="space-y-6">
-                        {/* Stats Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <Card>
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-bold text-black">Total Plays</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-black text-black">{stats.totalParticipations}</div>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-bold text-black">Winners</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-black text-green-600">{stats.totalWins}</div>
-                                    <p className="text-xs text-black font-medium mt-1">
-                                        {stats.totalParticipations > 0 ? Math.round((stats.totalWins / stats.totalParticipations) * 100) : 0}% win rate
-                                    </p>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-bold text-black">Pending Prizes</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-black text-orange-600">
-                                        {stats.pending}
-                                    </div>
-                                </CardContent>
-                            </Card>
-                            <Card>
-                                <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-bold text-black">Customers Collected</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-3xl font-black text-blue-600">{uniqueCustomers.length}</div>
-                                </CardContent>
-                            </Card>
+                    {/* HEADER SECTION */}
+                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+                        <div>
+                            <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                                {activeTab === 'overview' && "Vue d'ensemble"}
+                                {activeTab === 'customers' && "Base Clients"}
+                                {activeTab === 'rewards' && "Gestion des Cadeaux"}
+                                {activeTab === 'settings' && "Paramètres"}
+                            </h1>
+                            <p className="text-gray-500 mt-1">Gérez votre programme de fidélité simplement.</p>
                         </div>
+                        <div className="flex gap-3">
+                            <Button
+                                onClick={() => window.open(`/r/${restaurant.slug}`, '_blank')}
+                                className="bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 shadow-sm"
+                            >
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                Voir le jeu
+                            </Button>
+                        </div>
+                    </div>
 
-                        {/* Recent Activity */}
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-xl font-black text-black">Recent Activity</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {restaurant.participations.length === 0 ? (
-                                        <p className="text-center text-black font-bold py-4">No activity yet.</p>
-                                    ) : (
-                                        restaurant.participations.slice(0, 10).map((p) => (
-                                            <div key={p.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
+                    {/* CONTENT TABS */}
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+
+                        {/* OVERVIEW CONTENT */}
+                        <TabsContent value="overview" className="space-y-6 m-0">
+                            {/* Stats Cards - Super Admin Style */}
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                <StatCard
+                                    label="Total Jeux"
+                                    value={stats.totalParticipations}
+                                    icon={<Activity className="h-6 w-6 text-purple-600" />}
+                                    bg="bg-purple-100"
+                                    trend="+12% this week"
+                                />
+                                <StatCard
+                                    label="Gagnants"
+                                    value={stats.totalWins}
+                                    icon={<Trophy className="h-6 w-6 text-yellow-600" />}
+                                    bg="bg-yellow-100"
+                                    trend={`${stats.winRate}% win rate`}
+                                />
+                                <StatCard
+                                    label="À Valider"
+                                    value={stats.pending}
+                                    icon={<CheckCircle className="h-6 w-6 text-orange-600" />}
+                                    bg="bg-orange-100"
+                                    trend="Action required"
+                                />
+                                <StatCard
+                                    label="Clients Uniques"
+                                    value={uniqueCustomers.length}
+                                    icon={<Users className="h-6 w-6 text-blue-600" />}
+                                    bg="bg-blue-100"
+                                    trend="Growing"
+                                />
+                            </div>
+
+                            {/* Recent Activity List */}
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                                    <h3 className="font-bold text-gray-900">Activité Récente</h3>
+                                </div>
+                                {restaurant.participations.length === 0 ? (
+                                    <div className="p-12 text-center">
+                                        <div className="bg-gray-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <Activity className="h-8 w-8 text-gray-400" />
+                                        </div>
+                                        <p className="text-gray-500">Aucune activité pour le moment.</p>
+                                    </div>
+                                ) : (
+                                    <div className="divide-y divide-gray-100">
+                                        {restaurant.participations.slice(0, 10).map((p) => (
+                                            <div key={p.id} className="p-4 md:p-6 hover:bg-gray-50 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
                                                 <div className="flex items-center gap-4">
-                                                    <div className={`h-10 w-10 rounded-full flex items-center justify-center ${p.reward.isWin ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}`}>
+                                                    <div className={`h-10 w-10 rounded-full flex items-center justify-center ${p.reward.isWin ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-500'}`}>
                                                         {p.reward.isWin ? <Trophy className="h-5 w-5" /> : <Users className="h-5 w-5" />}
                                                     </div>
                                                     <div>
                                                         <p className="font-bold text-gray-900">{p.customerName}</p>
-                                                        <p className="text-sm text-gray-600 font-medium">{p.reward.label}</p>
+                                                        <p className="text-sm text-gray-500">{p.reward.label} • {new Date(p.createdAt).toLocaleDateString()}</p>
                                                     </div>
                                                 </div>
-                                                <div className="text-right flex flex-col items-end gap-2">
-                                                    <p className="text-sm text-black font-bold">{new Date(p.createdAt).toLocaleDateString()}</p>
-                                                    <div className="flex items-center gap-2">
-                                                        <Badge variant={p.status === "REDEEMED" ? "secondary" : p.reward.isWin ? "default" : "outline"} className="font-bold border-gray-300 text-black">
-                                                            {p.status}
-                                                        </Badge>
-                                                        {p.status === "PENDING" && p.reward.isWin && (
-                                                            <Button
-                                                                size="sm"
-                                                                variant="outline"
-                                                                className="h-6 text-xs"
-                                                                onClick={() => updateParticipationStatus(p.id, "VERIFIED")}
-                                                            >
-                                                                Verify
-                                                            </Button>
-                                                        )}
-                                                        {p.status === "VERIFIED" && p.reward.isWin && (
-                                                            <Button
-                                                                size="sm"
-                                                                className="h-6 text-xs bg-green-600 hover:bg-green-700"
-                                                                onClick={() => updateParticipationStatus(p.id, "REDEEMED")}
-                                                            >
-                                                                Redeem
-                                                            </Button>
-                                                        )}
-                                                    </div>
+                                                <div className="flex items-center gap-3 self-end md:self-auto">
+                                                    <Badge variant={p.status === "REDEEMED" ? "secondary" : p.reward.isWin ? "default" : "outline"} className="capitalize">
+                                                        {p.status === 'PENDING' ? 'En Attente' : p.status === 'VERIFIED' ? 'Validé' : p.status === 'REDEEMED' ? 'Utilisé' : p.status}
+                                                    </Badge>
+                                                    {p.status === "PENDING" && p.reward.isWin && (
+                                                        <Button size="sm" onClick={() => updateParticipationStatus(p.id, "VERIFIED")} className="bg-black text-white hover:bg-gray-800">
+                                                            Vérifier
+                                                        </Button>
+                                                    )}
+                                                    {p.status === "VERIFIED" && p.reward.isWin && (
+                                                        <Button size="sm" onClick={() => updateParticipationStatus(p.id, "REDEEMED")} className="bg-green-600 text-white hover:bg-green-700">
+                                                            Consommer
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </div>
-                                        ))
-                                    )}
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </TabsContent>
+
+                        {/* CUSTOMERS CONTENT */}
+                        <TabsContent value="customers" className="space-y-6 m-0">
+                            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-white">
+                                    <h3 className="font-bold text-gray-900">Liste des Clients</h3>
+                                    <Button variant="outline" size="sm" onClick={handleExportCSV}>
+                                        <Download className="h-4 w-4 mr-2" /> Export CSV
+                                    </Button>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-
-                    {/* CUSTOMERS TAB (CRM) */}
-                    <TabsContent value="customers">
-                        <Card>
-                            <CardHeader className="flex flex-row items-center justify-between">
-                                <div>
-                                    <CardTitle>Customer Database</CardTitle>
-                                    <CardDescription className="text-black font-medium">All customers who have played the game.</CardDescription>
+                                <div className="overflow-x-auto">
+                                    <table className="w-full text-left">
+                                        <thead className="bg-gray-50 border-b border-gray-100">
+                                            <tr>
+                                                <th className="p-4 font-semibold text-gray-500 text-xs uppercase tracking-wider">Nom</th>
+                                                <th className="p-4 font-semibold text-gray-500 text-xs uppercase tracking-wider">Email</th>
+                                                <th className="p-4 font-semibold text-gray-500 text-xs uppercase tracking-wider">Jeux</th>
+                                                <th className="p-4 font-semibold text-gray-500 text-xs uppercase tracking-wider">Gains</th>
+                                                <th className="p-4 font-semibold text-gray-500 text-xs uppercase tracking-wider">Dernière Visite</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-gray-100">
+                                            {uniqueCustomers.map((c) => (
+                                                <tr key={c.email} className="hover:bg-gray-50">
+                                                    <td className="p-4 font-medium text-gray-900">{c.name}</td>
+                                                    <td className="p-4 text-gray-500">{c.email}</td>
+                                                    <td className="p-4 font-medium text-gray-900">{c.totalPlays}</td>
+                                                    <td className="p-4 font-medium text-green-600">{c.totalWins}</td>
+                                                    <td className="p-4 text-gray-500">{new Date(c.lastVisit).toLocaleDateString()}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
                                 </div>
-                                <Button onClick={handleExportCSV} variant="outline" className="gap-2">
-                                    <Download className="h-4 w-4" />
-                                    Export CSV
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="text-black font-bold">Name</TableHead>
-                                            <TableHead className="text-black font-bold">Email</TableHead>
-                                            <TableHead className="text-black font-bold">Total Plays</TableHead>
-                                            <TableHead className="text-black font-bold">Wins</TableHead>
-                                            <TableHead className="text-black font-bold">Last Visit</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {uniqueCustomers.length === 0 ? (
-                                            <TableRow>
-                                                <TableCell colSpan={5} className="text-center py-8 text-black font-bold">
-                                                    No customers yet.
-                                                </TableCell>
-                                            </TableRow>
-                                        ) : (
-                                            uniqueCustomers.map((customer) => (
-                                                <TableRow key={customer.email}>
-                                                    <TableCell className="font-bold text-black">{customer.name}</TableCell>
-                                                    <TableCell className="text-black">{customer.email}</TableCell>
-                                                    <TableCell className="text-black font-bold">{customer.totalPlays}</TableCell>
-                                                    <TableCell className="text-black font-bold">{customer.totalWins}</TableCell>
-                                                    <TableCell className="text-black">{new Date(customer.lastVisit).toLocaleDateString()}</TableCell>
-                                                </TableRow>
-                                            ))
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                            </div>
+                        </TabsContent>
 
-                    {/* REWARDS TAB (EDITABLE) */}
-                    <TabsContent value="rewards">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Gestion des Récompenses</CardTitle>
-                                <CardDescription className="text-black font-medium">Modifiez les cadeaux et leurs probabilités.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {restaurant.rewards.map((reward, index) => (
-                                        <div key={reward.id} className="flex items-center gap-4 p-4 border rounded-lg bg-white shadow-sm">
-                                            {/* Color Indicator */}
-                                            <div
-                                                className="h-10 w-10 rounded-full flex-shrink-0 border-2 border-gray-100 shadow-inner"
-                                                style={{ backgroundColor: reward.colorHex || '#ccc' }}
-                                            />
+                        {/* REWARDS CONTENT */}
+                        <TabsContent value="rewards" className="space-y-6 m-0">
+                            <div className="grid gap-4">
+                                {restaurant.rewards.map((reward, index) => (
+                                    <div key={reward.id} className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-6">
+                                        <div className="h-12 w-12 rounded-lg flex items-center justify-center shadow-sm" style={{ backgroundColor: reward.colorHex || '#ccc' }}>
+                                            <Gift className="h-6 w-6 text-white opacity-75" />
+                                        </div>
 
-                                            {/* Label Input */}
-                                            <div className="flex-1">
-                                                <Label className="text-sm font-bold text-black">Nom du Cadeau</Label>
-                                                <Input
-                                                    value={reward.label}
-                                                    onChange={(e) => {
-                                                        const newRewards = [...restaurant.rewards]
-                                                        newRewards[index].label = e.target.value
-                                                        setRestaurant({ ...restaurant, rewards: newRewards })
-                                                    }}
-                                                    className="font-bold"
-                                                />
-                                            </div>
-
-                                            {/* Probability Input */}
-                                            <div className="w-24">
-                                                <Label className="text-sm font-bold text-black">Chance (%)</Label>
-                                                <div className="relative">
+                                        <div className="flex-1 space-y-4 w-full">
+                                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Nom</Label>
+                                                    <Input
+                                                        value={reward.label}
+                                                        onChange={(e) => {
+                                                            const newRewards = [...restaurant.rewards]
+                                                            newRewards[index].label = e.target.value
+                                                            setRestaurant({ ...restaurant, rewards: newRewards })
+                                                        }}
+                                                        className="font-medium"
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Probabilité (%)</Label>
                                                     <Input
                                                         type="number"
                                                         value={(reward.probability * 100).toFixed(0)}
@@ -410,91 +394,115 @@ function AdminContent() {
                                                             setRestaurant({ ...restaurant, rewards: newRewards })
                                                         }}
                                                     />
-                                                    <span className="absolute right-2 top-2 text-black font-bold text-xs">%</span>
+                                                </div>
+                                                <div>
+                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Type</Label>
+                                                    <Button
+                                                        variant={reward.isWin ? "default" : "outline"}
+                                                        onClick={() => {
+                                                            const newRewards = [...restaurant.rewards]
+                                                            newRewards[index].isWin = !newRewards[index].isWin
+                                                            setRestaurant({ ...restaurant, rewards: newRewards })
+                                                        }}
+                                                        className={`w-full ${reward.isWin ? 'bg-green-600 hover:bg-green-700' : ''}`}
+                                                    >
+                                                        {reward.isWin ? "Gagnant" : "Perdant"}
+                                                    </Button>
                                                 </div>
                                             </div>
-
-                                            {/* Status Toggle */}
-                                            <div className="flex flex-col items-center gap-1">
-                                                <Label className="text-sm font-bold text-black">Gagnant ?</Label>
-                                                <Button
-                                                    size="sm"
-                                                    variant={reward.isWin ? "default" : "secondary"}
-                                                    onClick={() => {
-                                                        const newRewards = [...restaurant.rewards]
-                                                        newRewards[index].isWin = !newRewards[index].isWin
-                                                        setRestaurant({ ...restaurant, rewards: newRewards })
-                                                    }}
-                                                    className={reward.isWin ? "bg-green-600 hover:bg-green-700" : "bg-gray-200 text-black font-bold hover:bg-gray-300"}
-                                                >
-                                                    {reward.isWin ? "OUI" : "NON"}
-                                                </Button>
-                                            </div>
                                         </div>
-                                    ))}
-
-                                    <div className="pt-4 flex justify-end">
-                                        <Button
-                                            onClick={async () => {
-                                                // Save logic
-                                                try {
-                                                    const res = await fetch(`/api/admin/update-rewards`, {
-                                                        method: "POST",
-                                                        headers: { "Content-Type": "application/json" },
-                                                        body: JSON.stringify({
-                                                            token,
-                                                            rewards: restaurant.rewards
-                                                        })
-                                                    })
-                                                    if (res.ok) alert("Récompenses mises à jour !")
-                                                    else alert("Erreur lors de la sauvegarde")
-                                                } catch (e) { alert("Erreur réseau") }
-                                            }}
-                                            className="bg-black text-white hover:bg-gray-800"
-                                        >
-                                            Enregistrer les modifications
-                                        </Button>
                                     </div>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
+                                ))}
+                            </div>
+                            <div className="flex justify-end sticky bottom-6">
+                                <Button
+                                    size="lg"
+                                    className="bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-200"
+                                    onClick={async () => {
+                                        try {
+                                            const res = await fetch(`/api/admin/update-rewards`, {
+                                                method: "POST",
+                                                headers: { "Content-Type": "application/json" },
+                                                body: JSON.stringify({ token, rewards: restaurant.rewards })
+                                            })
+                                            if (res.ok) alert("Sauvegardé !")
+                                            else alert("Erreur")
+                                        } catch (e) { alert("Erreur réseau") }
+                                    }}
+                                >
+                                    Enregistrer les modifications
+                                </Button>
+                            </div>
+                        </TabsContent>
 
-                    {/* SETTINGS TAB */}
-                    <TabsContent value="settings">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-black font-bold">QR Code & Links</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="flex flex-col items-center p-6 bg-white border border-gray-200 rounded-xl">
+                        {/* SETTINGS CONTENT */}
+                        <TabsContent value="settings" className="space-y-6 m-0">
+                            <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm max-w-2xl mx-auto text-center">
+                                <div className="bg-purple-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <QrCode className="h-8 w-8 text-purple-600" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-gray-900 mb-2">QR Code & Accès</h2>
+                                <p className="text-gray-500 mb-8">Partagez ce code avec vos clients pour qu'ils puissent jouer.</p>
+
+                                <div className="inline-block p-4 bg-white rounded-xl border-2 border-gray-100 shadow-sm mb-8">
                                     <QRCodeGenerator
                                         url={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
                                         restaurantName={restaurant.name}
                                         primaryColor={restaurant.primaryColor}
                                         secondaryColor={restaurant.secondaryColor}
                                     />
-                                    <p className="mt-4 text-sm text-black font-mono bg-gray-100 px-3 py-1 rounded">
-                                        {`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
-                                    </p>
-                                    <Button className="mt-4" variant="outline" onClick={() => window.print()}>
-                                        Print QR Code
-                                    </Button>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                </Tabs>
+
+                                <div className="w-full max-w-md mx-auto">
+                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block text-left">Lien Direct</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            readOnly
+                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
+                                            className="bg-gray-50 font-mono text-sm"
+                                        />
+                                        <Button variant="outline" onClick={() => {
+                                            navigator.clipboard.writeText(`${window.location.origin}/r/${restaurant.slug}`)
+                                            alert("Copié !")
+                                        }}>
+                                            Copier
+                                        </Button>
+                                    </div>
+                                </div>
+
+                                <Button className="mt-8 w-full max-w-md bg-black text-white" onClick={() => window.print()}>
+                                    Imprimer le QR Code
+                                </Button>
+                            </div>
+                        </TabsContent>
+                    </Tabs>
+                </div>
             </div>
         </div>
     )
 }
 
+function StatCard({ label, value, icon, bg, trend }: any) {
+    return (
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="pt-6">
+                <div className="flex items-center justify-between mb-4">
+                    <div className={`p-3 rounded-lg ${bg}`}>
+                        {icon}
+                    </div>
+                    {trend && <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{trend}</span>}
+                </div>
+                <p className="text-sm text-gray-500 font-medium">{label}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+            </CardContent>
+        </Card>
+    )
+}
+
 export default function AdminPage() {
     return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Chargement...</div>}>
             <AdminContent />
         </Suspense>
     )
 }
-
