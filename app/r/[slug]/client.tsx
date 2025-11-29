@@ -54,7 +54,6 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
             restaurantId: restaurant.id,
             customerName,
             customerEmail,
-            ticketNumber,
             rating,
             feedback,
             source: "qr",
@@ -212,18 +211,6 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                             placeholder="thomas@exemple.com"
                                             value={customerEmail}
                                             onChange={(e) => setCustomerEmail(e.target.value)}
-                                            className="h-12 bg-gray-50 border-gray-200"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1 flex items-center gap-1">
-                                            <Receipt className="w-3 h-3" />
-                                            N° Ticket / Table <span className="text-gray-400 font-normal lowercase">(optionnel)</span>
-                                        </label>
-                                        <Input
-                                            placeholder="Ex: Table 12 ou Ticket #458"
-                                            value={ticketNumber}
-                                            onChange={(e) => setTicketNumber(e.target.value)}
                                             className="h-12 bg-gray-50 border-gray-200"
                                         />
                                     </div>

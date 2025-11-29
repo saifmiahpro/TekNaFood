@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import { useParams, useSearchParams } from "next/navigation"
 import { PrizeWheelV2, WheelSegment } from "@/components/prize-wheel-v2"
+import { ValidationQRCode } from "@/components/validation-qr-code"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Trophy, Gift, Sparkles, PartyPopper, CheckCircle, Mail } from "lucide-react"
+import { Trophy, Gift, Sparkles, PartyPopper, CheckCircle, Mail, Receipt } from "lucide-react"
 import confetti from "canvas-confetti"
 import { motion } from "framer-motion"
 
@@ -311,25 +312,27 @@ export default function PlayPage() {
                                                 Comment profiter de votre cadeau :
                                             </h3>
 
-                                            {/* Validation System */}
+                                            {/* Validation System - QR Code */}
                                             {!isRedeemed ? (
-                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100 space-y-4">
+                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100 space-y-4 text-center">
                                                     <div>
                                                         <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">À montrer au serveur</p>
-                                                        <p className="text-sm text-green-900 font-medium">Ne validez que devant le personnel !</p>
+                                                        <p className="text-sm text-green-900 font-medium mb-4">
+                                                            Préparez votre ticket de caisse et faites scanner ce code :
+                                                        </p>
                                                     </div>
 
-                                                    <Button
-                                                        onClick={handleRedeem}
-                                                        disabled={isRedeeming}
-                                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-6 text-lg shadow-lg animate-pulse"
-                                                    >
-                                                        {isRedeeming ? "Validation..." : "👉 VALIDER MON CADEAU"}
-                                                    </Button>
+                                                    <div className="flex justify-center">
+                                                        <ValidationQRCode
+                                                            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/verify/${participation?.id}`}
+                                                            color={restaurant.primaryColor}
+                                                        />
+                                                    </div>
 
-                                                    <p className="text-[10px] text-center text-green-700/60">
-                                                        Attention : une fois validé, le coupon ne sera plus utilisable.
-                                                    </p>
+                                                    <div className="flex items-center justify-center gap-2 text-xs text-green-700/80 mt-2">
+                                                        <Receipt className="w-4 h-4" />
+                                                        <span>Preuve d'achat requise</span>
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <div className="p-6 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 text-center">
