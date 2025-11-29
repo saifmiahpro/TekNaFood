@@ -272,14 +272,14 @@ function AdminContent() {
                                         <p className="text-center text-gray-500 py-4">No activity yet.</p>
                                     ) : (
                                         restaurant.participations.slice(0, 10).map((p) => (
-                                            <div key={p.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
+                                            <div key={p.id} className="flex items-center justify-between p-4 bg-white rounded-lg border border-gray-200 shadow-sm hover:bg-gray-50 transition-colors">
                                                 <div className="flex items-center gap-4">
                                                     <div className={`h-10 w-10 rounded-full flex items-center justify-center ${p.reward.isWin ? 'bg-green-100 text-green-600' : 'bg-gray-200 text-gray-500'}`}>
                                                         {p.reward.isWin ? <Trophy className="h-5 w-5" /> : <Users className="h-5 w-5" />}
                                                     </div>
                                                     <div>
-                                                        <p className="font-medium text-gray-900">{p.customerName}</p>
-                                                        <p className="text-sm text-gray-500">{p.reward.label}</p>
+                                                        <p className="font-bold text-gray-900">{p.customerName}</p>
+                                                        <p className="text-sm text-gray-600 font-medium">{p.reward.label}</p>
                                                     </div>
                                                 </div>
                                                 <div className="text-right flex flex-col items-end gap-2">
