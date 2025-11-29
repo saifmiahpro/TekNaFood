@@ -110,6 +110,14 @@ export function VerifyClient({ participation }: { participation: any }) {
                                 <strong>{validFrom?.toLocaleDateString()}</strong>
                             </p>
                             <p className="text-xs text-orange-700 mt-2 italic">Revenez demain !</p>
+
+                            {/* Force Validate Button for Testing */}
+                            <button
+                                onClick={handleRedeem}
+                                className="mt-6 text-xs text-gray-400 underline hover:text-gray-600"
+                            >
+                                [TEST] Forcer la validation maintenant
+                            </button>
                         </div>
                     ) : isExpired ? (
                         <div className="bg-gray-100 border border-gray-300 rounded-xl p-6 text-center">
