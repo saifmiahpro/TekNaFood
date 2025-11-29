@@ -53,9 +53,18 @@ export default function PlayPage() {
 
     const fetchRestaurant = async () => {
         try {
+            console.log('Fetching restaurant:', slug)
             const res = await fetch(`/api/restaurant/${slug}`)
-            if (!res.ok) throw new Error("Restaurant not found")
+            console.log('Response status:', res.status)
+
+            if (!res.ok) {
+                const errorData = await res.json()
+                console.error('API Error:', errorData)
+                throw new Error("Restaurant not found")
+            }
+
             const data = await res.json()
+            console.log('Restaurant data:', data)
             setRestaurant(data)
 
             // Prepare wheel segments
@@ -65,10 +74,11 @@ export default function PlayPage() {
                 color: reward.colorHex || generateColorFromString(reward.label),
                 icon: reward.icon,
             }))
+            console.log('Wheel segments:', segments)
             setWheelSegments(segments)
         } catch (error) {
-            console.error(error)
-            alert("Restaurant not found")
+            console.error('Fetch error:', error)
+            alert("Restaurant not found: " + error)
         } finally {
             setLoading(false)
         }
