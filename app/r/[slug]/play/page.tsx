@@ -28,6 +28,8 @@ interface Restaurant {
 
 interface Participation {
     id: string
+    validFrom?: string | Date
+    expiresAt?: string | Date
     reward: {
         id: string
         label: string
