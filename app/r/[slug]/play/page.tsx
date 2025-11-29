@@ -278,10 +278,10 @@ export default function PlayPage() {
                                     </motion.div>
 
                                     <div className="space-y-2">
-                                        <h1 className="text-4xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-600 uppercase">
+                                        <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-orange-600 uppercase tracking-tight drop-shadow-sm">
                                             Félicitations ! 🎉
                                         </h1>
-                                        <p className="text-xl font-bold text-gray-800">
+                                        <p className="text-2xl font-bold text-gray-900">
                                             Vous avez gagné :
                                         </p>
                                     </div>
@@ -294,7 +294,7 @@ export default function PlayPage() {
                                         <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-yellow-300 opacity-20 rounded-full blur-2xl"></div>
                                         <div className="flex items-center justify-center gap-4">
                                             <Gift className="h-8 w-8 text-orange-500 animate-bounce" />
-                                            <span className="text-2xl md:text-4xl font-black text-gray-800 uppercase tracking-tight">
+                                            <span className="text-3xl md:text-5xl font-black text-gray-900 uppercase tracking-tight">
                                                 {participation?.reward.label}
                                             </span>
                                             <Gift className="h-8 w-8 text-orange-500 animate-bounce delay-100" />
@@ -304,8 +304,8 @@ export default function PlayPage() {
                                     {/* Redemption Options */}
                                     <div className="space-y-4 w-full max-w-sm mx-auto">
                                         <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm text-left">
-                                            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-                                                <CheckCircle className="h-5 w-5 text-green-500" />
+                                            <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
+                                                <CheckCircle className="h-6 w-6 text-green-600" />
                                                 Comment profiter de votre cadeau :
                                             </h3>
 
@@ -318,10 +318,10 @@ export default function PlayPage() {
 
                                                     return (
                                                         <>
-                                                            <p className="text-sm font-medium text-yellow-900 mt-1">
+                                                            <p className="text-base font-bold text-yellow-950 mt-1">
                                                                 Du {validFrom.toLocaleDateString()} au {expiresAt.toLocaleDateString()}
                                                             </p>
-                                                            <p className="text-[10px] text-yellow-700 mt-1 italic">
+                                                            <p className="text-xs text-yellow-800 mt-1 italic font-medium">
                                                                 (Utilisable dès demain)
                                                             </p>
                                                         </>

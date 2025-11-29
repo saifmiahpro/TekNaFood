@@ -87,11 +87,11 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     <ThumbsUp className="h-10 w-10 text-yellow-600" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900 mb-3">{restaurant.introTitle}</h2>
-                                <p className="text-gray-600 leading-relaxed">{restaurant.introSubtitle}</p>
+                                <p className="text-gray-700 leading-relaxed font-medium">{restaurant.introSubtitle}</p>
                             </div>
 
                             <div className="space-y-4">
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-widest">Comment s'est passé votre moment ?</p>
+                                <p className="text-sm font-bold text-gray-700 uppercase tracking-widest">Comment s'est passé votre moment ?</p>
                                 <div className="flex justify-center gap-2">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
@@ -123,7 +123,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     <Gift className="h-8 w-8 text-blue-600" />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">Un cadeau vous attend ! 🎁</h2>
-                                <p className="text-gray-600 mb-6 text-sm">
+                                <p className="text-gray-700 mb-6 text-base font-medium">
                                     Merci pour cette super note ! Partagez votre expérience sur Google en 2 clics pour <strong>lancer la roue magique</strong>.
                                 </p>
 
@@ -135,7 +135,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     <MapPin className="mr-2 h-5 w-5" />
                                     Poster mon avis & Jouer
                                 </Button>
-                                <p className="text-xs text-gray-400 mt-4">Ça ne prend que 10 secondes !</p>
+                                <p className="text-sm text-gray-500 mt-4 font-medium">Ça ne prend que 10 secondes !</p>
                             </div>
                         </motion.div>
                     )}
@@ -154,7 +154,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     <MessageSquare className="h-8 w-8 text-orange-600" />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">Aidez-nous à nous améliorer</h2>
-                                <p className="text-gray-600 mb-6 text-sm">
+                                <p className="text-gray-700 mb-6 text-base font-medium">
                                     Désolé que tout n'ait pas été parfait. Votre avis compte énormément pour nous (et restera privé).
                                 </p>
 
@@ -189,29 +189,29 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     <Sparkles className="h-8 w-8 text-purple-600" />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">C'est le moment de vérité !</h2>
-                                <p className="text-gray-600 mb-6 text-sm">
+                                <p className="text-gray-700 mb-6 text-base font-medium">
                                     Où devons-nous envoyer votre gain si vous gagnez ?
-                                    <br /><span className="text-xs text-gray-400">(Promis, zéro spam. Juste votre cadeau.)</span>
+                                    <br /><span className="text-sm text-gray-500 font-normal">(Promis, zéro spam. Juste votre cadeau.)</span>
                                 </p>
 
                                 <div className="space-y-4 text-left">
                                     <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Prénom</label>
+                                        <label className="text-sm font-bold text-gray-700 uppercase ml-1 mb-1 block">Prénom</label>
                                         <Input
                                             placeholder="Ex: Thomas"
                                             value={customerName}
                                             onChange={(e) => setCustomerName(e.target.value)}
-                                            className="h-12 bg-gray-50 border-gray-200"
+                                            className="h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg"
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1">Email</label>
+                                        <label className="text-sm font-bold text-gray-700 uppercase ml-1 mb-1 block">Email</label>
                                         <Input
                                             type="email"
                                             placeholder="thomas@exemple.com"
                                             value={customerEmail}
                                             onChange={(e) => setCustomerEmail(e.target.value)}
-                                            className="h-12 bg-gray-50 border-gray-200"
+                                            className="h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg"
                                         />
                                     </div>
                                 </div>
