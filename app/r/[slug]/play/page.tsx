@@ -178,48 +178,48 @@ export default function PlayPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-4 overflow-hidden relative">
-            {/* Background Effects */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-3 md:p-4 overflow-hidden relative">
+            {/* Background Effects - Reduced on mobile */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30 md:opacity-100">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-600 blur-[120px] opacity-30 animate-pulse"></div>
-                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-600 blur-[120px] opacity-20 animate-pulse delay-1000"></div>
+                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-600 blur-[120px] opacity-20 md:opacity-30 animate-pulse"></div>
+                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-600 blur-[120px] opacity-10 md:opacity-20 animate-pulse"></div>
                 <div className="absolute -bottom-[10%] left-[20%] w-[60%] h-[60%] rounded-full bg-pink-600 blur-[120px] opacity-20 animate-pulse delay-2000"></div>
             </div>
 
-            <div className="w-full max-w-2xl relative z-10">
+            <div className="w-full max-w-md md:max-w-2xl relative z-10">
                 {!hasSpun ? (
                     <>
-                        {/* Header / Hype Section */}
-                        <div className="text-center mb-8 relative z-10">
+                        {/* Header - Compact on mobile */}
+                        <div className="text-center mb-4 md:mb-8 relative z-10">
                             <motion.div
                                 initial={{ y: -20, opacity: 0 }}
                                 animate={{ y: 0, opacity: 1 }}
-                                className="inline-block bg-white/10 backdrop-blur-md px-6 py-2 rounded-full shadow-lg mb-6 border border-white/20"
+                                className="inline-block bg-white/10 backdrop-blur-md px-4 md:px-6 py-1.5 md:py-2 rounded-full shadow-lg mb-3 md:mb-6 border border-white/20"
                             >
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400 font-black text-lg uppercase tracking-wide flex items-center gap-2">
-                                    🔥 Déjà 124 gagnants aujourd'hui !
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-400 font-black text-sm md:text-lg uppercase tracking-wide flex items-center gap-2">
+                                    🔥 Déjà 124 gagnants !
                                 </span>
                             </motion.div>
 
-                            <h1 className="text-5xl md:text-7xl font-black text-white drop-shadow-2xl mb-4 tracking-tight">
+                            <h1 className="text-4xl md:text-5xl lg:text-7xl font-black text-white drop-shadow-2xl mb-2 md:mb-4 tracking-tight">
                                 Tournez & <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-yellow-500">Gagnez</span>
                             </h1>
-                            <p className="text-xl text-white/80 font-medium max-w-lg mx-auto leading-relaxed">
+                            <p className="text-base md:text-xl text-white/80 font-medium max-w-lg mx-auto leading-relaxed px-4">
                                 Merci pour votre avis ! La chance vous sourit...
                             </p>
                         </div>
 
-                        {/* Main Game Card - Glassmorphism */}
+                        {/* Main Game Card - Compact on mobile */}
                         <Card className="border-0 bg-white/10 backdrop-blur-xl shadow-2xl overflow-hidden relative ring-1 ring-white/20">
                             {/* Decorative blobs */}
                             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500" />
 
-                            <CardContent className="pt-12 pb-12 px-4 md:px-12">
+                            <CardContent className="pt-6 md:pt-12 pb-6 md:pb-12 px-3 md:px-12">
                                 <div className="flex flex-col items-center">
-                                    {/* Win Rate Badge */}
-                                    <div className="absolute top-6 right-6 rotate-12 animate-pulse z-20">
-                                        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-black text-xs px-3 py-1 rounded-full shadow-lg border-2 border-white transform scale-110">
+                                    {/* Win Rate Badge - Smaller on mobile */}
+                                    <div className="absolute top-3 md:top-6 right-3 md:right-6 rotate-12 animate-pulse z-20">
+                                        <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white font-black text-[10px] md:text-xs px-2 md:px-3 py-1 rounded-full shadow-lg border-2 border-white transform scale-100 md:scale-110">
                                             80% GAGNANTS !
                                         </div>
                                     </div>
@@ -232,9 +232,9 @@ export default function PlayPage() {
                                         secondaryColor={restaurant.secondaryColor}
                                     />
 
-                                    <div className="mt-8 text-white/40 text-sm font-medium flex items-center gap-2">
+                                    <div className="mt-4 md:mt-8 text-white/40 text-xs md:text-sm font-medium flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                        Jeu gratuit sans obligation d'achat
+                                        Jeu gratuit sans obligation
                                     </div>
                                 </div>
                             </CardContent>

@@ -211,22 +211,22 @@ export function PrizeWheel({
             {/* The Wheel */}
             <motion.div
                 className="relative z-10"
-                animate={{ rotate: rotation }}
-                transition={{ duration: 5, ease: [0.2, 0.8, 0.2, 1] }} // Bezier for "spin up then slow down"
+                style={{ rotate: rotation }}
+                transition={{ duration: 5, ease: [0.2, 0.8, 0.2, 1] }}
             >
                 <canvas
                     ref={canvasRef}
                     width={400}
                     height={400}
-                    className="rounded-full"
+                    className="rounded-full w-[280px] h-[280px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px]"
                 />
             </motion.div>
 
-            {/* Spin Button (Separate from wheel now, usually below) */}
+            {/* Spin Button - Mobile optimized */}
             <button
                 onClick={spinWheel}
                 disabled={isSpinning}
-                className="mt-12 group relative px-8 py-4 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full font-black text-white text-xl shadow-[0_4px_0_rgb(180,83,9)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-wider z-20"
+                className="mt-8 md:mt-12 group relative px-6 md:px-8 py-4 md:py-5 bg-gradient-to-b from-yellow-400 to-orange-500 rounded-full font-black text-white text-lg md:text-xl shadow-[0_4px_0_rgb(180,83,9)] active:shadow-none active:translate-y-1 transition-all uppercase tracking-wider z-20 min-h-[56px]"
             >
                 {isSpinning ? "Bonne chance !" : "LANCER LA ROUE !"}
 
