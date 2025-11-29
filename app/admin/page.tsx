@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -54,7 +54,7 @@ interface Restaurant {
     }>
 }
 
-export default function AdminPage() {
+function AdminContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const token = searchParams.get("token")
@@ -489,3 +489,12 @@ export default function AdminPage() {
         </div>
     )
 }
+
+export default function AdminPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <AdminContent />
+        </Suspense>
+    )
+}
+
