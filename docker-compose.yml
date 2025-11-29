@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: reviewspin-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: reviewspin
+      POSTGRES_PASSWORD: reviewspin
+      POSTGRES_DB: reviewspin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U reviewspin" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Next.js Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: reviewspin-app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://reviewspin:reviewspin@postgres:5432/reviewspin
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "npx prisma migrate deploy &&
+             node server.js"
+
+volumes:
+  postgres_data:

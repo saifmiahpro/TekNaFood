@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Restaurant {
+  id              String              @id @default(cuid())
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  name            String
+  slug            String              @unique // used in URL: /r/[slug]
+  category        RestaurantCategory  // e.g. FAST_FOOD / CAFE / CAR_WASH
+  googleMapsUrl   String              // link to Google Business page / reviews
+
+  primaryColor    String              @default("#16a34a")
+  secondaryColor  String              @default("#facc15")
+  logoUrl         String?
+  introTitle      String              @default("Merci pour votre visite !")
+  introSubtitle   String              @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
+  contactEmail    String?
+  adminToken      String              @unique // used as ?token= in admin URL
+
+  gameType        GameType            @default(ROULETTE) // for the future (other games)
+
+  rewards         Reward[]
+  participations  Participation[]
+}
+
+enum RestaurantCategory {
+  FAST_FOOD
+  CAFE
+  RESTAURANT
+  BAR
+  CAR_WASH
+  BEAUTY
+  OTHER
+}
+
+enum GameType {
+  ROULETTE
+  // In the future: MYSTERY_BOXES, SCRATCH_CARD, etc.
+}
+
+model Reward {
+  id            String        @id @default(cuid())
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId  String
+
+  label         String        // e.g. "Boisson offerte", "Dessert offert"
+  description   String?
+  probability   Float         // between 0 and 1; probabilities per restaurant should roughly sum to 1
+  isWin         Boolean       @default(true)  // if false, it's a "no prize but thank you" segment
+
+  colorHex      String?       // optional color for that segment
+  icon          String?       // optional icon/emoji name/code (e.g. "☕", "🍔", "🚗", or lucide icon name)
+  isActive      Boolean       @default(true)
+
+  participations Participation[]
+}
+
+model Participation {
+  id             String              @id @default(cuid())
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  restaurant     Restaurant          @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId   String
+
+  customerName   String
+  customerEmail  String?
+  googleName     String?             // optional (name displayed on Google review)
+  screenshotUrl  String?             // optional URL of screenshot (future extension)
+
+  reward         Reward?             @relation(fields: [rewardId], references: [id])
+  rewardId       String?
+
+  status         ParticipationStatus @default(PENDING)
+}
+
+enum ParticipationStatus {
+  PENDING    // customer submitted, reward chosen
+  VERIFIED   // staff has manually verified there is a review (optional use)
+  REDEEMED   // reward used / given
+}
+
+model Admin {
+  id            String   @id @default(cuid())
+  username      String   @unique
+  passwordHash  String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
