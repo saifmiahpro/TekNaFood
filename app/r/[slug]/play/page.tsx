@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useSearchParams } from "next/navigation"
-import { PrizeWheel, WheelSegment } from "@/components/prize-wheel"
+import { PrizeWheelV2, WheelSegment } from "@/components/prize-wheel-v2"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Trophy, Gift, Sparkles, PartyPopper, CheckCircle, Mail } from "lucide-react"
@@ -224,7 +224,7 @@ export default function PlayPage() {
                                         </div>
                                     </div>
 
-                                    <PrizeWheel
+                                    <PrizeWheelV2
                                         segments={wheelSegments}
                                         onStartSpin={handleStartSpin}
                                         onSpinComplete={handleSpinComplete}
