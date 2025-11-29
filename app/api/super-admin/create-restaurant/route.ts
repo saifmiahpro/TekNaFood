@@ -69,6 +69,41 @@ export async function POST(req: Request) {
         // Generate admin token
         const adminToken = generateRandomToken()
 
+        // Default rewards templates by category
+        const rewardTemplates: Record<string, any[]> = {
+            FAST_FOOD: [
+                { label: "Menu offert", probability: 0.15, isWin: true, colorHex: "#ef4444", icon: "🍔", isActive: true },
+                { label: "Boisson gratuite", probability: 0.25, isWin: true, colorHex: "#3b82f6", icon: "🥤", isActive: true },
+                { label: "Frites offertes", probability: 0.20, isWin: true, colorHex: "#f59e0b", icon: "🍟", isActive: true },
+                { label: "10% de réduction", probability: 0.20, isWin: true, colorHex: "#8b5cf6", icon: "💰", isActive: true },
+                { label: "Merci !", probability: 0.20, isWin: false, colorHex: "#6b7280", icon: "🙏", isActive: true },
+            ],
+            CAFE: [
+                { label: "Café offert", probability: 0.25, isWin: true, colorHex: "#92400e", icon: "☕", isActive: true },
+                { label: "Pâtisserie offerte", probability: 0.20, isWin: true, colorHex: "#ec4899", icon: "🥐", isActive: true },
+                { label: "Croissant offert", probability: 0.15, isWin: true, colorHex: "#f59e0b", icon: "🥨", isActive: true },
+                { label: "15% de réduction", probability: 0.20, isWin: true, colorHex: "#8b5cf6", icon: "💰", isActive: true },
+                { label: "Merci !", probability: 0.20, isWin: false, colorHex: "#6b7280", icon: "🙏", isActive: true },
+            ],
+            RESTAURANT: [
+                { label: "Entrée offerte", probability: 0.15, isWin: true, colorHex: "#10b981", icon: "🥗", isActive: true },
+                { label: "Dessert offert", probability: 0.25, isWin: true, colorHex: "#ec4899", icon: "🍰", isActive: true },
+                { label: "Café offert", probability: 0.20, isWin: true, colorHex: "#92400e", icon: "☕", isActive: true },
+                { label: "10% de réduction", probability: 0.20, isWin: true, colorHex: "#8b5cf6", icon: "💰", isActive: true },
+                { label: "Merci !", probability: 0.20, isWin: false, colorHex: "#6b7280", icon: "🙏", isActive: true },
+            ],
+            BAR: [
+                { label: "Shot offert", probability: 0.20, isWin: true, colorHex: "#ef4444", icon: "🍷", isActive: true },
+                { label: "Bière offerte", probability: 0.25, isWin: true, colorHex: "#f59e0b", icon: "🍺", isActive: true },
+                { label: "Cocktail -50%", probability: 0.15, isWin: true, colorHex: "#ec4899", icon: "🍹", isActive: true },
+                { label: "15% sur l'addition", probability: 0.20, isWin: true, colorHex: "#8b5cf6", icon: "💰", isActive: true },
+                { label: "Merci !", probability: 0.20, isWin: false, colorHex: "#6b7280", icon: "🙏", isActive: true },
+            ],
+        }
+
+        // Get rewards template based on category, with fallback
+        const defaultRewards = rewardTemplates[category] || rewardTemplates.RESTAURANT
+
         // Create restaurant with rewards
         const restaurant = await prisma.restaurant.create({
             data: {
@@ -85,40 +120,7 @@ export async function POST(req: Request) {
                 adminToken,
                 gameType: GameType.ROULETTE,
                 rewards: {
-                    create: rewards || [
-                        {
-                            label: "Boisson offerte",
-                            probability: 0.3,
-                            isWin: true,
-                            colorHex: "#3b82f6",
-                            icon: "☕",
-                            isActive: true,
-                        },
-                        {
-                            label: "Dessert offert",
-                            probability: 0.2,
-                            isWin: true,
-                            colorHex: "#ec4899",
-                            icon: "🍰",
-                            isActive: true,
-                        },
-                        {
-                            label: "10% de réduction",
-                            probability: 0.25,
-                            isWin: true,
-                            colorHex: "#8b5cf6",
-                            icon: "💰",
-                            isActive: true,
-                        },
-                        {
-                            label: "Merci d'avoir participé",
-                            probability: 0.25,
-                            isWin: false,
-                            colorHex: "#6b7280",
-                            icon: "🙏",
-                            isActive: true,
-                        },
-                    ],
+                    create: (rewards && rewards.length > 0) ? rewards : defaultRewards,
                 },
             },
             include: {
