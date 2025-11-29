@@ -188,7 +188,7 @@ function AdminContent() {
                             </div>
                             <div>
                                 <h1 className="text-xl font-bold text-gray-900">{restaurant.name}</h1>
-                                <p className="text-xs text-gray-500">Admin Dashboard</p>
+                                <p className="text-xs text-black font-bold">Admin Dashboard</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -224,7 +224,7 @@ function AdminContent() {
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                             <Card>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500">Total Plays</CardTitle>
+                                    <CardTitle className="text-sm font-bold text-black">Total Plays</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-bold">{stats.totalParticipations}</div>
@@ -232,7 +232,7 @@ function AdminContent() {
                             </Card>
                             <Card>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500">Winners</CardTitle>
+                                    <CardTitle className="text-sm font-bold text-black">Winners</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-bold text-green-600">{stats.totalWins}</div>
@@ -243,7 +243,7 @@ function AdminContent() {
                             </Card>
                             <Card>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500">Pending Prizes</CardTitle>
+                                    <CardTitle className="text-sm font-bold text-black">Pending Prizes</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-bold text-orange-600">
@@ -253,7 +253,7 @@ function AdminContent() {
                             </Card>
                             <Card>
                                 <CardHeader className="pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500">Customers Collected</CardTitle>
+                                    <CardTitle className="text-sm font-bold text-black">Customers Collected</CardTitle>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-bold text-blue-600">{uniqueCustomers.length}</div>
@@ -384,7 +384,7 @@ function AdminContent() {
 
                                             {/* Label Input */}
                                             <div className="flex-1">
-                                                <Label className="text-xs text-gray-500">Nom du Cadeau</Label>
+                                                <Label className="text-sm font-bold text-black">Nom du Cadeau</Label>
                                                 <Input
                                                     value={reward.label}
                                                     onChange={(e) => {
@@ -398,7 +398,7 @@ function AdminContent() {
 
                                             {/* Probability Input */}
                                             <div className="w-24">
-                                                <Label className="text-xs text-gray-500">Chance (%)</Label>
+                                                <Label className="text-sm font-bold text-black">Chance (%)</Label>
                                                 <div className="relative">
                                                     <Input
                                                         type="number"
@@ -416,7 +416,7 @@ function AdminContent() {
 
                                             {/* Status Toggle */}
                                             <div className="flex flex-col items-center gap-1">
-                                                <Label className="text-xs text-gray-500">Gagnant ?</Label>
+                                                <Label className="text-sm font-bold text-black">Gagnant ?</Label>
                                                 <Button
                                                     size="sm"
                                                     variant={reward.isWin ? "default" : "secondary"}
@@ -474,7 +474,7 @@ function AdminContent() {
                                         primaryColor={restaurant.primaryColor}
                                         secondaryColor={restaurant.secondaryColor}
                                     />
-                                    <p className="mt-4 text-sm text-gray-500 font-mono bg-gray-100 px-3 py-1 rounded">
+                                    <p className="mt-4 text-sm text-black font-mono bg-gray-100 px-3 py-1 rounded">
                                         {`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
                                     </p>
                                     <Button className="mt-4" variant="outline" onClick={() => window.print()}>
