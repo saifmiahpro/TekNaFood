@@ -13,6 +13,7 @@ export interface WheelSegment {
 interface PrizeWheelProps {
     segments: WheelSegment[]
     onSpinComplete?: (winningSegment: WheelSegment) => void
+    onStartSpin?: () => Promise<string | null> // Returns the winning segment ID
     primaryColor?: string
     secondaryColor?: string
 }
@@ -20,6 +21,7 @@ interface PrizeWheelProps {
 export function PrizeWheel({
     segments,
     onSpinComplete,
+    onStartSpin,
     primaryColor = "#16a34a",
     secondaryColor = "#facc15",
 }: PrizeWheelProps) {
@@ -121,28 +123,34 @@ export function PrizeWheel({
 
         setIsSpinning(true)
 
-        // Random winning index in the DISPLAY segments
-        const winningIndex = Math.floor(Math.random() * displaySegments.length)
-        const winningSegment = displaySegments[winningIndex]
+        // Get winning segment ID from server (if callback provided)
+        let winningSegmentId: string | null = null
+        if (onStartSpin) {
+            winningSegmentId = await onStartSpin()
+            if (!winningSegmentId) {
+                setIsSpinning(false)
+                return // API call failed
+            }
+        }
+
+        // Find the winning segment
+        let winningIndex: number
+        let winningSegment: WheelSegment
+
+        if (winningSegmentId) {
+            // Find the segment in displaySegments that matches the ID
+            winningIndex = displaySegments.findIndex(seg => seg.id === winningSegmentId)
+            if (winningIndex === -1) winningIndex = 0 // Fallback
+            winningSegment = displaySegments[winningIndex]
+        } else {
+            // Random fallback (if no onStartSpin)
+            winningIndex = Math.floor(Math.random() * displaySegments.length)
+            winningSegment = displaySegments[winningIndex]
+        }
 
         // Calculate rotation
         const segmentAngle = 360 / displaySegments.length
         const spins = 5 + Math.random() * 3 // 5 to 8 spins
-
-        // We need to land on the winningIndex. 
-        // 0 degrees is at 3 o'clock usually in canvas, but we drew starting at -PI/2 (12 o'clock).
-        // Actually, let's simplify: 
-        // The pointer is at the TOP.
-        // If we rotate the wheel, the segment that ends up at the top is the winner.
-        // Segment 0 starts at -90deg (top). 
-        // To bring Segment i to the top, we need to rotate by - (i * angle).
-        // Adding full spins: 360 * spins.
-
-        // Correction for the way we draw (index 0 is at top, clockwise)
-        // To land index i at top, we rotate COUNTER-CLOCKWISE by i * angle? 
-        // Or CLOCKWISE by (Total - i) * angle.
-        // Let's do Clockwise rotation.
-        // Target rotation = 360 * spins + (360 - (winningIndex * segmentAngle)) - (segmentAngle / 2) + randomOffset
 
         const randomOffset = (Math.random() - 0.5) * (segmentAngle * 0.8) // Add some randomness within the segment
         const targetRotation = 360 * spins + (360 - (winningIndex * segmentAngle)) + randomOffset

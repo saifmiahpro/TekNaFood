@@ -85,15 +85,35 @@ export default function PlayPage() {
     }
 
     const handleSpinComplete = async (winningSegment: WheelSegment) => {
+        setHasSpun(true)
+
+        // Find the reward that matches the winning segment
+        const wonReward = restaurant?.rewards.find(r => r.id === winningSegment.id)
+
+        if (wonReward) {
+            setParticipation({
+                id: 'temp-' + Date.now(), // Temporary ID
+                reward: wonReward
+            })
+
+            // Trigger confetti if they won
+            if (wonReward.isWin) {
+                triggerConfetti()
+            }
+        }
+    }
+
+    const handleStartSpin = async (): Promise<string | null> => {
         const customerDataParam = searchParams.get("data")
         if (!customerDataParam) {
             alert("Missing customer data")
-            return
+            return null
         }
 
         const customerData = JSON.parse(decodeURIComponent(customerDataParam))
 
         try {
+            // Call API to determine the prize BEFORE spinning
             const res = await fetch("/api/play", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -104,15 +124,16 @@ export default function PlayPage() {
 
             const data = await res.json()
             setParticipation(data)
-            setHasSpun(true)
 
-            // Trigger confetti if they won
-            if (data.reward.isWin) {
-                triggerConfetti()
-            }
+            // Find the wheel segment that matches this reward
+            const targetSegment = wheelSegments.find(seg => seg.id === data.reward.id)
+
+            // Trigger the wheel to spin to this specific segment
+            return targetSegment?.id || wheelSegments[0]?.id
         } catch (error) {
             console.error(error)
             alert("Something went wrong. Please try again.")
+            return null
         }
     }
 
@@ -205,6 +226,7 @@ export default function PlayPage() {
 
                                     <PrizeWheel
                                         segments={wheelSegments}
+                                        onStartSpin={handleStartSpin}
                                         onSpinComplete={handleSpinComplete}
                                         primaryColor={restaurant.primaryColor}
                                         secondaryColor={restaurant.secondaryColor}
