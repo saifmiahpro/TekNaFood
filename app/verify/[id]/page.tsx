@@ -2,9 +2,10 @@ import { prisma } from "@/lib/prisma"
 import { notFound } from "next/navigation"
 import { VerifyClient } from "./client"
 
-export default async function VerifyPage({ params }: { params: { id: string } }) {
+export default async function VerifyPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params
     const participation = await prisma.participation.findUnique({
-        where: { id: params.id },
+        where: { id },
         include: {
             restaurant: true,
             reward: true,

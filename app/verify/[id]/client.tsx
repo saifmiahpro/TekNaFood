@@ -38,6 +38,15 @@ export function VerifyClient({ participation }: { participation: any }) {
 
     const isRedeemed = status === "REDEEMED"
 
+    // Date checks
+    const now = new Date()
+    const validFrom = participation.validFrom ? new Date(participation.validFrom) : null
+    const expiresAt = participation.expiresAt ? new Date(participation.expiresAt) : null
+
+    const isTooEarly = validFrom && now < validFrom
+    const isExpired = expiresAt && now > expiresAt
+    const isValidDate = !isTooEarly && !isExpired
+
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
             <Card className="w-full max-w-md shadow-xl">
@@ -61,15 +70,19 @@ export function VerifyClient({ participation }: { participation: any }) {
                             <span className="font-bold text-gray-900">{participation.customerName}</span>
                         </div>
                         <div className="flex justify-between">
-                            <span className="text-sm text-gray-500">Email :</span>
-                            <span className="font-medium text-gray-900">{participation.customerEmail}</span>
-                        </div>
-                        <div className="flex justify-between">
-                            <span className="text-sm text-gray-500">Date :</span>
+                            <span className="text-sm text-gray-500">Date jeu :</span>
                             <span className="text-sm text-gray-900">
-                                {new Date(participation.createdAt).toLocaleDateString()} à {new Date(participation.createdAt).toLocaleTimeString()}
+                                {new Date(participation.createdAt).toLocaleDateString()}
                             </span>
                         </div>
+                        {validFrom && expiresAt && (
+                            <div className="flex justify-between border-t border-gray-200 pt-2 mt-2">
+                                <span className="text-sm text-gray-500">Validité :</span>
+                                <span className="text-sm font-medium text-gray-900">
+                                    {validFrom.toLocaleDateString()} - {expiresAt.toLocaleDateString()}
+                                </span>
+                            </div>
+                        )}
                     </div>
 
                     {/* Reward Info */}
@@ -86,6 +99,25 @@ export function VerifyClient({ participation }: { participation: any }) {
                             <p className="text-sm text-red-800">
                                 Ce cadeau a déjà été validé le :<br />
                                 <strong>{new Date(redeemedAt).toLocaleString()}</strong>
+                            </p>
+                        </div>
+                    ) : isTooEarly ? (
+                        <div className="bg-orange-50 border border-orange-200 rounded-xl p-6 text-center">
+                            <AlertTriangle className="w-12 h-12 text-orange-500 mx-auto mb-3" />
+                            <h3 className="text-xl font-black text-orange-600 mb-1">PAS ENCORE VALIDE</h3>
+                            <p className="text-sm text-orange-800">
+                                Ce cadeau n'est valable qu'à partir du :<br />
+                                <strong>{validFrom?.toLocaleDateString()}</strong>
+                            </p>
+                            <p className="text-xs text-orange-700 mt-2 italic">Revenez demain !</p>
+                        </div>
+                    ) : isExpired ? (
+                        <div className="bg-gray-100 border border-gray-300 rounded-xl p-6 text-center">
+                            <XCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                            <h3 className="text-xl font-black text-gray-500 mb-1">EXPIRÉ</h3>
+                            <p className="text-sm text-gray-600">
+                                La date limite était le :<br />
+                                <strong>{expiresAt?.toLocaleDateString()}</strong>
                             </p>
                         </div>
                     ) : (

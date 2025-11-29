@@ -312,6 +312,19 @@ export default function PlayPage() {
                                                 Comment profiter de votre cadeau :
                                             </h3>
 
+                                            {/* Validity Info */}
+                                            {participation?.validFrom && (
+                                                <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
+                                                    <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide">📅 Période de validité</p>
+                                                    <p className="text-sm font-medium text-yellow-900 mt-1">
+                                                        Du {new Date(participation.validFrom).toLocaleDateString()} au {new Date(participation.expiresAt!).toLocaleDateString()}
+                                                    </p>
+                                                    <p className="text-[10px] text-yellow-700 mt-1 italic">
+                                                        (Utilisable dès demain)
+                                                    </p>
+                                                </div>
+                                            )}
+
                                             {/* Validation System - QR Code */}
                                             {!isRedeemed ? (
                                                 <div className="p-4 bg-green-50 rounded-xl border border-green-100 space-y-4 text-center">

@@ -88,6 +88,9 @@ model Participation {
 
   status         ParticipationStatus @default(PENDING)
   redeemedAt     DateTime?           // When the reward was claimed
+  
+  validFrom      DateTime?           // Valid starting from (e.g. tomorrow)
+  expiresAt      DateTime?           // Valid until (e.g. 7 days later)
 }
 
 enum ParticipationStatus {

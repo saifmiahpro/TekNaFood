@@ -41,6 +41,16 @@ export async function POST(request: Request) {
         // Select a random reward based on probabilities
         const selectedReward = selectRewardByProbability(restaurant.rewards)
 
+        // Calculate validity dates
+        const now = new Date()
+        const validFrom = new Date(now)
+        validFrom.setDate(validFrom.getDate() + 1) // Valid starting tomorrow
+        validFrom.setHours(0, 0, 0, 0) // Start of day
+
+        const expiresAt = new Date(validFrom)
+        expiresAt.setDate(expiresAt.getDate() + 7) // Valid for 7 days
+        expiresAt.setHours(23, 59, 59, 999) // End of day
+
         // Create participation record
         const participation = await prisma.participation.create({
             data: {
@@ -51,6 +61,8 @@ export async function POST(request: Request) {
                 ticketNumber,
                 rewardId: selectedReward.id,
                 status: "PENDING",
+                validFrom,
+                expiresAt,
             },
             include: {
                 reward: true,
