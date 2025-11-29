@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -56,7 +56,7 @@ const DEFAULT_REWARD_TEMPLATES = {
     ],
 }
 
-export default function CreateRestaurantPage() {
+function CreateRestaurantContent() {
     const searchParams = useSearchParams()
     const router = useRouter()
     const token = searchParams.get("token")
@@ -251,8 +251,8 @@ export default function CreateRestaurantPage() {
                             <div key={s} className="flex items-center flex-1">
                                 <div
                                     className={`h-10 w-10 rounded-full flex items-center justify-center font-bold ${s <= step
-                                            ? "bg-purple-600 text-white"
-                                            : "bg-gray-200 text-gray-500"
+                                        ? "bg-purple-600 text-white"
+                                        : "bg-gray-200 text-gray-500"
                                         }`}
                                 >
                                     {s}
@@ -300,8 +300,8 @@ export default function CreateRestaurantPage() {
                                                 key={cat.value}
                                                 onClick={() => setCategory(cat.value)}
                                                 className={`p-4 border-2 rounded-lg text-center transition-all ${category === cat.value
-                                                        ? "border-purple-600 bg-purple-50"
-                                                        : "border-gray-200 hover:border-purple-300"
+                                                    ? "border-purple-600 bg-purple-50"
+                                                    : "border-gray-200 hover:border-purple-300"
                                                     }`}
                                             >
                                                 <div className="text-3xl mb-1">{cat.icon}</div>
@@ -533,5 +533,13 @@ export default function CreateRestaurantPage() {
                 </Card>
             </div>
         </div>
+    )
+}
+
+export default function CreateRestaurantPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+            <CreateRestaurantContent />
+        </Suspense>
     )
 }
