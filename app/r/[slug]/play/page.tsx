@@ -328,7 +328,7 @@ export default function PlayPage() {
                                                     </>
                                                 ) : (
                                                     <p className="text-sm font-medium text-yellow-900 mt-1">
-                                                        Valable pendant 1 an
+                                                        Valable dès maintenant
                                                     </p>
                                                 )}
                                             </div>
@@ -354,7 +354,18 @@ export default function PlayPage() {
                                                         <Receipt className="w-4 h-4" />
                                                         <span>Preuve d'achat requise</span>
                                                     </div>
-                                                    <p className="text-[10px] text-gray-400 font-mono">{participation?.id}</p>
+
+                                                    {/* Debug Link */}
+                                                    <div className="mt-4 pt-4 border-t border-green-200">
+                                                        <p className="text-[10px] text-gray-400 font-mono mb-1">Debug Link (si le scan ne marche pas):</p>
+                                                        <a
+                                                            href={`/verify/${participation?.id}`}
+                                                            className="text-xs text-blue-600 underline break-all"
+                                                            target="_blank"
+                                                        >
+                                                            {typeof window !== 'undefined' ? window.location.origin : ''}/verify/{participation?.id}
+                                                        </a>
+                                                    </div>
                                                 </div>
                                             ) : (
                                                 <div className="p-6 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 text-center">
