@@ -44,41 +44,39 @@ export function QRCodeGenerator({
         ctx.fillStyle = "#ffffff"
         ctx.fillRect(0, 0, w, h)
 
-        // Header Banner
+        // Top Decoration (Arc)
         ctx.fillStyle = primaryColor
-        ctx.fillRect(0, 0, w, 200)
+        ctx.beginPath()
+        ctx.ellipse(w / 2, 0, w * 0.8, 150, 0, 0, Math.PI * 2)
+        ctx.fill()
 
-        // Restaurant Name (in Header)
-        ctx.fillStyle = "#ffffff"
-        ctx.font = "bold 80px Inter, system-ui, sans-serif"
+        // Main Title - HUGE & CATCHY
+        ctx.fillStyle = "#111827" // Gray-900
+        ctx.font = "900 110px Inter, system-ui, sans-serif"
         ctx.textAlign = "center"
         ctx.textBaseline = "middle"
-        ctx.fillText(restaurantName.toUpperCase(), w / 2, 100)
+        ctx.fillText("CADEAU OFFERT ? 🎁", w / 2, 250)
 
-        // Main Title
-        ctx.fillStyle = "#111827" // Gray-900
-        ctx.font = "900 100px Inter, system-ui, sans-serif"
-        ctx.textAlign = "center"
-        ctx.textBaseline = "top"
-        ctx.fillText("GAGNEZ DES CADEAUX !", w / 2, 280)
-
-        // Subtitle
+        // Subtitle - Action oriented
         ctx.fillStyle = primaryColor
-        ctx.font = "bold 50px Inter, system-ui, sans-serif"
-        ctx.fillText("Donnez votre avis & Tournez la roue 🎁", w / 2, 400)
+        ctx.font = "bold 60px Inter, system-ui, sans-serif"
+        ctx.fillText("TOURNEZ LA ROUE !", w / 2, 380)
 
-        // QR Code Container (Shadow)
-        const qrSize = 600
+        // Tagline
+        ctx.fillStyle = "#4b5563" // Gray-600
+        ctx.font = "50px Inter, system-ui, sans-serif"
+        ctx.fillText("Gagnez une récompense immédiatement", w / 2, 480)
+
+        // QR Code Container
+        const qrSize = 700
         const qrX = (w - qrSize) / 2
-        const qrY = 500
+        const qrY = 600
 
-        ctx.shadowColor = "rgba(0, 0, 0, 0.15)"
-        ctx.shadowBlur = 40
-        ctx.shadowOffsetY = 20
-        ctx.fillStyle = "#ffffff"
-        ctx.fillRect(qrX - 40, qrY - 40, qrSize + 80, qrSize + 80)
-        ctx.shadowBlur = 0
-        ctx.shadowOffsetY = 0
+        // Decorative circle behind QR
+        ctx.fillStyle = secondaryColor + "20" // Very light secondary
+        ctx.beginPath()
+        ctx.arc(w / 2, qrY + qrSize / 2, qrSize * 0.65, 0, Math.PI * 2)
+        ctx.fill()
 
         // Generate QR code
         try {
@@ -96,43 +94,37 @@ export function QRCodeGenerator({
             // Draw QR code
             ctx.drawImage(qrCanvas, qrX, qrY)
 
-            // Steps / Instructions
-            const stepY = 1250
-            ctx.fillStyle = "#374151" // Gray-700
-            ctx.font = "bold 40px Inter, system-ui, sans-serif"
-
-            // Step 1
-            ctx.fillText("1. Scannez", w * 0.25, stepY)
-            // Step 2
-            ctx.fillText("2. Jouez", w * 0.5, stepY)
-            // Step 3
-            ctx.fillText("3. Gagnez", w * 0.75, stepY)
-
-            // Icons (Simple Emoji fallback for canvas)
-            ctx.font = "80px Inter, system-ui, sans-serif"
-            ctx.fillText("📱", w * 0.25, stepY - 80)
-            ctx.fillText("⭐️", w * 0.5, stepY - 80)
-            ctx.fillText("🎁", w * 0.75, stepY - 80)
-
-            // CTA Button (Visual only)
-            const btnY = 1400
-            const btnW = 600
-            const btnH = 100
-
+            // CTA Arrow
             ctx.fillStyle = "#000000"
+            ctx.font = "100px Inter, system-ui, sans-serif"
+            ctx.fillText("👇", w / 2, 560)
+
+            // Bottom CTA Button
+            const btnY = 1350
+            const btnW = 800
+            const btnH = 140
+
+            // Button Shadow
+            ctx.fillStyle = "rgba(0,0,0,0.2)"
             ctx.beginPath()
-            ctx.roundRect((w - btnW) / 2, btnY, btnW, btnH, 50)
+            ctx.roundRect((w - btnW) / 2 + 10, btnY + 10, btnW, btnH, 70)
             ctx.fill()
 
+            // Button Body
+            ctx.fillStyle = "#000000"
+            ctx.beginPath()
+            ctx.roundRect((w - btnW) / 2, btnY, btnW, btnH, 70)
+            ctx.fill()
+
+            // Button Text
             ctx.fillStyle = "#ffffff"
-            ctx.font = "bold 40px Inter, system-ui, sans-serif"
-            ctx.textBaseline = "middle"
+            ctx.font = "bold 60px Inter, system-ui, sans-serif"
             ctx.fillText("SCANNEZ POUR JOUER", w / 2, btnY + btnH / 2)
 
             // Footer
             ctx.fillStyle = "#9ca3af" // Gray-400
             ctx.font = "30px Inter, system-ui, sans-serif"
-            ctx.fillText("Powered by ReviewSpin", w / 2, 1550)
+            ctx.fillText("Jeu gratuit sans obligation d'achat*", w / 2, 1550)
 
             // Get data URL for download
             const dataUrl = canvas.toDataURL("image/png")
