@@ -79,6 +79,7 @@ model Participation {
 
   customerName   String
   customerEmail  String?
+  ticketNumber   String?             // Proof of purchase (optional but recommended)
   googleName     String?             // optional (name displayed on Google review)
   screenshotUrl  String?             // optional URL of screenshot (future extension)
 
@@ -86,6 +87,7 @@ model Participation {
   rewardId       String?
 
   status         ParticipationStatus @default(PENDING)
+  redeemedAt     DateTime?           // When the reward was claimed
 }
 
 enum ParticipationStatus {

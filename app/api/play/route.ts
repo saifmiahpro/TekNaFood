@@ -4,7 +4,7 @@ import { prisma } from "@/lib/prisma"
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { restaurantId, customerName, customerEmail, googleName } = body
+        const { restaurantId, customerName, customerEmail, googleName, ticketNumber } = body
 
         // Validate required fields
         if (!restaurantId || !customerName) {
@@ -48,6 +48,7 @@ export async function POST(request: Request) {
                 customerName,
                 customerEmail,
                 googleName,
+                ticketNumber,
                 rewardId: selectedReward.id,
                 status: "PENDING",
             },

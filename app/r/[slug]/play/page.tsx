@@ -46,10 +46,46 @@ export default function PlayPage() {
     const [hasSpun, setHasSpun] = useState(false)
     const [participation, setParticipation] = useState<Participation | null>(null)
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([])
+    const [isRedeeming, setIsRedeeming] = useState(false)
+    const [isRedeemed, setIsRedeemed] = useState(false)
 
     useEffect(() => {
         fetchRestaurant()
     }, [slug])
+
+    const handleRedeem = async () => {
+        if (!participation?.id) return
+
+        if (!confirm("Attention : Êtes-vous sûr de vouloir valider ce cadeau ? Il ne sera plus utilisable après.")) {
+            return
+        }
+
+        setIsRedeeming(true)
+        try {
+            const res = await fetch("/api/redeem", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ participationId: participation.id }),
+            })
+
+            if (!res.ok) {
+                const err = await res.json()
+                if (err.redeemedAt) {
+                    setIsRedeemed(true) // Already redeemed
+                    alert("Ce cadeau a déjà été validé le " + new Date(err.redeemedAt).toLocaleString())
+                } else {
+                    throw new Error(err.error || "Erreur lors de la validation")
+                }
+            } else {
+                setIsRedeemed(true)
+            }
+        } catch (error) {
+            console.error(error)
+            alert("Erreur de connexion. Réessayez.")
+        } finally {
+            setIsRedeeming(false)
+        }
+    }
 
     const fetchRestaurant = async () => {
         try {
@@ -275,34 +311,59 @@ export default function PlayPage() {
                                                 Comment profiter de votre cadeau :
                                             </h3>
 
-                                            <div className="space-y-4">
-                                                {/* Option 1: Instant Use */}
-                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100">
-                                                    <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">Option 1 : Maintenant</p>
-                                                    <p className="text-sm text-green-900 font-medium">Montrez cet écran au serveur <strong>tout de suite</strong> !</p>
-                                                    <div className="mt-3 flex items-center justify-center gap-2 text-sm text-green-800 bg-white p-3 rounded-lg border border-green-200 shadow-sm">
-                                                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                                        CODE : <span className="font-mono font-black text-lg">{participation?.id.slice(-6).toUpperCase()}</span>
+                                            {/* Validation System */}
+                                            {!isRedeemed ? (
+                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100 space-y-4">
+                                                    <div>
+                                                        <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">À montrer au serveur</p>
+                                                        <p className="text-sm text-green-900 font-medium">Ne validez que devant le personnel !</p>
+                                                    </div>
+
+                                                    <Button
+                                                        onClick={handleRedeem}
+                                                        disabled={isRedeeming}
+                                                        className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-6 text-lg shadow-lg animate-pulse"
+                                                    >
+                                                        {isRedeeming ? "Validation..." : "👉 VALIDER MON CADEAU"}
+                                                    </Button>
+
+                                                    <p className="text-[10px] text-center text-green-700/60">
+                                                        Attention : une fois validé, le coupon ne sera plus utilisable.
+                                                    </p>
+                                                </div>
+                                            ) : (
+                                                <div className="p-6 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 text-center">
+                                                    <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                                                        <CheckCircle className="h-6 w-6 text-green-600" />
+                                                    </div>
+                                                    <h3 className="text-xl font-black text-gray-800 mb-1">CADEAU VALIDÉ !</h3>
+                                                    <p className="text-sm text-gray-500 mb-2">Remis le {new Date().toLocaleDateString()} à {new Date().toLocaleTimeString()}</p>
+                                                    <div className="inline-block bg-white px-3 py-1 rounded border border-gray-200 text-xs font-mono text-gray-400">
+                                                        ID: {participation?.id.slice(-6).toUpperCase()}
                                                     </div>
                                                 </div>
+                                            )}
 
-                                                <div className="text-center text-xs text-gray-400 font-medium">- OU -</div>
+                                            {!isRedeemed && (
+                                                <>
+                                                    <div className="text-center text-xs text-gray-400 font-medium">- OU -</div>
 
-                                                {/* Option 2: Save for Later */}
-                                                <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                                    <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Option 2 : Plus Tard</p>
-                                                    <p className="text-sm text-blue-900 mb-3">On vous a envoyé le coupon par email pour la prochaine fois.</p>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="outline"
-                                                        className="w-full bg-white hover:bg-blue-50 text-blue-700 border-blue-200"
-                                                        onClick={() => alert("Coupon envoyé à " + JSON.parse(decodeURIComponent(dataParam || "{}")).customerEmail)}
-                                                    >
-                                                        <Mail className="w-3 h-3 mr-2" />
-                                                        Vérifier mes emails
-                                                    </Button>
-                                                </div>
-                                            </div>
+                                                    {/* Option 2: Save for Later */}
+                                                    <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+                                                        <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Pour plus tard</p>
+                                                        <p className="text-sm text-blue-900 mb-3">On vous a envoyé le coupon par email.</p>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            className="w-full bg-white hover:bg-blue-50 text-blue-700 border-blue-200"
+                                                            onClick={() => alert("Coupon envoyé à " + JSON.parse(decodeURIComponent(dataParam || "{}")).customerEmail)}
+                                                        >
+                                                            <Mail className="w-3 h-3 mr-2" />
+                                                            Vérifier mes emails
+                                                        </Button>
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
 
