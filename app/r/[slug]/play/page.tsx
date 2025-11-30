@@ -212,7 +212,7 @@ export default function PlayPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-3 md:p-4 overflow-hidden relative">
+        <div className="min-h-[100dvh] w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-3 md:p-4 overflow-hidden relative">
             {/* Background Effects - Reduced on mobile */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30 md:opacity-100">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>

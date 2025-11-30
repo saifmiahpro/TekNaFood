@@ -63,7 +63,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col">
+        <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
             {/* Brand Header */}
             <div
                 className="w-full py-6 px-4 shadow-lg text-center relative overflow-hidden"
