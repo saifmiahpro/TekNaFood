@@ -300,13 +300,13 @@ export default function SuperAdminPage() {
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                className="bg-white border-gray-300 hover:bg-gray-100 text-black"
+                                                className="bg-white border-purple-200 hover:bg-purple-50 text-purple-700"
                                                 onClick={() => {
                                                     const url = `${window.location.origin}/r/${restaurant.slug}`
                                                     window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`, '_blank')
                                                 }}
                                             >
-                                                <QrCode className="h-4 w-4" style={{ color: 'black' }} />
+                                                <QrCode className="h-4 w-4 text-purple-700" />
                                             </Button>
 
                                             {/* Manage */}
@@ -314,10 +314,10 @@ export default function SuperAdminPage() {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="gap-2 bg-white border-gray-300 hover:bg-gray-100 text-black"
+                                                    className="gap-2 bg-white border-purple-200 hover:bg-purple-50 text-purple-700"
                                                 >
-                                                    <Settings className="h-4 w-4" style={{ color: 'black' }} />
-                                                    <span className="font-medium" style={{ color: 'black' }}>Manage</span>
+                                                    <Settings className="h-4 w-4 text-purple-700" />
+                                                    <span className="font-medium text-purple-700">Manage</span>
                                                 </Button>
                                             </a>
 
@@ -326,9 +326,9 @@ export default function SuperAdminPage() {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="bg-white border-gray-300 hover:bg-gray-100 text-black"
+                                                    className="bg-white border-purple-200 hover:bg-purple-50 text-purple-700"
                                                 >
-                                                    <ExternalLink className="h-4 w-4" style={{ color: 'black' }} />
+                                                    <ExternalLink className="h-4 w-4 text-purple-700" />
                                                 </Button>
                                             </a>
 
