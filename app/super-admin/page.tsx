@@ -295,38 +295,46 @@ export default function SuperAdminPage() {
                                             </div>
                                         </div>
 
-                                        <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex items-center gap-2 transition-opacity">
                                             {/* QR Code */}
                                             <Button
                                                 size="sm"
                                                 variant="outline"
+                                                className="border-gray-300 hover:bg-gray-100 text-black"
                                                 onClick={() => {
                                                     const url = `${window.location.origin}/r/${restaurant.slug}`
                                                     window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`, '_blank')
                                                 }}
                                             >
-                                                <QrCode className="h-4 w-4" />
+                                                <QrCode className="h-4 w-4" style={{ color: 'black' }} />
                                             </Button>
 
                                             {/* Manage */}
                                             <a href={`/admin?token=${restaurant.adminToken}`} target="_blank" rel="noopener noreferrer">
-                                                <Button size="sm" variant="outline" className="gap-2">
-                                                    <Settings className="h-4 w-4" />
-                                                    Manage
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="gap-2 border-gray-300 hover:bg-gray-100 text-black"
+                                                >
+                                                    <Settings className="h-4 w-4" style={{ color: 'black' }} />
+                                                    <span className="font-medium" style={{ color: 'black' }}>Manage</span>
                                                 </Button>
                                             </a>
 
                                             {/* View Public */}
                                             <a href={`/r/${restaurant.slug}`} target="_blank" rel="noopener noreferrer">
-                                                <Button size="sm" variant="ghost">
-                                                    <ExternalLink className="h-4 w-4" />
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="border-gray-300 hover:bg-gray-100 text-black"
+                                                >
+                                                    <ExternalLink className="h-4 w-4" style={{ color: 'black' }} />
                                                 </Button>
                                             </a>
 
                                             {/* Delete */}
-                                            <Button
-                                                size="sm"
-                                                variant="destructive"
+                                            <button
+                                                className="h-9 px-3 rounded-md bg-red-600 hover:bg-red-700 text-white border-0 transition-colors shadow-sm flex items-center justify-center"
                                                 onClick={async () => {
                                                     if (confirm("Êtes-vous sûr de vouloir supprimer ce restaurant ? Cette action est irréversible.")) {
                                                         await fetch(`/api/super-admin/delete-restaurant?id=${restaurant.id}`, { method: "DELETE" })
@@ -334,8 +342,8 @@ export default function SuperAdminPage() {
                                                     }
                                                 }}
                                             >
-                                                <Trash2 className="h-4 w-4" />
-                                            </Button>
+                                                <Trash2 className="h-4 w-4 text-white" style={{ color: 'white' }} />
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
