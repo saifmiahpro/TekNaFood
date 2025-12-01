@@ -302,7 +302,8 @@ export default function SuperAdminPage() {
                                                 variant="outline"
                                                 className="bg-white border-gray-300 hover:bg-gray-100 text-black"
                                                 onClick={() => {
-                                                    const url = `${window.location.origin}/r/${restaurant.slug}`
+                                                    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin
+                                                    const url = `${baseUrl}/r/${restaurant.slug}`
                                                     window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`, '_blank')
                                                 }}
                                             >
