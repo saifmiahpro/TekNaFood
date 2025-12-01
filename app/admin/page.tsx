@@ -2,13 +2,13 @@
 
 import { useEffect, useState, Suspense } from "react"
 import { useSearchParams, useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { QRCodeGenerator } from "@/components/qr-code-generator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsContent } from "@/components/ui/tabs"
 import {
     Trophy,
     Users,
@@ -23,8 +23,8 @@ import {
     Activity,
     QrCode,
     LayoutDashboard,
-    Store,
-    Sparkles
+    RefreshCw,
+    Save
 } from "lucide-react"
 
 interface Restaurant {
@@ -34,6 +34,7 @@ interface Restaurant {
     category: string
     primaryColor: string
     secondaryColor: string
+    logoUrl: string | null
     rewards: Array<{
         id: string
         label: string
@@ -65,6 +66,7 @@ function AdminContent() {
     const [error, setError] = useState<string | null>(null)
     const [activeTab, setActiveTab] = useState("overview")
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const [saving, setSaving] = useState(false)
 
     useEffect(() => {
         if (token) {
@@ -99,6 +101,42 @@ function AdminContent() {
             fetchAdminData()
         } catch (err) {
             alert("Erreur lors de la mise à jour")
+        }
+    }
+
+    const handleUpdateRestaurant = async () => {
+        if (!restaurant) return
+        setSaving(true)
+        try {
+            const res = await fetch(`/api/admin`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    token,
+                    primaryColor: restaurant.primaryColor,
+                    secondaryColor: restaurant.secondaryColor,
+                    logoUrl: restaurant.logoUrl
+                }),
+            })
+            if (!res.ok) throw new Error("Erreur sauvegarde")
+            alert("Modifications enregistrées !")
+        } catch (err) {
+            alert("Erreur lors de la sauvegarde")
+        } finally {
+            setSaving(false)
+        }
+    }
+
+    const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0]
+            const reader = new FileReader()
+            reader.onload = (event) => {
+                if (restaurant) {
+                    setRestaurant({ ...restaurant, logoUrl: event.target?.result as string })
+                }
+            }
+            reader.readAsDataURL(file)
         }
     }
 
@@ -437,42 +475,105 @@ function AdminContent() {
 
                         {/* SETTINGS CONTENT */}
                         <TabsContent value="settings" className="space-y-6 m-0">
-                            <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm max-w-2xl mx-auto text-center">
-                                <div className="bg-purple-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <QrCode className="h-8 w-8 text-purple-600" />
-                                </div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-2">QR Code & Accès</h2>
-                                <p className="text-gray-500 mb-8">Partagez ce code avec vos clients pour qu'ils puissent jouer.</p>
+                            <div className="bg-white p-8 rounded-xl border border-gray-100 shadow-sm max-w-4xl mx-auto">
 
-                                <div className="inline-block p-4 bg-white rounded-xl border-2 border-gray-100 shadow-sm mb-8">
-                                    <QRCodeGenerator
-                                        url={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
-                                        restaurantName={restaurant.name}
-                                        primaryColor={restaurant.primaryColor}
-                                        secondaryColor={restaurant.secondaryColor}
-                                    />
-                                </div>
-
-                                <div className="w-full max-w-md mx-auto">
-                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block text-left">Lien Direct</Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            readOnly
-                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
-                                            className="bg-gray-50 font-mono text-sm"
-                                        />
-                                        <Button variant="outline" onClick={() => {
-                                            navigator.clipboard.writeText(`${window.location.origin}/r/${restaurant.slug}`)
-                                            alert("Copié !")
-                                        }}>
-                                            Copier
+                                {/* Branding Section */}
+                                <div className="mb-10">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                            <RefreshCw className="h-6 w-6 text-purple-600" />
+                                            Personnalisation & Branding
+                                        </h2>
+                                        <Button
+                                            onClick={handleUpdateRestaurant}
+                                            disabled={saving}
+                                            className="bg-black text-white hover:bg-gray-800"
+                                        >
+                                            <Save className="h-4 w-4 mr-2" />
+                                            {saving ? "Sauvegarde..." : "Enregistrer"}
                                         </Button>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Couleur Principale</Label>
+                                            <div className="flex items-center gap-3">
+                                                <Input
+                                                    type="color"
+                                                    value={restaurant.primaryColor}
+                                                    onChange={(e) => setRestaurant({ ...restaurant, primaryColor: e.target.value })}
+                                                    className="h-12 w-20 p-1 cursor-pointer"
+                                                />
+                                                <span className="text-sm font-mono text-gray-500 bg-gray-50 px-2 py-1 rounded">{restaurant.primaryColor}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-2">Utilisée pour les titres, boutons et l'arc du QR code.</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Couleur Secondaire</Label>
+                                            <div className="flex items-center gap-3">
+                                                <Input
+                                                    type="color"
+                                                    value={restaurant.secondaryColor}
+                                                    onChange={(e) => setRestaurant({ ...restaurant, secondaryColor: e.target.value })}
+                                                    className="h-12 w-20 p-1 cursor-pointer"
+                                                />
+                                                <span className="text-sm font-mono text-gray-500 bg-gray-50 px-2 py-1 rounded">{restaurant.secondaryColor}</span>
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-2">Utilisée pour les accents et décorations.</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Logo (Centre du QR)</Label>
+                                            <Input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleLogoUpload}
+                                                className="text-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                                            />
+                                            {restaurant.logoUrl && (
+                                                <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
+                                                    <CheckCircle className="h-3 w-3" /> Logo chargé
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
-                                <Button className="mt-8 w-full max-w-md bg-black text-white" onClick={() => window.print()}>
-                                    Imprimer le QR Code
-                                </Button>
+                                <div className="border-t border-gray-100 my-8"></div>
+
+                                {/* QR Code Preview Section */}
+                                <div className="text-center">
+                                    <h3 className="text-xl font-bold text-gray-900 mb-2">Aperçu du Poster QR Code</h3>
+                                    <p className="text-gray-500 mb-8">Ce design est généré automatiquement avec vos couleurs et votre logo.</p>
+
+                                    <div className="inline-block p-4 bg-white rounded-xl border-2 border-gray-100 shadow-sm mb-8">
+                                        <QRCodeGenerator
+                                            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
+                                            restaurantName={restaurant.name}
+                                            primaryColor={restaurant.primaryColor}
+                                            secondaryColor={restaurant.secondaryColor}
+                                            logoUrl={restaurant.logoUrl || undefined}
+                                        />
+                                    </div>
+
+                                    <div className="w-full max-w-md mx-auto">
+                                        <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block text-left">Lien Direct</Label>
+                                        <div className="flex gap-2">
+                                            <Input
+                                                readOnly
+                                                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
+                                                className="bg-gray-50 font-mono text-sm"
+                                            />
+                                            <Button variant="outline" onClick={() => {
+                                                navigator.clipboard.writeText(`${window.location.origin}/r/${restaurant.slug}`)
+                                                alert("Copié !")
+                                            }}>
+                                                Copier
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </TabsContent>
                     </Tabs>

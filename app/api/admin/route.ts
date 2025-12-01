@@ -45,3 +45,31 @@ export async function GET(request: Request) {
         )
     }
 }
+
+export async function PATCH(request: Request) {
+    try {
+        const body = await request.json()
+        const { token, primaryColor, secondaryColor, logoUrl } = body
+
+        if (!token) {
+            return NextResponse.json({ error: "Missing token" }, { status: 401 })
+        }
+
+        const restaurant = await prisma.restaurant.update({
+            where: { adminToken: token },
+            data: {
+                primaryColor,
+                secondaryColor,
+                logoUrl,
+            },
+        })
+
+        return NextResponse.json(restaurant)
+    } catch (error) {
+        console.error("Error updating restaurant:", error)
+        return NextResponse.json(
+            { error: "Internal server error" },
+            { status: 500 }
+        )
+    }
+}

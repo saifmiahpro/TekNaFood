@@ -3,9 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import QRCode from "qrcode"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Download, Share2, Upload, RefreshCw } from "lucide-react"
+import { Download, Share2 } from "lucide-react"
 
 interface QRCodeGeneratorProps {
     url: string
@@ -20,32 +18,14 @@ export function QRCodeGenerator({
     restaurantName,
     primaryColor = "#16a34a",
     secondaryColor = "#facc15",
-    logoUrl: initialLogoUrl,
+    logoUrl,
 }: QRCodeGeneratorProps) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [qrDataUrl, setQrDataUrl] = useState<string>("")
 
-    // Customization State
-    const [customPrimaryColor, setCustomPrimaryColor] = useState(primaryColor)
-    const [customSecondaryColor, setCustomSecondaryColor] = useState(secondaryColor)
-    const [customLogo, setCustomLogo] = useState<string | null>(initialLogoUrl || null)
-    const [logoFile, setLogoFile] = useState<File | null>(null)
-
     useEffect(() => {
         generateQRCode()
-    }, [url, customPrimaryColor, customSecondaryColor, customLogo])
-
-    const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]
-            setLogoFile(file)
-            const reader = new FileReader()
-            reader.onload = (event) => {
-                setCustomLogo(event.target?.result as string)
-            }
-            reader.readAsDataURL(file)
-        }
-    }
+    }, [url, primaryColor, secondaryColor, logoUrl])
 
     const generateQRCode = async () => {
         if (!canvasRef.current) return
@@ -65,7 +45,7 @@ export function QRCodeGenerator({
         ctx.fillRect(0, 0, w, h)
 
         // Top Decoration (Arc)
-        ctx.fillStyle = customPrimaryColor
+        ctx.fillStyle = primaryColor
         ctx.beginPath()
         ctx.ellipse(w / 2, 0, w * 0.8, 150, 0, 0, Math.PI * 2)
         ctx.fill()
@@ -78,7 +58,7 @@ export function QRCodeGenerator({
         ctx.fillText("CADEAU OFFERT ? 🎁", w / 2, 250)
 
         // Subtitle - Action oriented
-        ctx.fillStyle = customPrimaryColor
+        ctx.fillStyle = primaryColor
         ctx.font = "bold 60px Inter, system-ui, sans-serif"
         ctx.fillText("TOURNEZ LA ROUE !", w / 2, 380)
 
@@ -93,7 +73,7 @@ export function QRCodeGenerator({
         const qrY = 600
 
         // Decorative circle behind QR
-        ctx.fillStyle = customSecondaryColor + "20" // Very light secondary
+        ctx.fillStyle = secondaryColor + "20" // Very light secondary
         ctx.beginPath()
         ctx.arc(w / 2, qrY + qrSize / 2, qrSize * 0.65, 0, Math.PI * 2)
         ctx.fill()
@@ -108,19 +88,21 @@ export function QRCodeGenerator({
                     dark: "#000000",
                     light: "#ffffff",
                 },
-                errorCorrectionLevel: "H", // High error correction for logo
+                errorCorrectionLevel: "H",
             })
 
             // Draw QR code
             ctx.drawImage(qrCanvas, qrX, qrY)
 
             // Draw Logo in Center if exists
-            if (customLogo) {
+            if (logoUrl) {
                 const logoImg = new Image()
-                logoImg.src = customLogo
+                logoImg.src = logoUrl
+                logoImg.crossOrigin = "Anonymous"
+
                 await new Promise((resolve) => {
                     logoImg.onload = resolve
-                    logoImg.onerror = resolve // Skip if error
+                    logoImg.onerror = resolve
                 })
 
                 const logoSize = qrSize * 0.25 // 25% of QR size
@@ -187,7 +169,6 @@ export function QRCodeGenerator({
     const shareQRCode = async () => {
         if (navigator.share) {
             try {
-                // Convert data URL to blob
                 const response = await fetch(qrDataUrl)
                 const blob = await response.blob()
                 const file = new File([blob], `${restaurantName}_QR_Code.png`, {
@@ -209,72 +190,22 @@ export function QRCodeGenerator({
     }
 
     return (
-        <div className="space-y-8">
-            {/* Customization Controls */}
-            <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 space-y-6">
-                <h3 className="font-bold text-gray-900 flex items-center gap-2">
-                    <RefreshCw className="h-4 w-4" />
-                    Personnaliser le Design
-                </h3>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div>
-                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Couleur Principale</Label>
-                        <div className="flex items-center gap-3">
-                            <Input
-                                type="color"
-                                value={customPrimaryColor}
-                                onChange={(e) => setCustomPrimaryColor(e.target.value)}
-                                className="h-10 w-14 p-1 cursor-pointer"
-                            />
-                            <span className="text-sm font-mono text-gray-500">{customPrimaryColor}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Couleur Secondaire</Label>
-                        <div className="flex items-center gap-3">
-                            <Input
-                                type="color"
-                                value={customSecondaryColor}
-                                onChange={(e) => setCustomSecondaryColor(e.target.value)}
-                                className="h-10 w-14 p-1 cursor-pointer"
-                            />
-                            <span className="text-sm font-mono text-gray-500">{customSecondaryColor}</span>
-                        </div>
-                    </div>
-
-                    <div>
-                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Logo (Centre du QR)</Label>
-                        <div className="flex items-center gap-3">
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleLogoUpload}
-                                className="text-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Preview */}
-            <div className="flex justify-center bg-gray-100 p-8 rounded-2xl border border-gray-200">
+        <div className="space-y-6">
+            <div className="flex justify-center">
                 <canvas
                     ref={canvasRef}
-                    className="rounded-lg shadow-xl max-w-full h-auto bg-white"
+                    className="rounded-2xl shadow-2xl max-w-full h-auto"
                     style={{ maxWidth: "400px" }}
                 />
             </div>
 
-            {/* Actions */}
             <div className="flex gap-3 justify-center flex-wrap">
                 <Button
                     onClick={downloadQRCode}
                     size="lg"
                     className="gap-2 shadow-lg hover:scale-105 transition-transform"
                     style={{
-                        background: `linear-gradient(135deg, ${customPrimaryColor} 0%, ${customSecondaryColor} 100%)`,
+                        background: `linear-gradient(135deg, ${primaryColor} 0%, ${secondaryColor} 100%)`,
                     }}
                 >
                     <Download className="h-5 w-5" />
