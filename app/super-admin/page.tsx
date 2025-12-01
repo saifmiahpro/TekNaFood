@@ -300,7 +300,7 @@ export default function SuperAdminPage() {
                                             <Button
                                                 size="sm"
                                                 variant="outline"
-                                                className="border-gray-300 hover:bg-gray-100 text-black"
+                                                className="bg-white border-gray-300 hover:bg-gray-100 text-black"
                                                 onClick={() => {
                                                     const url = `${window.location.origin}/r/${restaurant.slug}`
                                                     window.open(`https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(url)}`, '_blank')
@@ -314,7 +314,7 @@ export default function SuperAdminPage() {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="gap-2 border-gray-300 hover:bg-gray-100 text-black"
+                                                    className="gap-2 bg-white border-gray-300 hover:bg-gray-100 text-black"
                                                 >
                                                     <Settings className="h-4 w-4" style={{ color: 'black' }} />
                                                     <span className="font-medium" style={{ color: 'black' }}>Manage</span>
@@ -326,7 +326,7 @@ export default function SuperAdminPage() {
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
-                                                    className="border-gray-300 hover:bg-gray-100 text-black"
+                                                    className="bg-white border-gray-300 hover:bg-gray-100 text-black"
                                                 >
                                                     <ExternalLink className="h-4 w-4" style={{ color: 'black' }} />
                                                 </Button>
