@@ -21,9 +21,11 @@ interface Restaurant {
 }
 
 export default function RestaurantClient({ restaurant }: { restaurant: Restaurant }) {
-    const [step, setStep] = useState<"welcome" | "rating" | "action-select" | "feedback" | "google" | "form">("welcome")
+    // Nouveau workflow : on commence par le choix de l'action
+    const [step, setStep] = useState<"action-select" | "rating" | "feedback" | "form">("action-select")
     const [rating, setRating] = useState(0)
-    const [selectedPlatform, setSelectedPlatform] = useState<string>("GOOGLE_REVIEW") // Nouvelle: action choisie
+    const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null)
+    const [selectedUrl, setSelectedUrl] = useState<string | null>(null) // Nouvelle: stocker l'URL pour l'ouvrir après la note
     const [customerName, setCustomerName] = useState("")
     const [customerEmail, setCustomerEmail] = useState("")
     const [feedback, setFeedback] = useState("")
@@ -50,31 +52,37 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
         }
     }
 
-    const handleRating = (stars: number) => {
-        setRating(stars)
-        if (stars >= 4) {
-            setStep("action-select") // Nouvelle: sélection d'action au lieu de Google direct
-        } else {
-            setStep("feedback")
-        }
-    }
-
     const handleActionSelected = (platform: string, url: string) => {
         setSelectedPlatform(platform)
-        if (url) {
+        setSelectedUrl(url)
+
+        if (platform === 'GOOGLE_REVIEW' || platform === 'TRIPADVISOR_REVIEW') {
+            // Pour les avis, on demande d'abord la note pour filtrer
+            setStep("rating")
+        } else {
+            // Pour les réseaux sociaux (Insta, TikTok), action directe
             window.open(url, "_blank")
             setTimeout(() => setStep("form"), 2000)
         }
     }
 
-    const handleGoogleClick = () => {
-        if (restaurant?.googleMapsUrl) {
-            window.open(restaurant.googleMapsUrl, "_blank")
+    const handleRating = (stars: number) => {
+        setRating(stars)
+        if (stars >= 4) {
+            // Si bonne note, on redirige vers la plateforme d'avis choisie
+            if (selectedUrl) {
+                window.open(selectedUrl, "_blank")
+            }
             setTimeout(() => setStep("form"), 2000)
+        } else {
+            // Si mauvaise note, feedback privé
+            setStep("feedback")
         }
     }
 
     const handleSubmitFeedback = async () => {
+        // On remercie et on laisse accéder au jeu (ou pas ? Le client voulait éviter les avis négatifs publics)
+        // Dans l'ancien flow, ça allait vers "form".
         setStep("form")
     }
 
@@ -85,7 +93,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
             customerEmail,
             rating,
             feedback,
-            platformAction: selectedPlatform, // Nouvelle: quelle action a donné accès au jeu
+            platformAction: selectedPlatform || "GOOGLE_REVIEW", // Fallback
             source: "qr",
         }
         const encodedData = encodeURIComponent(JSON.stringify(data))
@@ -109,20 +117,46 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
             <main className="flex-1 flex flex-col items-center justify-center p-6 max-w-md mx-auto w-full">
                 <AnimatePresence mode="wait">
 
-                    {/* STEP 1: WELCOME */}
-                    {step === "welcome" && (
+                    {/* STEP 1: ACTION SELECTION (Nouvel Accueil) */}
+                    {step === "action-select" && (
                         <div className="text-center space-y-8 w-full animate-in fade-in duration-500">
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
                                 <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <ThumbsUp className="h-10 w-10 text-yellow-600" />
+                                    <Gift className="h-10 w-10 text-yellow-600" />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900 mb-3">{restaurant.introTitle}</h2>
                                 <p className="text-gray-700 leading-relaxed font-medium">{restaurant.introSubtitle}</p>
                             </div>
 
-                            <div className="space-y-4">
-                                <p className="text-sm font-bold text-gray-700 uppercase tracking-widest">Comment s'est passé votre moment ?</p>
-                                <div className="flex justify-center gap-2">
+                            <ActionSelector
+                                restaurantId={restaurant.id}
+                                restaurantName={restaurant.name}
+                                primaryColor={restaurant.primaryColor}
+                                secondaryColor={restaurant.secondaryColor}
+                                onActionSelected={handleActionSelected}
+                            />
+                        </div>
+                    )}
+
+                    {/* STEP 2: RATING (Seulement si Avis Google/TripAdvisor choisi) */}
+                    {step === "rating" && (
+                        <motion.div
+                            key="rating"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            className="text-center w-full"
+                        >
+                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                    <Star className="h-8 w-8 text-yellow-600" />
+                                </div>
+                                <h2 className="text-xl font-bold mb-2">Votre avis compte !</h2>
+                                <p className="text-gray-700 mb-6 text-base font-medium">
+                                    Combien d'étoiles mérite votre expérience ?
+                                </p>
+
+                                <div className="flex justify-center gap-2 mb-4">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
                                             key={star}
@@ -136,60 +170,10 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                     ))}
                                 </div>
                             </div>
-                        </div>
-                    )}
-
-                    {/* STEP 2: ACTION SELECTION (Positive) */}
-                    {step === "action-select" && (
-                        <motion.div
-                            key="action-select"
-                            initial={{ opacity: 0, x: 50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -50 }}
-                            className="w-full"
-                        >
-                            <ActionSelector
-                                restaurantId={restaurant.id}
-                                restaurantName={restaurant.name}
-                                primaryColor={restaurant.primaryColor}
-                                secondaryColor={restaurant.secondaryColor}
-                                onActionSelected={handleActionSelected}
-                            />
                         </motion.div>
                     )}
 
-                    {/* STEP 2: GOOGLE REVIEW (Positive) - OBSOLETE mais gardé en fallback */}
-                    {step === "google" && (
-                        <motion.div
-                            key="google"
-                            initial={{ opacity: 0, x: 50 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -50 }}
-                            className="text-center w-full"
-                        >
-                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Gift className="h-8 w-8 text-blue-600" />
-                                </div>
-                                <h2 className="text-xl font-bold mb-2">Un cadeau vous attend ! 🎁</h2>
-                                <p className="text-gray-700 mb-6 text-base font-medium">
-                                    Merci pour cette super note ! Partagez votre expérience sur Google en 2 clics pour <strong>lancer la roue magique</strong>.
-                                </p>
-
-                                <Button
-                                    onClick={handleGoogleClick}
-                                    className="w-full py-6 text-lg font-bold shadow-lg hover:scale-105 transition-transform"
-                                    style={{ backgroundColor: restaurant.primaryColor }}
-                                >
-                                    <MapPin className="mr-2 h-5 w-5" />
-                                    Poster mon avis & Jouer
-                                </Button>
-                                <p className="text-sm text-gray-500 mt-4 font-medium">Ça ne prend que 10 secondes !</p>
-                            </div>
-                        </motion.div>
-                    )}
-
-                    {/* STEP 2: FEEDBACK (Negative) */}
+                    {/* STEP 3: FEEDBACK (Si mauvaise note) */}
                     {step === "feedback" && (
                         <motion.div
                             key="feedback"
