@@ -179,7 +179,10 @@ export default function PlayPage() {
                 body: JSON.stringify(customerData),
             })
 
-            if (!res.ok) throw new Error("Failed to record participation")
+            if (!res.ok) {
+                const errData = await res.json()
+                throw new Error(errData.error || "Failed to record participation")
+            }
 
             const data = await res.json()
             setParticipation(data)
@@ -189,9 +192,9 @@ export default function PlayPage() {
 
             // Trigger the wheel to spin to this specific segment
             return targetSegment?.id || wheelSegments[0]?.id
-        } catch (error) {
+        } catch (error: any) {
             console.error(error)
-            alert("Something went wrong. Please try again.")
+            alert(error.message || "Something went wrong. Please try again.")
             return null
         }
     }
