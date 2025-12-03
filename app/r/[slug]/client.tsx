@@ -182,7 +182,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 >
                                     <Star className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">Votre avis compte !</h2>
+                                <h2 className="text-xl font-bold mb-2 text-gray-900">Votre avis compte !</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">
                                     Combien d'étoiles mérite votre expérience ?
                                 </p>
@@ -220,7 +220,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 >
                                     <MessageSquare className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">Aidez-nous à nous améliorer</h2>
+                                <h2 className="text-xl font-bold mb-2 text-gray-900">Aidez-nous à nous améliorer</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">
                                     Désolé que tout n'ait pas été parfait. Votre avis compte énormément pour nous (et restera privé).
                                 </p>
@@ -259,7 +259,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 >
                                     <Sparkles className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2">C'est le moment de vérité !</h2>
+                                <h2 className="text-xl font-bold mb-2 text-gray-900">C'est le moment de vérité !</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">
                                     Où devons-nous envoyer votre gain si vous gagnez ?
                                     <br /><span className="text-sm text-gray-500 font-normal">(Promis, zéro spam. Juste votre cadeau.)</span>
