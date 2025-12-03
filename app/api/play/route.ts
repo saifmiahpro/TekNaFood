@@ -56,6 +56,33 @@ export async function POST(request: Request) {
             )
         }
 
+        // Vérifier la limite quotidienne globale
+        if (customerEmail) {
+            const today = new Date()
+            today.setHours(0, 0, 0, 0)
+
+            const participationsToday = await prisma.participation.count({
+                where: {
+                    restaurantId,
+                    customerEmail,
+                    createdAt: {
+                        gte: today
+                    }
+                }
+            })
+
+            if (participationsToday >= restaurant.maxPlaysPerDay) {
+                return NextResponse.json(
+                    { error: `Limite quotidienne atteinte (${restaurant.maxPlaysPerDay} jeux max/jour)` },
+                    { status: 429 } // Too Many Requests
+                )
+            }
+        }
+
+        // Calculer canReplayAt
+        const currentTime = new Date()
+        const canReplayAt = new Date(currentTime.getTime() + restaurant.replayDelayHours * 60 * 60 * 1000)
+
         // Select a random reward based on probabilities
         const selectedReward = selectRewardByProbability(restaurant.rewards)
 
@@ -82,6 +109,7 @@ export async function POST(request: Request) {
                 status: "PENDING",
                 validFrom,
                 expiresAt,
+                canReplayAt, // Date où le joueur pourra rejouer
             },
             include: {
                 reward: true,

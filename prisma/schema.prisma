@@ -34,6 +34,10 @@ model Restaurant {
   contactEmail   String?
   adminToken     String  @unique // used as ?token= in admin URL
 
+  // 🆕 Limites de jeu
+  maxPlaysPerDay   Int @default(3)  // Combien de fois on peut jouer/jour (toutes plateformes confondues)
+  replayDelayHours Int @default(24) // Délai avant de pouvoir rejouer (si pas d'autre action dispo)
+
   gameType GameType @default(ROULETTE) // for the future (other games)
 
   rewards        Reward[]
@@ -123,6 +127,8 @@ model Participation {
 
   validFrom DateTime? // Valid starting from (e.g. tomorrow)
   expiresAt DateTime? // Valid until (e.g. 7 days later)
+  
+  canReplayAt DateTime? // Quand le client peut rejouer (calculé selon replayDelayHours)
 
   @@index([customerEmail, platformAction]) // Pour détecter si déjà participé
 }

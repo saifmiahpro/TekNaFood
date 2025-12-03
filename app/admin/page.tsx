@@ -39,6 +39,14 @@ interface Restaurant {
     instagramHandle?: string | null
     tiktokHandle?: string | null
     facebookUrl?: string | null
+    maxPlaysPerDay: number
+    replayDelayHours: number
+    platformStats?: Array<{
+        platformAction: string
+        _count: {
+            platformAction: number
+        }
+    }>
     rewards: Array<{
         id: string
         label: string
@@ -322,6 +330,40 @@ function AdminContent() {
                                 />
                             </div>
 
+                            {/* Platform Stats */}
+                            {restaurant.platformStats && restaurant.platformStats.length > 0 && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {restaurant.platformStats.map((stat) => (
+                                        <Card key={stat.platformAction} className="border-0 shadow-sm bg-white">
+                                            <CardContent className="pt-6 flex items-center gap-4">
+                                                <div className={`p-3 rounded-lg ${stat.platformAction === 'GOOGLE_REVIEW' ? 'bg-blue-50 text-blue-600' :
+                                                        stat.platformAction === 'INSTAGRAM_FOLLOW' ? 'bg-pink-50 text-pink-600' :
+                                                            stat.platformAction === 'TIKTOK_FOLLOW' ? 'bg-gray-900 text-white' :
+                                                                stat.platformAction === 'TRIPADVISOR_REVIEW' ? 'bg-green-50 text-green-600' :
+                                                                    'bg-blue-50 text-blue-600'
+                                                    }`}>
+                                                    {stat.platformAction === 'GOOGLE_REVIEW' && <span className="text-xl">⭐</span>}
+                                                    {stat.platformAction === 'INSTAGRAM_FOLLOW' && <span className="text-xl">📷</span>}
+                                                    {stat.platformAction === 'TIKTOK_FOLLOW' && <span className="text-xl">🎵</span>}
+                                                    {stat.platformAction === 'TRIPADVISOR_REVIEW' && <span className="text-xl">🦉</span>}
+                                                    {stat.platformAction === 'FACEBOOK_LIKE' && <span className="text-xl">👍</span>}
+                                                </div>
+                                                <div>
+                                                    <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">
+                                                        {stat.platformAction === 'GOOGLE_REVIEW' ? 'Avis Google' :
+                                                            stat.platformAction === 'INSTAGRAM_FOLLOW' ? 'Instagram' :
+                                                                stat.platformAction === 'TIKTOK_FOLLOW' ? 'TikTok' :
+                                                                    stat.platformAction === 'TRIPADVISOR_REVIEW' ? 'TripAdvisor' :
+                                                                        'Facebook'}
+                                                    </p>
+                                                    <p className="text-2xl font-black text-gray-900">{stat._count.platformAction}</p>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
+
                             {/* Recent Activity List */}
                             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                                 <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
@@ -549,6 +591,40 @@ function AdminContent() {
                                 </div>
 
                                 <div className="border-t border-gray-100 my-8"></div>
+
+                                {/* Game Limits Section */}
+                                <div className="mb-10">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                            <Activity className="h-6 w-6 text-purple-600" />
+                                            Limites de Jeu
+                                        </h2>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Jeux Max par Jour</Label>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={restaurant.maxPlaysPerDay}
+                                                onChange={(e) => setRestaurant({ ...restaurant, maxPlaysPerDay: parseInt(e.target.value) || 1 })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Combien de fois un client peut jouer en 24h (toutes actions confondues).</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai de Rejeu (Heures)</Label>
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                value={restaurant.replayDelayHours}
+                                                onChange={(e) => setRestaurant({ ...restaurant, replayDelayHours: parseInt(e.target.value) || 0 })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Temps d'attente avant de pouvoir rejouer (si limite non atteinte).</p>
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {/* Social Platforms Section */}
                                 <div className="mb-10">

@@ -36,7 +36,16 @@ export async function GET(request: Request) {
             )
         }
 
-        return NextResponse.json(restaurant)
+        // Calculer les stats par plateforme
+        const platformStats = await prisma.participation.groupBy({
+            by: ['platformAction'],
+            where: { restaurantId: restaurant.id },
+            _count: {
+                platformAction: true
+            }
+        })
+
+        return NextResponse.json({ ...restaurant, platformStats })
     } catch (error) {
         console.error("Error fetching admin data:", error)
         return NextResponse.json(
@@ -49,7 +58,18 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
     try {
         const body = await request.json()
-        const { token, primaryColor, secondaryColor, logoUrl, tripadvisorUrl, instagramHandle, tiktokHandle, facebookUrl } = body
+        const {
+            token,
+            primaryColor,
+            secondaryColor,
+            logoUrl,
+            tripadvisorUrl,
+            instagramHandle,
+            tiktokHandle,
+            facebookUrl,
+            maxPlaysPerDay,
+            replayDelayHours
+        } = body
 
         if (!token) {
             return NextResponse.json({ error: "Missing token" }, { status: 401 })
@@ -65,6 +85,8 @@ export async function PATCH(request: Request) {
                 instagramHandle,
                 tiktokHandle,
                 facebookUrl,
+                maxPlaysPerDay: maxPlaysPerDay ? parseInt(maxPlaysPerDay) : undefined,
+                replayDelayHours: replayDelayHours ? parseInt(replayDelayHours) : undefined,
             },
         })
 
