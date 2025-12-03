@@ -27,6 +27,9 @@ export default function SalesModePage() {
     const [name, setName] = useState("")
     const [selectedPreset, setSelectedPreset] = useState<any>(null)
     const [googleUrl, setGoogleUrl] = useState("")
+    const [instagramHandle, setInstagramHandle] = useState("")
+    const [tiktokHandle, setTiktokHandle] = useState("")
+    const [tripadvisorUrl, setTripadvisorUrl] = useState("")
     const [createdRestaurant, setCreatedRestaurant] = useState<any>(null)
 
     const handleCreate = async () => {
@@ -41,6 +44,9 @@ export default function SalesModePage() {
                 primaryColor: selectedPreset.color,
                 secondaryColor: selectedPreset.secondary,
                 googleMapsUrl: googleUrl || "https://google.com", // Default if skipped
+                instagramHandle,
+                tiktokHandle,
+                tripadvisorUrl,
                 rewards: [] // Auto-generated on server
             }
 
@@ -110,6 +116,10 @@ export default function SalesModePage() {
                                     setName("")
                                     setSelectedPreset(null)
                                     setCreatedRestaurant(null)
+                                    setGoogleUrl("")
+                                    setInstagramHandle("")
+                                    setTiktokHandle("")
+                                    setTripadvisorUrl("")
                                 }}
                             >
                                 Create Another
@@ -215,24 +225,58 @@ export default function SalesModePage() {
                             </div>
                         )}
 
-                        {/* STEP 3: GOOGLE LINK */}
+                        {/* STEP 3: SOCIAL LINKS */}
                         {step === 3 && (
                             <div className="space-y-6 animate-in fade-in slide-in-from-right-8 duration-500">
                                 <div className="text-center mb-8">
-                                    <h2 className="text-2xl font-bold text-gray-900">One Last Thing</h2>
-                                    <p className="text-gray-500">Where should happy customers leave reviews?</p>
+                                    <h2 className="text-2xl font-bold text-gray-900">Connect Platforms</h2>
+                                    <p className="text-gray-500">Where should happy customers engage?</p>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <Label>Google Maps Link (Optional)</Label>
-                                    <Input
-                                        value={googleUrl}
-                                        onChange={(e) => setGoogleUrl(e.target.value)}
-                                        placeholder="https://g.page/..."
-                                        className="text-lg py-6"
-                                    />
+                                    <div>
+                                        <Label>Google Maps Link (Recommended)</Label>
+                                        <Input
+                                            value={googleUrl}
+                                            onChange={(e) => setGoogleUrl(e.target.value)}
+                                            placeholder="https://g.page/..."
+                                            className="text-lg py-4"
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <Label>Instagram Handle</Label>
+                                            <Input
+                                                value={instagramHandle}
+                                                onChange={(e) => setInstagramHandle(e.target.value)}
+                                                placeholder="@restaurant"
+                                                className="py-4"
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label>TikTok Handle</Label>
+                                            <Input
+                                                value={tiktokHandle}
+                                                onChange={(e) => setTiktokHandle(e.target.value)}
+                                                placeholder="@restaurant"
+                                                className="py-4"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <Label>TripAdvisor URL</Label>
+                                        <Input
+                                            value={tripadvisorUrl}
+                                            onChange={(e) => setTripadvisorUrl(e.target.value)}
+                                            placeholder="https://tripadvisor.com/..."
+                                            className="py-4"
+                                        />
+                                    </div>
+
                                     <p className="text-xs text-gray-400">
-                                        If you skip this, we'll use a Google Search link for "{name}".
+                                        Tip: Add multiple platforms to let customers choose their favorite!
                                     </p>
                                 </div>
 

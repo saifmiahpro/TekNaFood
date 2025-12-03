@@ -46,6 +46,10 @@ export async function POST(req: Request) {
             introSubtitle,
             contactEmail,
             rewards,
+            tripadvisorUrl,
+            instagramHandle,
+            tiktokHandle,
+            facebookUrl,
         } = body
 
         // Validation
@@ -117,6 +121,10 @@ export async function POST(req: Request) {
                 introTitle: introTitle || "Merci pour votre visite !",
                 introSubtitle: introSubtitle || "Laissez-nous un avis honnête puis tentez de gagner une surprise.",
                 contactEmail: contactEmail || null,
+                tripadvisorUrl: tripadvisorUrl || null,
+                instagramHandle: instagramHandle || null,
+                tiktokHandle: tiktokHandle || null,
+                facebookUrl: facebookUrl || null,
                 adminToken,
                 gameType: GameType.ROULETTE,
                 rewards: {

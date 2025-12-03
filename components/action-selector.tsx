@@ -33,6 +33,7 @@ export function ActionSelector({
     const [actions, setActions] = useState<Action[]>([])
     const [loading, setLoading] = useState(true)
     const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null)
+    const [loadingAction, setLoadingAction] = useState<string | null>(null)
 
     useEffect(() => {
         fetchAvailableActions()
@@ -102,9 +103,10 @@ export function ActionSelector({
     }
 
     const handleActionClick = (action: Action) => {
-        if (action.completed) return
+        if (action.completed || loadingAction) return
         if (!action.url) return
 
+        setLoadingAction(action.platform)
         setSelectedPlatform(action.platform)
         onActionSelected(action.platform, action.url)
     }
@@ -159,15 +161,22 @@ export function ActionSelector({
                         transition={{ delay: index * 0.1 }}
                     >
                         <Card
-                            className={`p-6 transition-all cursor-pointer ${action.completed
-                                    ? 'bg-gray-50 border-gray-200 opacity-60'
-                                    : 'hover:shadow-xl hover:scale-[1.02] border-2'
+                            className={`p-6 transition-all cursor-pointer relative overflow-hidden ${action.completed
+                                ? 'bg-gray-50 border-gray-200 opacity-60'
+                                : 'hover:shadow-xl hover:scale-[1.02] border-2'
                                 }`}
                             style={{
-                                borderColor: action.completed ? '#e5e7eb' : `${primaryColor}40`
+                                borderColor: action.completed ? '#e5e7eb' : (action.platform === 'GOOGLE_REVIEW' ? primaryColor : `${primaryColor}40`),
+                                backgroundColor: action.platform === 'GOOGLE_REVIEW' && !action.completed ? `${primaryColor}05` : undefined
                             }}
                             onClick={() => handleActionClick(action)}
                         >
+                            {action.platform === 'GOOGLE_REVIEW' && !action.completed && (
+                                <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">
+                                    RECOMMANDÉ
+                                </div>
+                            )}
+
                             <div className="flex items-center justify-between gap-4">
                                 {/* Icon + Info */}
                                 <div className="flex items-center gap-4 flex-1">
@@ -185,7 +194,7 @@ export function ActionSelector({
                                     </div>
 
                                     <div className="flex-1">
-                                        <h3 className="font-bold text-lg mb-1">
+                                        <h3 className="font-bold text-lg mb-1 flex items-center gap-2">
                                             {action.label}
                                         </h3>
                                         <p className="text-sm text-gray-600">
@@ -204,14 +213,22 @@ export function ActionSelector({
                                 {!action.completed && (
                                     <Button
                                         size="lg"
+                                        disabled={!!loadingAction}
                                         className="gap-2 font-bold flex-shrink-0"
                                         style={{
                                             background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
-                                            color: 'white'
+                                            color: 'white',
+                                            opacity: (loadingAction && loadingAction !== action.platform) ? 0.5 : 1
                                         }}
                                     >
-                                        Choisir
-                                        <ExternalLink className="w-4 h-4" />
+                                        {loadingAction === action.platform ? (
+                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                        ) : (
+                                            <>
+                                                Choisir
+                                                <ExternalLink className="w-4 h-4" />
+                                            </>
+                                        )}
                                     </Button>
                                 )}
                             </div>
