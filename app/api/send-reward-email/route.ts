@@ -37,8 +37,9 @@ export async function POST(request: Request) {
         // Send Email
         try {
             if (process.env.RESEND_API_KEY) {
+                console.log("Attempting to send email with key starting with:", process.env.RESEND_API_KEY.substring(0, 5))
                 await resend.emails.send({
-                    from: 'ReviewSpin <cadeau@reviewspin.com>', // Idealement configurable
+                    from: 'ReviewSpin <onboarding@resend.dev>', // Utiliser le domaine de test par défaut pour garantir l'envoi
                     to: participation.customerEmail,
                     subject: `🎁 Votre cadeau chez ${participation.restaurant.name} vous attend !`,
                     html: `
