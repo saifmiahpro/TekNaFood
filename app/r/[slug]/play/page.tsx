@@ -30,6 +30,7 @@ interface Participation {
     id: string
     validFrom?: string | Date
     expiresAt?: string | Date
+    customerEmail?: string
     reward: {
         id: string
         label: string
@@ -51,6 +52,29 @@ export default function PlayPage() {
     const [wheelSegments, setWheelSegments] = useState<WheelSegment[]>([])
     const [isRedeeming, setIsRedeeming] = useState(false)
     const [isRedeemed, setIsRedeemed] = useState(false)
+    const [emailSent, setEmailSent] = useState(false)
+    const [sendingEmail, setSendingEmail] = useState(false)
+
+    const handleSendEmail = async () => {
+        setSendingEmail(true)
+        try {
+            const res = await fetch("/api/send-reward-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ participationId: participation?.id })
+            })
+            if (res.ok) {
+                setEmailSent(true)
+                triggerConfetti()
+            } else {
+                alert("Erreur lors de l'envoi. Réessayez.")
+            }
+        } catch (e) {
+            alert("Erreur connexion.")
+        } finally {
+            setSendingEmail(false)
+        }
+    }
 
     useEffect(() => {
         fetchRestaurant()
@@ -302,118 +326,57 @@ export default function PlayPage() {
                                         </div>
                                     </motion.div>
 
-                                    {/* Redemption Options */}
+                                    {/* Redemption Options - REBOUND MARKETING */}
                                     <div className="space-y-4 w-full max-w-sm mx-auto">
                                         <div className="bg-white rounded-xl p-6 border border-gray-100 shadow-sm text-left">
                                             <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2 text-lg">
-                                                <CheckCircle className="h-6 w-6 text-green-600" />
-                                                Comment profiter de votre cadeau :
+                                                <Gift className="h-6 w-6 text-purple-600" />
+                                                Votre cadeau est débloqué !
                                             </h3>
 
-                                            {/* NOUVEAU : Message de vérification */}
-                                            <div className="mb-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
-                                                <div className="flex items-start gap-3">
-                                                    <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
-                                                        <span className="text-lg">⚠️</span>
-                                                    </div>
-                                                    <div className="flex-1 text-left">
-                                                        <h4 className="font-bold text-yellow-900 text-sm mb-1">
-                                                            Montrez votre avis au personnel
-                                                        </h4>
-                                                        <p className="text-xs text-yellow-800 leading-relaxed">
-                                                            Pour valider votre cadeau, le staff peut vous demander de prouver que vous
-                                                            avez bien laissé un avis ou suivi la page. Gardez l'écran ouvert !
-                                                        </p>
-                                                    </div>
-                                                </div>
+                                            <div className="mb-6 p-4 bg-purple-50 border border-purple-100 rounded-xl text-center space-y-2">
+                                                <p className="text-purple-900 font-black text-lg uppercase tracking-tight">
+                                                    Pour votre prochaine visite
+                                                </p>
+                                                <p className="text-purple-700 text-sm font-medium">
+                                                    Valable à partir de demain et pendant 30 jours.
+                                                </p>
                                             </div>
 
-                                            {/* Validity Info */}
-                                            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
-                                                <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide">📅 Période de validité</p>
-                                                {(() => {
-                                                    const validFrom = participation?.validFrom ? new Date(participation.validFrom) : new Date(Date.now() + 86400000)
-                                                    const expiresAt = participation?.expiresAt ? new Date(participation.expiresAt) : new Date(Date.now() + 8 * 86400000)
-
-                                                    return (
-                                                        <>
-                                                            <p className="text-base font-bold text-yellow-950 mt-1">
-                                                                Du {validFrom.toLocaleDateString()} au {expiresAt.toLocaleDateString()}
-                                                            </p>
-                                                            <p className="text-xs text-yellow-800 mt-1 italic font-medium">
-                                                                (Utilisable dès demain)
-                                                            </p>
-                                                        </>
-                                                    )
-                                                })()}
-                                            </div>
-
-                                            {/* Validation System - QR Code */}
-                                            {!isRedeemed ? (
-                                                <div className="p-4 bg-green-50 rounded-xl border border-green-100 space-y-4 text-center">
-                                                    <div>
-                                                        <p className="text-xs font-bold text-green-800 uppercase tracking-wider mb-1">À montrer au serveur</p>
-                                                        <p className="text-sm text-green-900 font-medium mb-4">
-                                                            Préparez votre ticket de caisse et faites scanner ce code :
-                                                        </p>
-                                                    </div>
-
-                                                    <div className="flex justify-center bg-white p-2 rounded-xl shadow-sm inline-block mx-auto">
-                                                        <ValidationQRCode
-                                                            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/verify/${participation?.id}`}
-                                                            color={restaurant?.primaryColor || "#000000"}
-                                                        />
-                                                    </div>
-
-                                                    <div className="flex items-center justify-center gap-2 text-xs text-green-700/80 mt-2">
-                                                        <Receipt className="w-4 h-4" />
-                                                        <span>Preuve d'achat requise</span>
-                                                    </div>
-
-                                                    {/* Debug Link */}
-                                                    <div className="mt-4 pt-4 border-t border-green-200">
-                                                        <p className="text-[10px] text-gray-400 font-mono mb-1">Debug Link (si le scan ne marche pas):</p>
-                                                        <a
-                                                            href={`/verify/${participation?.id}`}
-                                                            className="text-xs text-blue-600 underline break-all"
-                                                            target="_blank"
-                                                        >
-                                                            {typeof window !== 'undefined' ? window.location.origin : ''}/verify/{participation?.id}
-                                                        </a>
-                                                    </div>
+                                            {!emailSent ? (
+                                                <div className="space-y-3">
+                                                    <Button
+                                                        onClick={handleSendEmail}
+                                                        className="w-full py-6 text-lg font-bold shadow-lg hover:scale-105 transition-transform"
+                                                        style={{ backgroundColor: restaurant.primaryColor }}
+                                                        disabled={sendingEmail}
+                                                    >
+                                                        {sendingEmail ? (
+                                                            <div className="flex items-center gap-2">
+                                                                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                                                Envoi en cours...
+                                                            </div>
+                                                        ) : (
+                                                            <>
+                                                                RECEVOIR MON BON PAR EMAIL 📩
+                                                            </>
+                                                        )}
+                                                    </Button>
+                                                    <p className="text-center text-xs text-gray-400">
+                                                        On vous l'envoie à {participation?.customerEmail || "votre adresse"}
+                                                    </p>
                                                 </div>
                                             ) : (
-                                                <div className="p-6 bg-gray-100 rounded-xl border-2 border-dashed border-gray-300 text-center">
+                                                <div className="text-center p-6 bg-green-50 rounded-xl border border-green-100 animate-in fade-in zoom-in duration-300">
                                                     <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                                                        <CheckCircle className="h-6 w-6 text-green-600" />
+                                                        <CheckCircle className="w-6 h-6 text-green-600" />
                                                     </div>
-                                                    <h3 className="text-xl font-black text-gray-800 mb-1">CADEAU VALIDÉ !</h3>
-                                                    <p className="text-sm text-gray-500 mb-2">Remis le {new Date().toLocaleDateString()} à {new Date().toLocaleTimeString()}</p>
-                                                    <div className="inline-block bg-white px-3 py-1 rounded border border-gray-200 text-xs font-mono text-gray-400">
-                                                        ID: {participation?.id.slice(-6).toUpperCase()}
+                                                    <p className="font-bold text-green-800 text-lg mb-1">C'est envoyé !</p>
+                                                    <p className="text-sm text-green-700 font-medium mb-4">Vérifiez vos emails (et vos spams).</p>
+                                                    <div className="bg-white p-3 rounded border border-green-100 text-xs text-gray-500">
+                                                        👋 Présentez l'email reçu lors de votre prochaine venue pour profiter de votre cadeau.
                                                     </div>
                                                 </div>
-                                            )}
-
-                                            {!isRedeemed && (
-                                                <>
-                                                    <div className="text-center text-xs text-gray-400 font-medium">- OU -</div>
-
-                                                    {/* Option 2: Save for Later */}
-                                                    <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
-                                                        <p className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Pour plus tard</p>
-                                                        <p className="text-sm text-blue-900 mb-3">On vous a envoyé le coupon par email.</p>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="w-full bg-white hover:bg-blue-50 text-blue-700 border-blue-200"
-                                                            onClick={() => alert("Coupon envoyé à " + JSON.parse(decodeURIComponent(dataParam || "{}")).customerEmail)}
-                                                        >
-                                                            <Mail className="w-3 h-3 mr-2" />
-                                                            Vérifier mes emails
-                                                        </Button>
-                                                    </div>
-                                                </>
                                             )}
                                         </div>
                                     </div>

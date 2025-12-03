@@ -17,6 +17,7 @@ interface Action {
 
 interface ActionSelectorProps {
     restaurantId: string
+    restaurantSlug: string // Ajout du slug
     restaurantName: string
     primaryColor: string
     secondaryColor: string
@@ -25,6 +26,7 @@ interface ActionSelectorProps {
 
 export function ActionSelector({
     restaurantId,
+    restaurantSlug,
     restaurantName,
     primaryColor,
     secondaryColor,
@@ -41,7 +43,8 @@ export function ActionSelector({
 
     const fetchAvailableActions = async () => {
         try {
-            const res = await fetch(`/api/restaurant/${restaurantId}/actions`)
+            // Utilisation du slug pour l'API
+            const res = await fetch(`/api/restaurant/${restaurantSlug}/actions`)
             const data = await res.json()
 
             const formattedActions: Action[] = []

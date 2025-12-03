@@ -35,7 +35,11 @@ export async function POST(request: Request) {
         // Get restaurant with active rewards
         const restaurant = await prisma.restaurant.findUnique({
             where: { id: restaurantId },
-            include: {
+            select: {
+                maxPlaysPerDay: true,
+                replayDelayHours: true,
+                rewardDelayHours: true,
+                rewardValidityDays: true,
                 rewards: {
                     where: { isActive: true },
                 },
@@ -86,15 +90,13 @@ export async function POST(request: Request) {
         // Select a random reward based on probabilities
         const selectedReward = selectRewardByProbability(restaurant.rewards)
 
-        // Calculate validity dates
+        // Calculate validity dates based on restaurant settings
         const now = new Date()
-        const validFrom = new Date(now)
-        validFrom.setDate(validFrom.getDate() + 1) // Valid starting tomorrow
-        validFrom.setHours(0, 0, 0, 0) // Start of day
+        // Valid from: Now + Delay (e.g. 24h)
+        const validFrom = new Date(now.getTime() + restaurant.rewardDelayHours * 60 * 60 * 1000)
 
-        const expiresAt = new Date(validFrom)
-        expiresAt.setDate(expiresAt.getDate() + 7) // Valid for 7 days
-        expiresAt.setHours(23, 59, 59, 999) // End of day
+        // Expires: ValidFrom + Validity (e.g. 30 days)
+        const expiresAt = new Date(validFrom.getTime() + restaurant.rewardValidityDays * 24 * 60 * 60 * 1000)
 
         // Create participation record
         const participation = await prisma.participation.create({

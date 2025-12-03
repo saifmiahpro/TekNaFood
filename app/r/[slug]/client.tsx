@@ -130,6 +130,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
 
                             <ActionSelector
                                 restaurantId={restaurant.id}
+                                restaurantSlug={restaurant.slug}
                                 restaurantName={restaurant.name}
                                 primaryColor={restaurant.primaryColor}
                                 secondaryColor={restaurant.secondaryColor}

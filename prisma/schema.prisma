@@ -37,6 +37,8 @@ model Restaurant {
   // 🆕 Limites de jeu
   maxPlaysPerDay   Int @default(3)  // Combien de fois on peut jouer/jour (toutes plateformes confondues)
   replayDelayHours Int @default(24) // Délai avant de pouvoir rejouer (si pas d'autre action dispo)
+  rewardDelayHours   Int      @default(24) // Délai avant validité du cadeau (heures)
+  rewardValidityDays Int      @default(30) // Durée de validité du cadeau (jours)
 
   gameType GameType @default(ROULETTE) // for the future (other games)
 
@@ -123,6 +125,7 @@ model Participation {
   rewardId String?
 
   status     ParticipationStatus @default(PENDING)
+  redeemToken String    @unique @default(cuid())
   redeemedAt DateTime? // When the reward was claimed
 
   validFrom DateTime? // Valid starting from (e.g. tomorrow)
