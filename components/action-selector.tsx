@@ -165,44 +165,40 @@ export function ActionSelector({
                         transition={{ delay: index * 0.1 }}
                     >
                         <Card
-                            className={`p-6 transition-all cursor-pointer relative overflow-hidden ${action.completed
-                                ? 'bg-gray-50 border-gray-200 opacity-60'
-                                : 'hover:shadow-xl hover:scale-[1.02] border-2'
-                                }`}
+                            className={`p-6 transition-all cursor-pointer relative overflow-hidden border-0 shadow-lg hover:shadow-2xl hover:-translate-y-1 ${action.completed ? 'opacity-60 grayscale' : ''}`}
                             style={{
-                                borderColor: action.completed ? '#e5e7eb' : (action.platform === 'GOOGLE_REVIEW' ? primaryColor : `${primaryColor}40`),
-                                backgroundColor: action.platform === 'GOOGLE_REVIEW' && !action.completed ? `${primaryColor}05` : undefined
+                                backgroundColor: 'white',
                             }}
                             onClick={() => handleActionClick(action)}
                         >
                             {action.platform === 'GOOGLE_REVIEW' && !action.completed && (
-                                <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-[10px] font-bold px-2 py-1 rounded-bl-lg shadow-sm">
+                                <div className="absolute top-0 right-0 bg-black text-white text-[10px] font-bold px-3 py-1 rounded-bl-xl shadow-sm z-10">
                                     RECOMMANDÉ
                                 </div>
                             )}
 
                             <div className="flex items-center justify-between gap-4">
                                 {/* Icon + Info */}
-                                <div className="flex items-center gap-4 flex-1">
+                                <div className="flex items-center gap-5 flex-1">
                                     <div
-                                        className="w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 bg-white shadow-sm border border-gray-100"
+                                        className="w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 bg-gray-50 shadow-inner"
                                     >
-                                        <div className={action.completed ? 'opacity-50 grayscale' : ''}>
+                                        <div className={`transform scale-110 ${action.completed ? 'opacity-50' : ''}`}>
                                             {action.icon}
                                         </div>
                                     </div>
 
                                     <div className="flex-1">
-                                        <h3 className="font-bold text-lg mb-1 flex items-center gap-2">
+                                        <h3 className="font-black text-lg mb-1 flex items-center gap-2 text-gray-900 leading-tight">
                                             {action.label}
                                         </h3>
-                                        <p className="text-sm text-gray-600">
+                                        <p className="text-sm text-gray-500 font-medium leading-relaxed">
                                             {action.description}
                                         </p>
                                         {action.completed && (
-                                            <p className="text-xs text-green-600 font-medium mt-1 flex items-center gap-1">
+                                            <p className="text-xs text-green-600 font-bold mt-2 flex items-center gap-1 bg-green-50 w-fit px-2 py-1 rounded-full">
                                                 <CheckCircle2 className="w-3 h-3" />
-                                                Déjà fait
+                                                Fait
                                             </p>
                                         )}
                                     </div>
@@ -211,22 +207,19 @@ export function ActionSelector({
                                 {/* CTA */}
                                 {!action.completed && (
                                     <Button
-                                        size="lg"
+                                        size="icon"
                                         disabled={!!loadingAction}
-                                        className="gap-2 font-bold flex-shrink-0"
+                                        className="h-12 w-12 rounded-full shadow-md flex-shrink-0 transition-transform active:scale-95"
                                         style={{
-                                            background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
+                                            backgroundColor: action.platform === 'GOOGLE_REVIEW' ? 'black' : primaryColor,
                                             color: 'white',
                                             opacity: (loadingAction && loadingAction !== action.platform) ? 0.5 : 1
                                         }}
                                     >
                                         {loadingAction === action.platform ? (
-                                            <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                                            <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
                                         ) : (
-                                            <>
-                                                Choisir
-                                                <ExternalLink className="w-4 h-4" />
-                                            </>
+                                            <ExternalLink className="w-5 h-5" />
                                         )}
                                     </Button>
                                 )}
