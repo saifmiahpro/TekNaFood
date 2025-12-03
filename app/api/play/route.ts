@@ -6,6 +6,15 @@ export async function POST(request: Request) {
         const body = await request.json()
         const { restaurantId, customerName, customerEmail, googleName, ticketNumber, platformAction } = body
 
+        // Map frontend strings to Prisma Enum
+        const actionMap: Record<string, any> = {
+            "google": "GOOGLE_REVIEW",
+            "tripadvisor": "TRIPADVISOR_REVIEW",
+            "instagram": "INSTAGRAM_FOLLOW",
+            "tiktok": "TIKTOK_FOLLOW",
+            "facebook": "FACEBOOK_LIKE"
+        }
+
         // Validate required fields
         if (!restaurantId || !customerName || !platformAction) {
             return NextResponse.json(
@@ -20,7 +29,7 @@ export async function POST(request: Request) {
                 where: {
                     restaurantId,
                     customerEmail,
-                    platformAction
+                    platformAction: actionMap[platformAction] || "GOOGLE_REVIEW"
                 }
             })
 
@@ -106,7 +115,7 @@ export async function POST(request: Request) {
                 customerEmail,
                 googleName,
                 ticketNumber,
-                platformAction, // Nouvelle: enregistrer quelle action a donné accès au jeu
+                platformAction: actionMap[platformAction] || "GOOGLE_REVIEW", // Map string to Enum
                 rewardId: selectedReward.id,
                 status: "PENDING",
                 validFrom,
