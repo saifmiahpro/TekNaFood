@@ -35,6 +35,10 @@ interface Restaurant {
     primaryColor: string
     secondaryColor: string
     logoUrl: string | null
+    tripadvisorUrl?: string | null
+    instagramHandle?: string | null
+    tiktokHandle?: string | null
+    facebookUrl?: string | null
     rewards: Array<{
         id: string
         label: string
@@ -115,7 +119,11 @@ function AdminContent() {
                     token,
                     primaryColor: restaurant.primaryColor,
                     secondaryColor: restaurant.secondaryColor,
-                    logoUrl: restaurant.logoUrl
+                    logoUrl: restaurant.logoUrl,
+                    tripadvisorUrl: restaurant.tripadvisorUrl,
+                    instagramHandle: restaurant.instagramHandle,
+                    tiktokHandle: restaurant.tiktokHandle,
+                    facebookUrl: restaurant.facebookUrl
                 }),
             })
             if (!res.ok) throw new Error("Erreur sauvegarde")
@@ -536,6 +544,68 @@ function AdminContent() {
                                                     <CheckCircle className="h-3 w-3" /> Logo chargé
                                                 </p>
                                             )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="border-t border-gray-100 my-8"></div>
+
+                                {/* Social Platforms Section */}
+                                <div className="mb-10">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                            <Users className="h-6 w-6 text-purple-600" />
+                                            Plateformes Sociales (Optionnel)
+                                        </h2>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TripAdvisor URL</Label>
+                                            <Input
+                                                placeholder="https://www.tripadvisor.fr/Restaurant_Review..."
+                                                value={restaurant.tripadvisorUrl || ""}
+                                                onChange={(e) => setRestaurant({ ...restaurant, tripadvisorUrl: e.target.value })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Laissez vide pour désactiver.</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Instagram Handle</Label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2.5 text-gray-400">@</span>
+                                                <Input
+                                                    placeholder="mon_restaurant"
+                                                    value={restaurant.instagramHandle?.replace('@', '') || ""}
+                                                    onChange={(e) => setRestaurant({ ...restaurant, instagramHandle: e.target.value })}
+                                                    className="pl-8"
+                                                />
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TikTok Handle</Label>
+                                            <div className="relative">
+                                                <span className="absolute left-3 top-2.5 text-gray-400">@</span>
+                                                <Input
+                                                    placeholder="mon_restaurant"
+                                                    value={restaurant.tiktokHandle?.replace('@', '') || ""}
+                                                    onChange={(e) => setRestaurant({ ...restaurant, tiktokHandle: e.target.value })}
+                                                    className="pl-8"
+                                                />
+                                            </div>
+                                            <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Facebook URL</Label>
+                                            <Input
+                                                placeholder="https://facebook.com/..."
+                                                value={restaurant.facebookUrl || ""}
+                                                onChange={(e) => setRestaurant({ ...restaurant, facebookUrl: e.target.value })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Lien vers votre page Facebook.</p>
                                         </div>
                                     </div>
                                 </div>

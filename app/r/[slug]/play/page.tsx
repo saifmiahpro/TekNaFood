@@ -310,6 +310,24 @@ export default function PlayPage() {
                                                 Comment profiter de votre cadeau :
                                             </h3>
 
+                                            {/* NOUVEAU : Message de vérification */}
+                                            <div className="mb-4 bg-yellow-50 border-2 border-yellow-200 rounded-xl p-4">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center flex-shrink-0">
+                                                        <span className="text-lg">⚠️</span>
+                                                    </div>
+                                                    <div className="flex-1 text-left">
+                                                        <h4 className="font-bold text-yellow-900 text-sm mb-1">
+                                                            Montrez votre avis au personnel
+                                                        </h4>
+                                                        <p className="text-xs text-yellow-800 leading-relaxed">
+                                                            Pour valider votre cadeau, le staff peut vous demander de prouver que vous
+                                                            avez bien laissé un avis ou suivi la page. Gardez l'écran ouvert !
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             {/* Validity Info */}
                                             <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-center">
                                                 <p className="text-xs font-bold text-yellow-800 uppercase tracking-wide">📅 Période de validité</p>

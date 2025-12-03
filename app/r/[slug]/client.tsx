@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Star, ThumbsUp, MessageSquare, ArrowRight, Mail, MapPin, Users, Gift, Sparkles } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
+import { ActionSelector } from "@/components/action-selector"
 
 interface Restaurant {
     id: string
@@ -20,8 +21,9 @@ interface Restaurant {
 }
 
 export default function RestaurantClient({ restaurant }: { restaurant: Restaurant }) {
-    const [step, setStep] = useState<"welcome" | "rating" | "feedback" | "google" | "form">("welcome")
+    const [step, setStep] = useState<"welcome" | "rating" | "action-select" | "feedback" | "google" | "form">("welcome")
     const [rating, setRating] = useState(0)
+    const [selectedPlatform, setSelectedPlatform] = useState<string>("GOOGLE_REVIEW") // Nouvelle: action choisie
     const [customerName, setCustomerName] = useState("")
     const [customerEmail, setCustomerEmail] = useState("")
     const [feedback, setFeedback] = useState("")
@@ -51,9 +53,17 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
     const handleRating = (stars: number) => {
         setRating(stars)
         if (stars >= 4) {
-            setStep("google")
+            setStep("action-select") // Nouvelle: sélection d'action au lieu de Google direct
         } else {
             setStep("feedback")
+        }
+    }
+
+    const handleActionSelected = (platform: string, url: string) => {
+        setSelectedPlatform(platform)
+        if (url) {
+            window.open(url, "_blank")
+            setTimeout(() => setStep("form"), 2000)
         }
     }
 
@@ -75,6 +85,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
             customerEmail,
             rating,
             feedback,
+            platformAction: selectedPlatform, // Nouvelle: quelle action a donné accès au jeu
             source: "qr",
         }
         const encodedData = encodeURIComponent(JSON.stringify(data))
@@ -128,7 +139,26 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                         </div>
                     )}
 
-                    {/* STEP 2: GOOGLE REVIEW (Positive) */}
+                    {/* STEP 2: ACTION SELECTION (Positive) */}
+                    {step === "action-select" && (
+                        <motion.div
+                            key="action-select"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -50 }}
+                            className="w-full"
+                        >
+                            <ActionSelector
+                                restaurantId={restaurant.id}
+                                restaurantName={restaurant.name}
+                                primaryColor={restaurant.primaryColor}
+                                secondaryColor={restaurant.secondaryColor}
+                                onActionSelected={handleActionSelected}
+                            />
+                        </motion.div>
+                    )}
+
+                    {/* STEP 2: GOOGLE REVIEW (Positive) - OBSOLETE mais gardé en fallback */}
                     {step === "google" && (
                         <motion.div
                             key="google"

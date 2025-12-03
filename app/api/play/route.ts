@@ -4,14 +4,32 @@ import { prisma } from "@/lib/prisma"
 export async function POST(request: Request) {
     try {
         const body = await request.json()
-        const { restaurantId, customerName, customerEmail, googleName, ticketNumber } = body
+        const { restaurantId, customerName, customerEmail, googleName, ticketNumber, platformAction } = body
 
         // Validate required fields
-        if (!restaurantId || !customerName) {
+        if (!restaurantId || !customerName || !platformAction) {
             return NextResponse.json(
                 { error: "Missing required fields" },
                 { status: 400 }
             )
+        }
+
+        // Vérifier si le client a déjà participé avec cette action
+        if (customerEmail) {
+            const existingParticipation = await prisma.participation.findFirst({
+                where: {
+                    restaurantId,
+                    customerEmail,
+                    platformAction
+                }
+            })
+
+            if (existingParticipation) {
+                return NextResponse.json(
+                    { error: "Vous avez déjà utilisé cette action pour jouer" },
+                    { status: 409 } // Conflict
+                )
+            }
         }
 
         // Get restaurant with active rewards
@@ -59,6 +77,7 @@ export async function POST(request: Request) {
                 customerEmail,
                 googleName,
                 ticketNumber,
+                platformAction, // Nouvelle: enregistrer quelle action a donné accès au jeu
                 rewardId: selectedReward.id,
                 status: "PENDING",
                 validFrom,

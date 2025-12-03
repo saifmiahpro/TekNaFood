@@ -11,41 +11,47 @@ datasource db {
 }
 
 model Restaurant {
-  id              String              @id @default(cuid())
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  name            String
-  slug            String              @unique // used in URL: /r/[slug]
-  category        RestaurantCategory  // e.g. FAST_FOOD / CAFE / CAR_WASH
-  googleMapsUrl   String              // link to Google Business page / reviews
+  name     String
+  slug     String             @unique // used in URL: /r/[slug]
+  category RestaurantCategory // e.g. FAST_FOOD / CAFE / CAR_WASH
 
-  primaryColor    String              @default("#16a34a")
-  secondaryColor  String              @default("#facc15")
-  logoUrl         String?
-  introTitle      String              @default("Merci pour votre visite !")
-  introSubtitle   String              @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
-  contactEmail    String?
-  adminToken      String              @unique // used as ?token= in admin URL
+  // Platformes sociales (Google obligatoire, autres optionnels)
+  googleMapsUrl   String // link to Google Business page / reviews (OBLIGATOIRE)
+  tripadvisorUrl  String? // OPTIONNEL - link to TripAdvisor page
+  instagramHandle String? // OPTIONNEL - ex: "@mon_resto" 
+  tiktokHandle    String? // OPTIONNEL - ex: "@mon_resto"
+  facebookUrl     String? // OPTIONNEL - link to Facebook page
 
-  gameType        GameType            @default(ROULETTE) // for the future (other games)
+  primaryColor   String  @default("#16a34a")
+  secondaryColor String  @default("#facc15")
+  logoUrl        String?
+  introTitle     String  @default("Merci pour votre visite !")
+  introSubtitle  String  @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
+  contactEmail   String?
+  adminToken     String  @unique // used as ?token= in admin URL
 
-  rewards         Reward[]
-  participations  Participation[]
-  dailyStats      DailyStat[]
+  gameType GameType @default(ROULETTE) // for the future (other games)
+
+  rewards        Reward[]
+  participations Participation[]
+  dailyStats     DailyStat[]
 }
 
 model DailyStat {
-  id            String     @id @default(cuid())
-  restaurant    Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId  String
-  date          DateTime   // The day concerned (midnight)
+  id           String     @id @default(cuid())
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId String
+  date         DateTime // The day concerned (midnight)
 
-  participations Int       @default(0) // Total games played
-  wins           Int       @default(0) // Total prizes won
-  redeemed       Int       @default(0) // Total prizes redeemed
-  reviews        Int       @default(0) // Total reviews (clicks on Google button)
-  
+  participations Int @default(0) // Total games played
+  wins           Int @default(0) // Total prizes won
+  redeemed       Int @default(0) // Total prizes redeemed
+  reviews        Int @default(0) // Total reviews (clicks on Google button)
+
   @@unique([restaurantId, date])
 }
 
@@ -64,60 +70,73 @@ enum GameType {
   // In the future: MYSTERY_BOXES, SCRATCH_CARD, etc.
 }
 
+enum PlatformAction {
+  GOOGLE_REVIEW // Avis Google (OBLIGATOIRE - toujours disponible)
+  TRIPADVISOR_REVIEW // Avis TripAdvisor (optionnel)
+  INSTAGRAM_FOLLOW // Follow Instagram (optionnel)
+  TIKTOK_FOLLOW // Follow TikTok (optionnel)
+  FACEBOOK_LIKE // Like Facebook (optionnel)
+}
+
 model Reward {
-  id            String        @id @default(cuid())
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  restaurant    Restaurant    @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId  String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId String
 
-  label         String        // e.g. "Boisson offerte", "Dessert offert"
-  description   String?
-  probability   Float         // between 0 and 1; probabilities per restaurant should roughly sum to 1
-  isWin         Boolean       @default(true)  // if false, it's a "no prize but thank you" segment
+  label       String // e.g. "Boisson offerte", "Dessert offert"
+  description String?
+  probability Float // between 0 and 1; probabilities per restaurant should roughly sum to 1
+  isWin       Boolean @default(true) // if false, it's a "no prize but thank you" segment
 
-  colorHex      String?       // optional color for that segment
-  icon          String?       // optional icon/emoji name/code (e.g. "☕", "🍔", "🚗", or lucide icon name)
-  isActive      Boolean       @default(true)
+  colorHex String? // optional color for that segment
+  icon     String? // optional icon/emoji name/code (e.g. "☕", "🍔", "🚗", or lucide icon name)
+  isActive Boolean @default(true)
 
   participations Participation[]
 }
 
 model Participation {
-  id             String              @id @default(cuid())
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  restaurant     Restaurant          @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
-  restaurantId   String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  restaurantId String
 
-  customerName   String
-  customerEmail  String?
-  ticketNumber   String?             // Proof of purchase (optional but recommended)
-  googleName     String?             // optional (name displayed on Google review)
-  screenshotUrl  String?             // optional URL of screenshot (future extension)
+  customerName  String
+  customerEmail String?
+  ticketNumber  String? // Proof of purchase (optional but recommended)
+  googleName    String? // optional (name displayed on Google review)
+  screenshotUrl String? // optional URL of screenshot (future extension)
 
-  reward         Reward?             @relation(fields: [rewardId], references: [id])
-  rewardId       String?
+  // Tracking de l'action sociale effectuée
+  platformAction PlatformAction @default(GOOGLE_REVIEW) // Quelle action a donné accès au jeu
 
-  status         ParticipationStatus @default(PENDING)
-  redeemedAt     DateTime?           // When the reward was claimed
-  
-  validFrom      DateTime?           // Valid starting from (e.g. tomorrow)
-  expiresAt      DateTime?           // Valid until (e.g. 7 days later)
+  reward   Reward? @relation(fields: [rewardId], references: [id])
+  rewardId String?
+
+  status     ParticipationStatus @default(PENDING)
+  redeemedAt DateTime? // When the reward was claimed
+
+  validFrom DateTime? // Valid starting from (e.g. tomorrow)
+  expiresAt DateTime? // Valid until (e.g. 7 days later)
+
+  @@index([customerEmail, platformAction]) // Pour détecter si déjà participé
 }
 
 enum ParticipationStatus {
-  PENDING    // customer submitted, reward chosen
-  VERIFIED   // staff has manually verified there is a review (optional use)
-  REDEEMED   // reward used / given
+  PENDING // customer submitted, reward chosen
+  VERIFIED // staff has manually verified there is a review (optional use)
+  REDEEMED // reward used / given
 }
 
 model Admin {
-  id            String   @id @default(cuid())
-  username      String   @unique
-  passwordHash  String
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }

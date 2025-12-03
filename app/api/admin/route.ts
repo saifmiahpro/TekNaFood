@@ -49,7 +49,7 @@ export async function GET(request: Request) {
 export async function PATCH(request: Request) {
     try {
         const body = await request.json()
-        const { token, primaryColor, secondaryColor, logoUrl } = body
+        const { token, primaryColor, secondaryColor, logoUrl, tripadvisorUrl, instagramHandle, tiktokHandle, facebookUrl } = body
 
         if (!token) {
             return NextResponse.json({ error: "Missing token" }, { status: 401 })
@@ -61,6 +61,10 @@ export async function PATCH(request: Request) {
                 primaryColor,
                 secondaryColor,
                 logoUrl,
+                tripadvisorUrl,
+                instagramHandle,
+                tiktokHandle,
+                facebookUrl,
             },
         })
 
