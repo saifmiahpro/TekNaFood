@@ -67,6 +67,7 @@ export default function LoginPage() {
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
                                 required
+                                autocomplete="username"
                             />
                         </div>
                         <div className="space-y-2">
@@ -79,6 +80,7 @@ export default function LoginPage() {
                                     onChange={(e) => setPassword(e.target.value)}
                                     className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
                                     required
+                                    autocomplete="current-password"
                                 />
                             </div>
                         </div>

@@ -26,6 +26,7 @@ import {
     RefreshCw,
     Save
 } from "lucide-react"
+import { Icons } from "@/components/icons"
 
 interface Restaurant {
     id: string
@@ -337,16 +338,16 @@ function AdminContent() {
                                         <Card key={stat.platformAction} className="border-0 shadow-sm bg-white">
                                             <CardContent className="pt-6 flex items-center gap-4">
                                                 <div className={`p-3 rounded-lg ${stat.platformAction === 'GOOGLE_REVIEW' ? 'bg-blue-50 text-blue-600' :
-                                                        stat.platformAction === 'INSTAGRAM_FOLLOW' ? 'bg-pink-50 text-pink-600' :
-                                                            stat.platformAction === 'TIKTOK_FOLLOW' ? 'bg-gray-900 text-white' :
-                                                                stat.platformAction === 'TRIPADVISOR_REVIEW' ? 'bg-green-50 text-green-600' :
-                                                                    'bg-blue-50 text-blue-600'
+                                                    stat.platformAction === 'INSTAGRAM_FOLLOW' ? 'bg-pink-50 text-pink-600' :
+                                                        stat.platformAction === 'TIKTOK_FOLLOW' ? 'bg-gray-900 text-white' :
+                                                            stat.platformAction === 'TRIPADVISOR_REVIEW' ? 'bg-green-50 text-green-600' :
+                                                                'bg-blue-50 text-blue-600'
                                                     }`}>
-                                                    {stat.platformAction === 'GOOGLE_REVIEW' && <span className="text-xl">⭐</span>}
-                                                    {stat.platformAction === 'INSTAGRAM_FOLLOW' && <span className="text-xl">📷</span>}
-                                                    {stat.platformAction === 'TIKTOK_FOLLOW' && <span className="text-xl">🎵</span>}
-                                                    {stat.platformAction === 'TRIPADVISOR_REVIEW' && <span className="text-xl">🦉</span>}
-                                                    {stat.platformAction === 'FACEBOOK_LIKE' && <span className="text-xl">👍</span>}
+                                                    {stat.platformAction === 'GOOGLE_REVIEW' && <Icons.Google className="w-6 h-6" />}
+                                                    {stat.platformAction === 'INSTAGRAM_FOLLOW' && <Icons.Instagram className="w-6 h-6" />}
+                                                    {stat.platformAction === 'TIKTOK_FOLLOW' && <Icons.TikTok className="w-6 h-6" />}
+                                                    {stat.platformAction === 'TRIPADVISOR_REVIEW' && <Icons.TripAdvisor className="w-6 h-6" />}
+                                                    {stat.platformAction === 'FACEBOOK_LIKE' && <Icons.Facebook className="w-6 h-6" />}
                                                 </div>
                                                 <div>
                                                     <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">

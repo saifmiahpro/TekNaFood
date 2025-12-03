@@ -237,13 +237,27 @@ export default function PlayPage() {
     }
 
     return (
-        <div className="min-h-[100dvh] w-full bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 flex flex-col items-center justify-center p-3 md:p-4 overflow-hidden relative">
+        <div
+            className="min-h-[100dvh] w-full flex flex-col items-center justify-center p-3 md:p-4 overflow-hidden relative"
+            style={{
+                background: `linear-gradient(135deg, #0f172a 0%, ${restaurant.primaryColor}40 50%, #0f172a 100%)`
+            }}
+        >
             {/* Background Effects - Reduced on mobile */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none opacity-30 md:opacity-100">
                 <div className="absolute top-0 left-0 w-full h-full bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
-                <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-purple-600 blur-[120px] opacity-20 md:opacity-30 animate-pulse"></div>
-                <div className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-600 blur-[120px] opacity-10 md:opacity-20 animate-pulse"></div>
-                <div className="absolute -bottom-[10%] left-[20%] w-[60%] h-[60%] rounded-full bg-pink-600 blur-[120px] opacity-20 animate-pulse delay-2000"></div>
+                <div
+                    className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full blur-[120px] opacity-20 md:opacity-30 animate-pulse"
+                    style={{ backgroundColor: restaurant.primaryColor }}
+                ></div>
+                <div
+                    className="absolute top-[40%] -right-[10%] w-[40%] h-[40%] rounded-full blur-[120px] opacity-10 md:opacity-20 animate-pulse"
+                    style={{ backgroundColor: restaurant.secondaryColor }}
+                ></div>
+                <div
+                    className="absolute -bottom-[10%] left-[20%] w-[60%] h-[60%] rounded-full blur-[120px] opacity-20 animate-pulse delay-2000"
+                    style={{ backgroundColor: restaurant.primaryColor }}
+                ></div>
             </div>
 
             <div className="w-full max-w-md md:max-w-2xl relative z-10">

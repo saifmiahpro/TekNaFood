@@ -121,8 +121,11 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                     {step === "action-select" && (
                         <div className="text-center space-y-8 w-full animate-in fade-in duration-500">
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                                <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <Gift className="h-10 w-10 text-yellow-600" />
+                                <div
+                                    className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                                    style={{ backgroundColor: `${restaurant.primaryColor}20` }}
+                                >
+                                    <Gift className="h-10 w-10" style={{ color: restaurant.primaryColor }} />
                                 </div>
                                 <h2 className="text-2xl font-bold text-gray-900 mb-3">{restaurant.introTitle}</h2>
                                 <p className="text-gray-700 leading-relaxed font-medium">{restaurant.introSubtitle}</p>
@@ -149,8 +152,11 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             className="text-center w-full"
                         >
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Star className="h-8 w-8 text-yellow-600" />
+                                <div
+                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    style={{ backgroundColor: `${restaurant.primaryColor}20` }}
+                                >
+                                    <Star className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">Votre avis compte !</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">
@@ -184,8 +190,11 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             className="text-center w-full"
                         >
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                                <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <MessageSquare className="h-8 w-8 text-orange-600" />
+                                <div
+                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    style={{ backgroundColor: `${restaurant.primaryColor}20` }}
+                                >
+                                    <MessageSquare className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">Aidez-nous à nous améliorer</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">
@@ -202,7 +211,8 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
 
                                 <Button
                                     onClick={handleSubmitFeedback}
-                                    className="w-full py-6 text-lg font-bold bg-black text-white hover:bg-gray-800"
+                                    className="w-full py-6 text-lg font-bold text-white hover:opacity-90"
+                                    style={{ backgroundColor: restaurant.primaryColor }}
                                 >
                                     Envoyer mes remarques
                                 </Button>
@@ -219,8 +229,11 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             className="text-center w-full"
                         >
                             <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-                                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                    <Sparkles className="h-8 w-8 text-purple-600" />
+                                <div
+                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    style={{ backgroundColor: `${restaurant.primaryColor}20` }}
+                                >
+                                    <Sparkles className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
                                 <h2 className="text-xl font-bold mb-2">C'est le moment de vérité !</h2>
                                 <p className="text-gray-700 mb-6 text-base font-medium">

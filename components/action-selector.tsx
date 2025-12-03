@@ -4,7 +4,8 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { motion } from "framer-motion"
-import { ExternalLink, CheckCircle2, Star, Instagram, Music, MessageCircle } from "lucide-react"
+import { ExternalLink, CheckCircle2 } from "lucide-react"
+import { Icons } from "@/components/icons"
 
 interface Action {
     platform: "GOOGLE_REVIEW" | "TRIPADVISOR_REVIEW" | "INSTAGRAM_FOLLOW" | "TIKTOK_FOLLOW"
@@ -54,7 +55,7 @@ export function ActionSelector({
                 formattedActions.push({
                     platform: "GOOGLE_REVIEW",
                     label: "Avis Google",
-                    icon: <Star className="w-6 h-6" />,
+                    icon: <Icons.Google className="w-6 h-6" />,
                     url: data.googleMapsUrl,
                     completed: data.completedActions?.includes("GOOGLE_REVIEW") || false,
                     description: "Laissez un avis sur Google Maps"
@@ -66,7 +67,7 @@ export function ActionSelector({
                 formattedActions.push({
                     platform: "TRIPADVISOR_REVIEW",
                     label: "Avis TripAdvisor",
-                    icon: <MessageCircle className="w-6 h-6" />,
+                    icon: <Icons.TripAdvisor className="w-6 h-6" />,
                     url: data.tripadvisorUrl,
                     completed: data.completedActions?.includes("TRIPADVISOR_REVIEW") || false,
                     description: "Partagez votre expérience sur TripAdvisor"
@@ -78,7 +79,7 @@ export function ActionSelector({
                 formattedActions.push({
                     platform: "INSTAGRAM_FOLLOW",
                     label: "Instagram",
-                    icon: <Instagram className="w-6 h-6" />,
+                    icon: <Icons.Instagram className="w-6 h-6" />,
                     url: `https://instagram.com/${data.instagramHandle.replace('@', '')}`,
                     completed: data.completedActions?.includes("INSTAGRAM_FOLLOW") || false,
                     description: `Suivez @${data.instagramHandle.replace('@', '')}`
@@ -90,7 +91,7 @@ export function ActionSelector({
                 formattedActions.push({
                     platform: "TIKTOK_FOLLOW",
                     label: "TikTok",
-                    icon: <Music className="w-6 h-6" />,
+                    icon: <Icons.TikTok className="w-6 h-6" />,
                     url: `https://tiktok.com/@${data.tiktokHandle.replace('@', '')}`,
                     completed: data.completedActions?.includes("TIKTOK_FOLLOW") || false,
                     description: `Suivez @${data.tiktokHandle.replace('@', '')}`
