@@ -67,22 +67,21 @@ export default function LoginPage() {
                                 onChange={(e) => setUsername(e.target.value)}
                                 className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
                                 required
-                                autocomplete="username"
+                                autoComplete="username"
                             />
                         </div>
                         <div className="space-y-2">
-                            <div className="relative">
-                                <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
-                                <Input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="pl-10 bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
-                                    required
-                                    autocomplete="current-password"
-                                />
-                            </div>
+                            <Label htmlFor="password">Mot de passe</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
+                                required
+                                autoComplete="current-password"
+                            />
                         </div>
 
                         {error && (
