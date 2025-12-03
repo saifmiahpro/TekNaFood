@@ -112,6 +112,7 @@ export default function PlayPage() {
                 label: reward.label,
                 color: reward.colorHex || generateColorFromString(reward.label),
                 icon: reward.icon,
+                probability: reward.probability, // Passer la probabilité pour l'affichage
             }))
             console.log('Wheel segments:', segments)
             setWheelSegments(segments)

@@ -26,8 +26,27 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
     const [customerEmail, setCustomerEmail] = useState("")
     const [feedback, setFeedback] = useState("")
     const [ticketNumber, setTicketNumber] = useState("")
+    const [emailError, setEmailError] = useState("")
 
     const router = useRouter()
+
+    // Fonction de validation email
+    const isValidEmail = (email: string): boolean => {
+        if (!email) return false
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+        return emailRegex.test(email)
+    }
+
+    const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const email = e.target.value
+        setCustomerEmail(email)
+
+        if (email && !isValidEmail(email)) {
+            setEmailError("Adresse email invalide")
+        } else {
+            setEmailError("")
+        }
+    }
 
     const handleRating = (stars: number) => {
         setRating(stars)
@@ -210,19 +229,22 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                             type="email"
                                             placeholder="thomas@exemple.com"
                                             value={customerEmail}
-                                            onChange={(e) => setCustomerEmail(e.target.value)}
-                                            className="h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg"
+                                            onChange={handleEmailChange}
+                                            className={`h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg ${emailError ? 'border-red-500 focus:ring-red-500' : ''}`}
                                         />
+                                        {emailError && (
+                                            <p className="text-red-600 text-xs mt-1 ml-1 font-medium">{emailError}</p>
+                                        )}
                                     </div>
                                 </div>
 
                                 <Button
                                     onClick={handleProceedToGame}
-                                    disabled={!customerName || !customerEmail}
+                                    disabled={!customerName || !customerEmail || !isValidEmail(customerEmail)}
                                     className="w-full mt-8 py-6 text-lg font-bold shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
                                     style={{ backgroundColor: restaurant.primaryColor }}
                                 >
-                                    LANCER LA ROUE ! 🎰
+                                    {!customerName || !customerEmail ? "Remplissez le formulaire" : !isValidEmail(customerEmail) ? "Email invalide" : "LANCER LA ROUE ! 🎰"}
                                 </Button>
                             </div>
                         </motion.div>

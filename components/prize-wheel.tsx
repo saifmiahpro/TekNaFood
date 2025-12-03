@@ -8,6 +8,7 @@ export interface WheelSegment {
     label: string
     color: string
     icon?: string
+    probability?: number // Ajouté pour afficher le pourcentage
 }
 
 interface PrizeWheelProps {
@@ -95,6 +96,16 @@ export function PrizeWheel({
             const label = segment.label.length > 15 ? segment.label.substring(0, 12) + "..." : segment.label
             // If icon exists, push text back, otherwise closer to edge
             ctx.fillText(label, radius - (segment.icon ? 55 : 20), 5)
+
+            // Afficher le pourcentage si disponible
+            if (segment.probability !== undefined) {
+                ctx.font = "bold 10px Inter, sans-serif"
+                ctx.fillStyle = "#ffffff"
+                ctx.shadowColor = "rgba(0,0,0,0.7)"
+                ctx.shadowBlur = 3
+                const percentage = `${Math.round(segment.probability * 100)}%`
+                ctx.fillText(percentage, radius - (segment.icon ? 55 : 20), 18)
+            }
 
             ctx.restore()
         })
