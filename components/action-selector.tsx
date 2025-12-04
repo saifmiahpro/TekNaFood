@@ -74,15 +74,41 @@ export function ActionSelector({
                 })
             }
 
+            // Helper pour nettoyer et générer les URLs sociales
+            const getSocialUrl = (input: string, platform: 'instagram' | 'tiktok') => {
+                if (!input) return null
+
+                // Si c'est déjà une URL complète
+                if (input.startsWith('http')) return input
+                if (input.includes('instagram.com') || input.includes('tiktok.com')) return `https://${input}`
+
+                // Sinon c'est un handle
+                const cleanHandle = input.replace('@', '').trim()
+                if (platform === 'instagram') return `https://instagram.com/${cleanHandle}`
+                if (platform === 'tiktok') return `https://tiktok.com/@${cleanHandle}`
+
+                return input
+            }
+
+            // Helper pour l'affichage du handle
+            const getDisplayHandle = (input: string) => {
+                if (!input) return ''
+                if (input.includes('/')) {
+                    const parts = input.split('/')
+                    return '@' + parts[parts.length - 1].replace('@', '')
+                }
+                return '@' + input.replace('@', '')
+            }
+
             // Instagram (optionnel)
             if (data.instagramHandle) {
                 formattedActions.push({
                     platform: "INSTAGRAM_FOLLOW",
                     label: "Instagram",
                     icon: <Icons.Instagram className="w-6 h-6" />,
-                    url: `https://instagram.com/${data.instagramHandle.replace('@', '')}`,
+                    url: getSocialUrl(data.instagramHandle, 'instagram'),
                     completed: data.completedActions?.includes("INSTAGRAM_FOLLOW") || false,
-                    description: `Suivez @${data.instagramHandle.replace('@', '')}`
+                    description: `Suivez ${getDisplayHandle(data.instagramHandle)}`
                 })
             }
 
@@ -92,9 +118,9 @@ export function ActionSelector({
                     platform: "TIKTOK_FOLLOW",
                     label: "TikTok",
                     icon: <Icons.TikTok className="w-6 h-6" />,
-                    url: `https://tiktok.com/@${data.tiktokHandle.replace('@', '')}`,
+                    url: getSocialUrl(data.tiktokHandle, 'tiktok'),
                     completed: data.completedActions?.includes("TIKTOK_FOLLOW") || false,
-                    description: `Suivez @${data.tiktokHandle.replace('@', '')}`
+                    description: `Suivez ${getDisplayHandle(data.tiktokHandle)}`
                 })
             }
 
