@@ -21,6 +21,14 @@ export async function GET() {
             where: { id: restaurantId },
             include: {
                 rewards: true,
+                participations: {
+                    include: {
+                        reward: true
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    }
+                },
                 dailyStats: {
                     orderBy: { date: 'desc' },
                     take: 30
