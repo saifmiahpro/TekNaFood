@@ -601,167 +601,209 @@ function AdminContent() {
                                     </div>
                                 </div>
 
-                                <div className="border-t border-gray-100 my-8"></div>
-
-                                {/* Game Limits Section */}
-                                <div className="mb-10">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                            <Activity className="h-6 w-6 text-purple-600" />
-                                            Limites de Jeu
-                                        </h2>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Jeux Max par Jour</Label>
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                value={restaurant.maxPlaysPerDay}
-                                                onChange={(e) => setRestaurant({ ...restaurant, maxPlaysPerDay: parseInt(e.target.value) || 1 })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Combien de fois un client peut jouer en 24h (toutes actions confondues).</p>
-                                        </div>
-
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai de Rejeu (Heures)</Label>
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                value={restaurant.replayDelayHours}
-                                                onChange={(e) => setRestaurant({ ...restaurant, replayDelayHours: parseInt(e.target.value) || 0 })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Temps d'attente avant de pouvoir rejouer (si limite non atteinte).</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai avant Validité (Heures)</Label>
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                value={restaurant.rewardDelayHours}
-                                                onChange={(e) => setRestaurant({ ...restaurant, rewardDelayHours: parseInt(e.target.value) || 0 })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Temps d'attente avant que le client puisse utiliser son cadeau (ex: 24h).</p>
-                                        </div>
-
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Durée de Validité (Jours)</Label>
-                                            <Input
-                                                type="number"
-                                                min="1"
-                                                value={restaurant.rewardValidityDays}
-                                                onChange={(e) => setRestaurant({ ...restaurant, rewardValidityDays: parseInt(e.target.value) || 1 })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Combien de temps le cadeau reste valable (ex: 30 jours).</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Social Platforms Section */}
-                                <div className="mb-10">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                            <Users className="h-6 w-6 text-purple-600" />
-                                            Plateformes Sociales (Optionnel)
-                                        </h2>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TripAdvisor URL</Label>
-                                            <Input
-                                                placeholder="https://www.tripadvisor.fr/Restaurant_Review..."
-                                                value={restaurant.tripadvisorUrl || ""}
-                                                onChange={(e) => setRestaurant({ ...restaurant, tripadvisorUrl: e.target.value })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Laissez vide pour désactiver.</p>
-                                        </div>
-
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Instagram Handle</Label>
-                                            <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-400">@</span>
-                                                <Input
-                                                    placeholder="mon_restaurant"
-                                                    value={restaurant.instagramHandle?.replace('@', '') || ""}
-                                                    onChange={(e) => setRestaurant({ ...restaurant, instagramHandle: e.target.value })}
-                                                    className="pl-8"
-                                                />
+                                <div className="mt-8">
+                                    <Label className="mb-3 block text-xs uppercase text-gray-500 font-bold">Position du Logo sur le Poster</Label>
+                                    <div className="flex gap-4">
+                                        <div
+                                            className={`cursor-pointer border-2 rounded-xl p-4 flex-1 flex flex-col items-center gap-2 transition-all ${restaurant.qrLogoPlacement === 'CENTER' ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                            onClick={() => setRestaurant({ ...restaurant, qrLogoPlacement: 'CENTER' })}
+                                        >
+                                            <div className="w-16 h-16 border border-gray-300 rounded bg-white relative">
+                                                <div className="absolute inset-0 m-auto w-8 h-8 bg-black rounded-full opacity-20"></div>
+                                                <div className="absolute inset-0 m-auto w-4 h-4 bg-purple-600 rounded-full z-10"></div>
                                             </div>
-                                            <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                            <span className={`font-medium ${restaurant.qrLogoPlacement === 'CENTER' ? 'text-purple-700' : 'text-gray-600'}`}>Au Centre du QR</span>
                                         </div>
 
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TikTok Handle</Label>
-                                            <div className="relative">
-                                                <span className="absolute left-3 top-2.5 text-gray-400">@</span>
-                                                <Input
-                                                    placeholder="mon_restaurant"
-                                                    value={restaurant.tiktokHandle?.replace('@', '') || ""}
-                                                    onChange={(e) => setRestaurant({ ...restaurant, tiktokHandle: e.target.value })}
-                                                    className="pl-8"
-                                                />
+                                        <div
+                                            className={`cursor-pointer border-2 rounded-xl p-4 flex-1 flex flex-col items-center gap-2 transition-all ${restaurant.qrLogoPlacement === 'HEADER' ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                            onClick={() => setRestaurant({ ...restaurant, qrLogoPlacement: 'HEADER' })}
+                                        >
+                                            <div className="w-16 h-16 border border-gray-300 rounded bg-white relative">
+                                                <div className="absolute top-0 left-0 right-0 h-4 bg-black opacity-20"></div>
+                                                <div className="absolute top-1 left-0 right-0 mx-auto w-4 h-4 bg-purple-600 rounded-full z-10"></div>
+                                                <div className="absolute inset-0 m-auto w-8 h-8 bg-black rounded-full opacity-20"></div>
                                             </div>
-                                            <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                            <span className={`font-medium ${restaurant.qrLogoPlacement === 'HEADER' ? 'text-purple-700' : 'text-gray-600'}`}>Dans l'En-tête</span>
                                         </div>
 
-                                        <div>
-                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Facebook URL</Label>
-                                            <Input
-                                                placeholder="https://facebook.com/..."
-                                                value={restaurant.facebookUrl || ""}
-                                                onChange={(e) => setRestaurant({ ...restaurant, facebookUrl: e.target.value })}
-                                            />
-                                            <p className="text-xs text-gray-400 mt-2">Lien vers votre page Facebook.</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="border-t border-gray-100 my-8"></div>
-
-                                {/* QR Code Preview Section */}
-                                <div className="text-center">
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">Aperçu du Poster QR Code</h3>
-                                    <p className="text-gray-500 mb-8">Ce design est généré automatiquement avec vos couleurs et votre logo.</p>
-
-                                    <div className="inline-block p-4 bg-white rounded-xl border-2 border-gray-100 shadow-sm mb-8">
-                                        <QRCodeGenerator
-                                            url={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
-                                            restaurantName={restaurant.name}
-                                            primaryColor={restaurant.primaryColor}
-                                            secondaryColor={restaurant.secondaryColor}
-                                            logoUrl={restaurant.logoUrl || undefined}
-                                            logoPlacement={restaurant.qrLogoPlacement || "CENTER"}
-                                        />
-                                    </div>
-
-                                    <div className="w-full max-w-md mx-auto">
-                                        <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block text-left">Lien Direct</Label>
-                                        <div className="flex gap-2">
-                                            <Input
-                                                readOnly
-                                                value={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
-                                                className="bg-gray-50 font-mono text-sm"
-                                            />
-                                            <Button variant="outline" onClick={() => {
-                                                navigator.clipboard.writeText(`${window.location.origin}/r/${restaurant.slug}`)
-                                                alert("Copié !")
-                                            }}>
-                                                Copier
-                                            </Button>
+                                        <div
+                                            className={`cursor-pointer border-2 rounded-xl p-4 flex-1 flex flex-col items-center gap-2 transition-all ${restaurant.qrLogoPlacement === 'BOTH' ? 'border-purple-600 bg-purple-50' : 'border-gray-200 hover:border-gray-300'}`}
+                                            onClick={() => setRestaurant({ ...restaurant, qrLogoPlacement: 'BOTH' })}
+                                        >
+                                            <div className="w-16 h-16 border border-gray-300 rounded bg-white relative">
+                                                <div className="absolute top-0 left-0 right-0 h-4 bg-black opacity-20"></div>
+                                                <div className="absolute top-1 left-0 right-0 mx-auto w-3 h-3 bg-purple-600 rounded-full z-10"></div>
+                                                <div className="absolute inset-0 m-auto w-8 h-8 bg-black rounded-full opacity-20"></div>
+                                                <div className="absolute inset-0 m-auto w-3 h-3 bg-purple-600 rounded-full z-10"></div>
+                                            </div>
+                                            <span className={`font-medium ${restaurant.qrLogoPlacement === 'BOTH' ? 'text-purple-700' : 'text-gray-600'}`}>Les Deux</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </TabsContent>
-                    </Tabs>
-                </div>
+
+                            <div className="border-t border-gray-100 my-8"></div>
+
+                            {/* Game Limits Section */}
+                            <div className="mb-10">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                        <Activity className="h-6 w-6 text-purple-600" />
+                                        Limites de Jeu
+                                    </h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Jeux Max par Jour</Label>
+                                        <Input
+                                            type="number"
+                                            min="1"
+                                            value={restaurant.maxPlaysPerDay}
+                                            onChange={(e) => setRestaurant({ ...restaurant, maxPlaysPerDay: parseInt(e.target.value) || 1 })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Combien de fois un client peut jouer en 24h (toutes actions confondues).</p>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai de Rejeu (Heures)</Label>
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            value={restaurant.replayDelayHours}
+                                            onChange={(e) => setRestaurant({ ...restaurant, replayDelayHours: parseInt(e.target.value) || 0 })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Temps d'attente avant de pouvoir rejouer (si limite non atteinte).</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai avant Validité (Heures)</Label>
+                                        <Input
+                                            type="number"
+                                            min="0"
+                                            value={restaurant.rewardDelayHours}
+                                            onChange={(e) => setRestaurant({ ...restaurant, rewardDelayHours: parseInt(e.target.value) || 0 })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Temps d'attente avant que le client puisse utiliser son cadeau (ex: 24h).</p>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Durée de Validité (Jours)</Label>
+                                        <Input
+                                            type="number"
+                                            min="1"
+                                            value={restaurant.rewardValidityDays}
+                                            onChange={(e) => setRestaurant({ ...restaurant, rewardValidityDays: parseInt(e.target.value) || 1 })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Combien de temps le cadeau reste valable (ex: 30 jours).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Social Platforms Section */}
+                            <div className="mb-10">
+                                <div className="flex items-center justify-between mb-6">
+                                    <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                        <Users className="h-6 w-6 text-purple-600" />
+                                        Plateformes Sociales (Optionnel)
+                                    </h2>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TripAdvisor URL</Label>
+                                        <Input
+                                            placeholder="https://www.tripadvisor.fr/Restaurant_Review..."
+                                            value={restaurant.tripadvisorUrl || ""}
+                                            onChange={(e) => setRestaurant({ ...restaurant, tripadvisorUrl: e.target.value })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Laissez vide pour désactiver.</p>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Instagram Handle</Label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-2.5 text-gray-400">@</span>
+                                            <Input
+                                                placeholder="mon_restaurant"
+                                                value={restaurant.instagramHandle?.replace('@', '') || ""}
+                                                onChange={(e) => setRestaurant({ ...restaurant, instagramHandle: e.target.value })}
+                                                className="pl-8"
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TikTok Handle</Label>
+                                        <div className="relative">
+                                            <span className="absolute left-3 top-2.5 text-gray-400">@</span>
+                                            <Input
+                                                placeholder="mon_restaurant"
+                                                value={restaurant.tiktokHandle?.replace('@', '') || ""}
+                                                onChange={(e) => setRestaurant({ ...restaurant, tiktokHandle: e.target.value })}
+                                                className="pl-8"
+                                            />
+                                        </div>
+                                        <p className="text-xs text-gray-400 mt-2">Ex: @mon_restaurant</p>
+                                    </div>
+
+                                    <div>
+                                        <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Facebook URL</Label>
+                                        <Input
+                                            placeholder="https://facebook.com/..."
+                                            value={restaurant.facebookUrl || ""}
+                                            onChange={(e) => setRestaurant({ ...restaurant, facebookUrl: e.target.value })}
+                                        />
+                                        <p className="text-xs text-gray-400 mt-2">Lien vers votre page Facebook.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="border-t border-gray-100 my-8"></div>
+
+                            {/* QR Code Preview Section */}
+                            <div className="text-center">
+                                <h3 className="text-xl font-bold text-gray-900 mb-2">Aperçu du Poster QR Code</h3>
+                                <p className="text-gray-500 mb-8">Ce design est généré automatiquement avec vos couleurs et votre logo.</p>
+
+                                <div className="inline-block p-4 bg-white rounded-xl border-2 border-gray-100 shadow-sm mb-8">
+                                    <QRCodeGenerator
+                                        url={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
+                                        restaurantName={restaurant.name}
+                                        primaryColor={restaurant.primaryColor}
+                                        secondaryColor={restaurant.secondaryColor}
+                                        logoUrl={restaurant.logoUrl || undefined}
+                                        logoPlacement={restaurant.qrLogoPlacement || "CENTER"}
+                                    />
+                                </div>
+
+                                <div className="w-full max-w-md mx-auto">
+                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block text-left">Lien Direct</Label>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            readOnly
+                                            value={`${typeof window !== 'undefined' ? window.location.origin : ''}/r/${restaurant.slug}`}
+                                            className="bg-gray-50 font-mono text-sm"
+                                        />
+                                        <Button variant="outline" onClick={() => {
+                                            navigator.clipboard.writeText(`${window.location.origin}/r/${restaurant.slug}`)
+                                            alert("Copié !")
+                                        }}>
+                                            Copier
+                                        </Button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
+        </div >
     )
 }
 
