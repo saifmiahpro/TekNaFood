@@ -35,7 +35,7 @@ export default function TermsPage() {
                             <li>Lancer la roue virtuelle.</li>
                         </ul>
                         <p className="mt-2">
-                            La participation est limitée à une par jour et par personne.
+                            La participation est limitée à une par action validée (ex: 1 avis = 1 participation, 1 abonnement = 1 participation).
                         </p>
                     </section>
 
