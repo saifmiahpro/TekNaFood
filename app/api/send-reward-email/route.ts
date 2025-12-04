@@ -43,17 +43,35 @@ export async function POST(request: Request) {
                     to: participation.customerEmail,
                     subject: `🎁 Votre cadeau chez ${participation.restaurant.name} vous attend !`,
                     html: `
-                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; text-align: center;">
                             <h1 style="color: ${participation.restaurant.primaryColor};">Bravo ${participation.customerName} !</h1>
-                            <p>Vous avez gagné : <strong>${participation.reward.label}</strong></p>
+                            
+                            <div style="background-color: #f9fafb; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                                <p style="font-size: 18px; margin-bottom: 5px;">Vous avez gagné :</p>
+                                <strong style="font-size: 24px; color: #111827;">${participation.reward.label}</strong>
+                            </div>
+
                             <p>Ce cadeau est valable pour votre <strong>PROCHAINE VISITE</strong>.</p>
-                            <p>Valable du ${new Date(participation.validFrom!).toLocaleDateString()} au ${new Date(participation.expiresAt!).toLocaleDateString()}.</p>
-                            <br/>
+                            <p style="font-size: 14px; color: #6b7280;">Valable du ${new Date(participation.validFrom!).toLocaleDateString()} au ${new Date(participation.expiresAt!).toLocaleDateString()}.</p>
+                            
+                            <div style="margin: 30px 0;">
+                                <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(redeemUrl)}" alt="QR Code de validation" style="width: 200px; height: 200px;" />
+                            </div>
+
+                            <div style="background-color: #fff7ed; border: 1px solid #fdba74; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
+                                <p style="margin: 0; font-weight: bold; color: #9a3412;">⚠️ IMPORTANT : À présenter au commerçant</p>
+                                <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #9a3412;">
+                                    <li>Ce QR Code pour valider votre gain.</li>
+                                    <li><strong>La preuve de votre action</strong> (votre avis Google/TripAdvisor publié ou votre abonnement Instagram/TikTok).</li>
+                                </ul>
+                            </div>
+
                             <a href="${redeemUrl}" style="background-color: ${participation.restaurant.primaryColor}; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-                                CLIQUER ICI DEVANT LE SERVEUR POUR VALIDER
+                                LIEN DE VALIDATION (SECOURS)
                             </a>
+                            
                             <br/><br/>
-                            <p style="font-size: 12px; color: #888;">Si le bouton ne fonctionne pas, copiez ce lien : ${redeemUrl}</p>
+                            <p style="font-size: 12px; color: #888;">Si le QR code ne fonctionne pas, le commerçant peut cliquer sur le bouton ci-dessus.</p>
                         </div>
                     `
                 })
