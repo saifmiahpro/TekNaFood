@@ -75,6 +75,7 @@ export async function POST(request: Request) {
                         </div>
                     `
                 })
+                console.log("Email sent successfully to:", participation.customerEmail)
             } else {
                 console.log("MOCK EMAIL SENT TO:", participation.customerEmail, "LINK:", redeemUrl)
             }
