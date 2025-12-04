@@ -803,7 +803,7 @@ function AdminContent() {
                 </Tabs>
             </div>
         </div>
-        </div >
+
     )
 }
 
