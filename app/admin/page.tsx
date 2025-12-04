@@ -802,31 +802,32 @@ function AdminContent() {
                     </Tabs>
                 </div>
             </div>
+        </div>
 
-            )
+    )
 }
 
-            function StatCard({label, value, icon, bg, trend}: any) {
+function StatCard({ label, value, icon, bg, trend }: any) {
     return (
-            <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
-                <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-4">
-                        <div className={`p-3 rounded-lg ${bg}`}>
-                            {icon}
-                        </div>
-                        {trend && <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{trend}</span>}
+        <Card className="border-0 shadow-sm hover:shadow-md transition-shadow bg-white">
+            <CardContent className="pt-6">
+                <div className="flex items-center justify-between mb-4">
+                    <div className={`p-3 rounded-lg ${bg}`}>
+                        {icon}
                     </div>
-                    <p className="text-sm text-gray-500 font-medium">{label}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
-                </CardContent>
-            </Card>
-            )
+                    {trend && <span className="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded-full">{trend}</span>}
+                </div>
+                <p className="text-sm text-gray-500 font-medium">{label}</p>
+                <p className="text-3xl font-bold text-gray-900 mt-1">{value}</p>
+            </CardContent>
+        </Card>
+    )
 }
 
-            export default function AdminPage() {
+export default function AdminPage() {
     return (
-            <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Chargement...</div>}>
-                <AdminContent />
-            </Suspense>
-            )
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Chargement...</div>}>
+            <AdminContent />
+        </Suspense>
+    )
 }
