@@ -8,8 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
 
-    // 1. Protection Super Admin (/super) - Via NextAuth
-    if (path.startsWith("/super")) {
+    // 1. Protection Super Admin (/super-admin) - Via NextAuth
+    if (path.startsWith("/super-admin")) {
         const session = await auth()
         if (!session) {
             return NextResponse.redirect(new URL("/auth/login", request.url))
@@ -46,5 +46,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/admin/:path*", "/super/:path*"],
+    matcher: ["/admin/:path*", "/super-admin/:path*"],
 }

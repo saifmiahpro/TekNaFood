@@ -1,24 +1,13 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
-import { cookies } from "next/headers"
-import { jwtVerify } from "jose"
-
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-key-change-it")
+import { auth } from "@/auth"
 
 export async function GET(req: Request) {
     try {
-        // 1. Vérification Sécurisée (Cookie)
-        const cookieStore = await cookies()
-        const token = cookieStore.get("admin_session")?.value
-
-        if (!token) {
+        // 1. Vérification Sécurisée (NextAuth)
+        const session = await auth()
+        if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-        }
-
-        try {
-            await jwtVerify(token, JWT_SECRET)
-        } catch (err) {
-            return NextResponse.json({ error: "Invalid Token" }, { status: 401 })
         }
 
         // 2. Fetch Data
