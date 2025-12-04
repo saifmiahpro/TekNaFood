@@ -36,6 +36,7 @@ interface Restaurant {
     primaryColor: string
     secondaryColor: string
     logoUrl: string | null
+    googleMapsUrl?: string | null
     tripadvisorUrl?: string | null
     instagramHandle?: string | null
     tiktokHandle?: string | null
@@ -142,6 +143,7 @@ export default function AdminDashboard() {
                     primaryColor: restaurant.primaryColor,
                     secondaryColor: restaurant.secondaryColor,
                     logoUrl: restaurant.logoUrl,
+                    googleMapsUrl: restaurant.googleMapsUrl,
                     tripadvisorUrl: restaurant.tripadvisorUrl,
                     instagramHandle: restaurant.instagramHandle,
                     tiktokHandle: restaurant.tiktokHandle,
@@ -755,6 +757,16 @@ export default function AdminDashboard() {
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Lien Avis Google (Important)</Label>
+                                            <Input
+                                                placeholder="https://g.page/r/..."
+                                                value={restaurant.googleMapsUrl || ""}
+                                                onChange={(e) => setRestaurant({ ...restaurant, googleMapsUrl: e.target.value })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Le lien direct vers vos avis Google.</p>
+                                        </div>
+
                                         <div>
                                             <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">TripAdvisor URL</Label>
                                             <Input
