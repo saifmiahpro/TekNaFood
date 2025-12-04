@@ -10,13 +10,9 @@ export async function middleware(request: NextRequest) {
 
     // 1. Protection Super Admin (/super) - Via NextAuth
     if (path.startsWith("/super")) {
-        if (path === "/super/login") {
-            return NextResponse.next()
-        }
-
         const session = await auth()
         if (!session) {
-            return NextResponse.redirect(new URL("/super/login", request.url))
+            return NextResponse.redirect(new URL("/auth/login", request.url))
         }
         return NextResponse.next()
     }
