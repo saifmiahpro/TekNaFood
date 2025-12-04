@@ -68,7 +68,9 @@ export async function PATCH(request: Request) {
             tiktokHandle,
             facebookUrl,
             maxPlaysPerDay,
-            replayDelayHours
+            replayDelayHours,
+            rewardDelayHours,
+            rewardValidityDays
         } = body
 
         if (!token) {
@@ -87,6 +89,8 @@ export async function PATCH(request: Request) {
                 facebookUrl,
                 maxPlaysPerDay: maxPlaysPerDay ? parseInt(maxPlaysPerDay) : undefined,
                 replayDelayHours: replayDelayHours ? parseInt(replayDelayHours) : undefined,
+                rewardDelayHours: rewardDelayHours ? parseInt(rewardDelayHours) : undefined,
+                rewardValidityDays: rewardValidityDays ? parseInt(rewardValidityDays) : undefined,
             },
         })
 

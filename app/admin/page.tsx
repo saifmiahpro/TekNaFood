@@ -42,6 +42,8 @@ interface Restaurant {
     facebookUrl?: string | null
     maxPlaysPerDay: number
     replayDelayHours: number
+    rewardDelayHours: number
+    rewardValidityDays: number
     platformStats?: Array<{
         platformAction: string
         _count: {
@@ -132,7 +134,11 @@ function AdminContent() {
                     tripadvisorUrl: restaurant.tripadvisorUrl,
                     instagramHandle: restaurant.instagramHandle,
                     tiktokHandle: restaurant.tiktokHandle,
-                    facebookUrl: restaurant.facebookUrl
+                    facebookUrl: restaurant.facebookUrl,
+                    maxPlaysPerDay: restaurant.maxPlaysPerDay,
+                    replayDelayHours: restaurant.replayDelayHours,
+                    rewardDelayHours: restaurant.rewardDelayHours,
+                    rewardValidityDays: restaurant.rewardValidityDays
                 }),
             })
             if (!res.ok) throw new Error("Erreur sauvegarde")
@@ -623,6 +629,30 @@ function AdminContent() {
                                                 onChange={(e) => setRestaurant({ ...restaurant, replayDelayHours: parseInt(e.target.value) || 0 })}
                                             />
                                             <p className="text-xs text-gray-400 mt-2">Temps d'attente avant de pouvoir rejouer (si limite non atteinte).</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Délai avant Validité (Heures)</Label>
+                                            <Input
+                                                type="number"
+                                                min="0"
+                                                value={restaurant.rewardDelayHours}
+                                                onChange={(e) => setRestaurant({ ...restaurant, rewardDelayHours: parseInt(e.target.value) || 0 })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Temps d'attente avant que le client puisse utiliser son cadeau (ex: 24h).</p>
+                                        </div>
+
+                                        <div>
+                                            <Label className="mb-2 block text-xs uppercase text-gray-500 font-bold">Durée de Validité (Jours)</Label>
+                                            <Input
+                                                type="number"
+                                                min="1"
+                                                value={restaurant.rewardValidityDays}
+                                                onChange={(e) => setRestaurant({ ...restaurant, rewardValidityDays: parseInt(e.target.value) || 1 })}
+                                            />
+                                            <p className="text-xs text-gray-400 mt-2">Combien de temps le cadeau reste valable (ex: 30 jours).</p>
                                         </div>
                                     </div>
                                 </div>
