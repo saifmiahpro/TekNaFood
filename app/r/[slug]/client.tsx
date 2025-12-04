@@ -298,6 +298,10 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 >
                                     {!customerName || !customerEmail ? "Remplissez le formulaire" : !isValidEmail(customerEmail) ? "Email invalide" : "LANCER LA ROUE ! 🎰"}
                                 </Button>
+
+                                <p className="text-[10px] text-gray-400 mt-3 text-center">
+                                    En jouant, vous acceptez notre <a href="/privacy" target="_blank" className="underline hover:text-gray-600">politique de confidentialité</a>.
+                                </p>
                             </div>
                         </motion.div>
                     )}
