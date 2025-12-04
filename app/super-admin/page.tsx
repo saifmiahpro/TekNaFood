@@ -310,7 +310,7 @@ export default function SuperAdminPage() {
                                             </Button>
 
                                             {/* Manage */}
-                                            <a href={`/admin?token=${restaurant.adminToken}`} target="_blank" rel="noopener noreferrer">
+                                            <a href={`/api/super-admin/impersonate?token=${restaurant.adminToken}`} target="_blank" rel="noopener noreferrer">
                                                 <Button
                                                     size="sm"
                                                     variant="outline"
