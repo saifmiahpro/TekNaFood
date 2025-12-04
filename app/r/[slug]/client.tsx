@@ -101,20 +101,20 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
     }
 
     return (
-        <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
-            {/* Brand Header - Premium Style */}
+        <div className="min-h-[100dvh] bg-gray-50 flex flex-col font-sans">
+            {/* Brand Header - Compact Mobile */}
             <div
-                className="w-full py-8 px-4 shadow-2xl text-center relative overflow-hidden"
+                className="w-full py-6 md:py-8 px-4 shadow-xl text-center relative overflow-hidden"
                 style={{
                     backgroundColor: restaurant.primaryColor,
-                    borderBottomLeftRadius: '2rem',
-                    borderBottomRightRadius: '2rem'
+                    borderBottomLeftRadius: '1.5rem',
+                    borderBottomRightRadius: '1.5rem'
                 }}
             >
                 <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center space-y-3">
+                <div className="relative z-10 flex flex-col items-center justify-center space-y-2">
                     {restaurant.logoUrl ? (
-                        <div className="w-20 h-20 bg-white rounded-full p-1.5 shadow-xl flex items-center justify-center overflow-hidden border-4 border-white/20">
+                        <div className="w-16 h-16 md:w-20 md:h-20 bg-white rounded-full p-1.5 shadow-lg flex items-center justify-center overflow-hidden border-4 border-white/20">
                             <img
                                 src={restaurant.logoUrl}
                                 alt={restaurant.name}
@@ -122,37 +122,37 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             />
                         </div>
                     ) : (
-                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-inner border border-white/30">
+                        <div className="w-14 h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-xl md:text-2xl font-bold text-white shadow-inner border border-white/30">
                             {restaurant.name.charAt(0)}
                         </div>
                     )}
 
                     <div className="space-y-0.5">
-                        <h1 className="text-2xl font-black text-white tracking-tight drop-shadow-md">
+                        <h1 className="text-xl md:text-2xl font-black text-white tracking-tight drop-shadow-md">
                             {restaurant.name}
                         </h1>
-                        <p className="text-white/90 text-xs font-medium uppercase tracking-widest opacity-80">
+                        <p className="text-white/90 text-[10px] md:text-xs font-medium uppercase tracking-widest opacity-80">
                             Programme de Fidélité
                         </p>
                     </div>
                 </div>
             </div>
 
-            <main className="flex-1 flex flex-col items-center justify-center p-6 max-w-md mx-auto w-full">
+            <main className="flex-1 flex flex-col items-center justify-center p-4 md:p-6 max-w-md mx-auto w-full">
                 <AnimatePresence mode="wait">
 
                     {/* STEP 1: ACTION SELECTION (Nouvel Accueil) */}
                     {step === "action-select" && (
-                        <div className="text-center space-y-8 w-full animate-in fade-in duration-500">
-                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                        <div className="text-center space-y-6 w-full animate-in fade-in duration-500">
+                            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-100">
                                 <div
-                                    className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+                                    className="w-16 h-16 md:w-20 md:h-20 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6"
                                     style={{ backgroundColor: `${restaurant.primaryColor}20` }}
                                 >
-                                    <Gift className="h-10 w-10" style={{ color: restaurant.primaryColor }} />
+                                    <Gift className="h-8 w-8 md:h-10 md:w-10" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-2xl font-bold text-gray-900 mb-3">{restaurant.introTitle}</h2>
-                                <p className="text-gray-700 leading-relaxed font-medium">{restaurant.introSubtitle}</p>
+                                <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 md:mb-3">{restaurant.introTitle}</h2>
+                                <p className="text-gray-600 text-sm md:text-base leading-relaxed font-medium">{restaurant.introSubtitle}</p>
                             </div>
 
                             <ActionSelector
@@ -175,27 +175,27 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             exit={{ opacity: 0, x: -50 }}
                             className="text-center w-full"
                         >
-                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-100">
                                 <div
-                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4"
                                     style={{ backgroundColor: `${restaurant.primaryColor}20` }}
                                 >
-                                    <Star className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
+                                    <Star className="h-7 w-7 md:h-8 md:w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2 text-gray-900">Votre avis compte !</h2>
-                                <p className="text-gray-700 mb-6 text-base font-medium">
+                                <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-900">Votre avis compte !</h2>
+                                <p className="text-gray-600 mb-6 text-sm md:text-base font-medium">
                                     Combien d'étoiles mérite votre expérience ?
                                 </p>
 
-                                <div className="flex justify-center gap-2 mb-4">
+                                <div className="flex justify-center gap-1 md:gap-2 mb-2">
                                     {[1, 2, 3, 4, 5].map((star) => (
                                         <button
                                             key={star}
                                             onClick={() => handleRating(star)}
-                                            className="transform hover:scale-110 transition-transform focus:outline-none"
+                                            className="transform hover:scale-110 transition-transform focus:outline-none p-1"
                                         >
                                             <Star
-                                                className={`h-10 w-10 ${rating >= star ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                                                className={`h-8 w-8 md:h-10 md:w-10 ${rating >= star ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
                                             />
                                         </button>
                                     ))}
@@ -213,20 +213,20 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             exit={{ opacity: 0, x: -50 }}
                             className="text-center w-full"
                         >
-                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-100">
                                 <div
-                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4"
                                     style={{ backgroundColor: `${restaurant.primaryColor}20` }}
                                 >
-                                    <MessageSquare className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
+                                    <MessageSquare className="h-7 w-7 md:h-8 md:w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2 text-gray-900">Aidez-nous à nous améliorer</h2>
-                                <p className="text-gray-700 mb-6 text-base font-medium">
+                                <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-900">Aidez-nous à nous améliorer</h2>
+                                <p className="text-gray-600 mb-6 text-sm md:text-base font-medium">
                                     Désolé que tout n'ait pas été parfait. Votre avis compte énormément pour nous (et restera privé).
                                 </p>
 
                                 <textarea
-                                    className="w-full p-4 border border-gray-200 rounded-xl mb-4 focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none bg-gray-50"
+                                    className="w-full p-3 md:p-4 border border-gray-200 rounded-xl mb-4 focus:ring-2 focus:ring-black focus:border-transparent outline-none resize-none bg-gray-50 text-sm"
                                     rows={4}
                                     placeholder="Dites-nous ce qui n'a pas été..."
                                     value={feedback}
@@ -235,7 +235,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
 
                                 <Button
                                     onClick={handleSubmitFeedback}
-                                    className="w-full py-6 text-lg font-bold text-white hover:opacity-90"
+                                    className="w-full py-5 md:py-6 text-base md:text-lg font-bold text-white hover:opacity-90"
                                     style={{ backgroundColor: restaurant.primaryColor }}
                                 >
                                     Envoyer mes remarques
@@ -252,40 +252,40 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             animate={{ opacity: 1, scale: 1 }}
                             className="text-center w-full"
                         >
-                            <div className="bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
+                            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg border border-gray-100">
                                 <div
-                                    className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"
+                                    className="w-14 h-14 md:w-16 md:h-16 rounded-full flex items-center justify-center mx-auto mb-4"
                                     style={{ backgroundColor: `${restaurant.primaryColor}20` }}
                                 >
-                                    <Sparkles className="h-8 w-8" style={{ color: restaurant.primaryColor }} />
+                                    <Sparkles className="h-7 w-7 md:h-8 md:w-8" style={{ color: restaurant.primaryColor }} />
                                 </div>
-                                <h2 className="text-xl font-bold mb-2 text-gray-900">C'est le moment de vérité !</h2>
-                                <p className="text-gray-700 mb-6 text-base font-medium">
+                                <h2 className="text-lg md:text-xl font-bold mb-2 text-gray-900">C'est le moment de vérité !</h2>
+                                <p className="text-gray-600 mb-6 text-sm md:text-base font-medium">
                                     Où devons-nous envoyer votre gain si vous gagnez ?
-                                    <br /><span className="text-sm text-gray-500 font-normal">(Promis, zéro spam. Juste votre cadeau.)</span>
+                                    <br /><span className="text-xs text-gray-400 font-normal">(Promis, zéro spam. Juste votre cadeau.)</span>
                                 </p>
 
-                                <div className="space-y-4 text-left">
+                                <div className="space-y-3 md:space-y-4 text-left">
                                     <div>
-                                        <label className="text-sm font-bold text-gray-700 uppercase ml-1 mb-1 block">Prénom</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1 mb-1 block">Prénom</label>
                                         <Input
                                             placeholder="Ex: Thomas"
                                             value={customerName}
                                             onChange={(e) => setCustomerName(e.target.value)}
-                                            className="h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg"
+                                            className="h-10 md:h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-base md:text-lg"
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-sm font-bold text-gray-700 uppercase ml-1 mb-1 block">Email</label>
+                                        <label className="text-xs font-bold text-gray-500 uppercase ml-1 mb-1 block">Email</label>
                                         <Input
                                             type="email"
                                             placeholder="thomas@exemple.com"
                                             value={customerEmail}
                                             onChange={handleEmailChange}
-                                            className={`h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-lg ${emailError ? 'border-red-500 focus:ring-red-500' : ''}`}
+                                            className={`h-10 md:h-12 bg-gray-50 border-gray-300 text-gray-900 font-medium text-base md:text-lg ${emailError ? 'border-red-500 focus:ring-red-500' : ''}`}
                                         />
                                         {emailError && (
-                                            <p className="text-red-600 text-xs mt-1 ml-1 font-medium">{emailError}</p>
+                                            <p className="text-red-600 text-[10px] mt-1 ml-1 font-medium">{emailError}</p>
                                         )}
                                     </div>
                                 </div>
@@ -293,7 +293,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 <Button
                                     onClick={handleProceedToGame}
                                     disabled={!customerName || !customerEmail || !isValidEmail(customerEmail)}
-                                    className="w-full mt-8 py-6 text-lg font-bold shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
+                                    className="w-full mt-6 md:mt-8 py-5 md:py-6 text-base md:text-lg font-bold shadow-lg hover:scale-105 transition-transform disabled:opacity-50 disabled:hover:scale-100"
                                     style={{ backgroundColor: restaurant.primaryColor }}
                                 >
                                     {!customerName || !customerEmail ? "Remplissez le formulaire" : !isValidEmail(customerEmail) ? "Email invalide" : "LANCER LA ROUE ! 🎰"}
@@ -305,7 +305,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                 </AnimatePresence>
             </main>
 
-            <footer className="py-6 text-center text-gray-400 text-xs">
+            <footer className="py-4 md:py-6 text-center text-gray-400 text-[10px] md:text-xs">
                 Propulsé par <span className="font-bold text-gray-500">ReviewSpin</span>
             </footer>
         </div>
