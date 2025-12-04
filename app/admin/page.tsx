@@ -43,7 +43,6 @@ interface Restaurant {
     maxPlaysPerDay: number
     replayDelayHours: number
     rewardDelayHours: number
-    rewardDelayHours: number
     rewardValidityDays: number
     qrLogoPlacement?: "CENTER" | "HEADER"
     platformStats?: Array<{
@@ -139,7 +138,6 @@ function AdminContent() {
                     facebookUrl: restaurant.facebookUrl,
                     maxPlaysPerDay: restaurant.maxPlaysPerDay,
                     replayDelayHours: restaurant.replayDelayHours,
-                    rewardDelayHours: restaurant.rewardDelayHours,
                     rewardDelayHours: restaurant.rewardDelayHours,
                     rewardValidityDays: restaurant.rewardValidityDays,
                     qrLogoPlacement: restaurant.qrLogoPlacement || "CENTER"
