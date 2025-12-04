@@ -44,7 +44,7 @@ interface Restaurant {
     replayDelayHours: number
     rewardDelayHours: number
     rewardValidityDays: number
-    qrLogoPlacement?: "CENTER" | "HEADER"
+    qrLogoPlacement?: "CENTER" | "HEADER" | "BOTH"
     platformStats?: Array<{
         platformAction: string
         _count: {

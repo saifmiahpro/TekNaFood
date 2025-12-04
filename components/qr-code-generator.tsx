@@ -20,7 +20,7 @@ export function QRCodeGenerator({
     secondaryColor = "#facc15",
     logoUrl,
     logoPlacement = "CENTER",
-}: QRCodeGeneratorProps & { logoPlacement?: "CENTER" | "HEADER" }) {
+}: QRCodeGeneratorProps & { logoPlacement?: "CENTER" | "HEADER" | "BOTH" }) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [qrDataUrl, setQrDataUrl] = useState<string>("")
 
@@ -51,8 +51,8 @@ export function QRCodeGenerator({
         ctx.ellipse(w / 2, 0, w * 0.8, 150, 0, 0, Math.PI * 2)
         ctx.fill()
 
-        // Draw Logo in Header if selected
-        if (logoUrl && logoPlacement === "HEADER") {
+        // Draw Logo in Header if selected (HEADER or BOTH)
+        if (logoUrl && (logoPlacement === "HEADER" || logoPlacement === "BOTH")) {
             const logoImg = new Image()
             logoImg.src = logoUrl
             logoImg.crossOrigin = "Anonymous"
@@ -125,8 +125,8 @@ export function QRCodeGenerator({
             // Draw QR code
             ctx.drawImage(qrCanvas, qrX, qrY)
 
-            // Draw Logo in Center if selected
-            if (logoUrl && logoPlacement === "CENTER") {
+            // Draw Logo in Center if selected (CENTER or BOTH)
+            if (logoUrl && (logoPlacement === "CENTER" || logoPlacement === "BOTH")) {
                 const logoImg = new Image()
                 logoImg.src = logoUrl
                 logoImg.crossOrigin = "Anonymous"

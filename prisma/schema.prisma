@@ -29,7 +29,7 @@ model Restaurant {
   primaryColor   String  @default("#16a34a")
   secondaryColor String  @default("#facc15")
   logoUrl        String?
-  qrLogoPlacement String  @default("CENTER") // "CENTER" or "HEADER"
+  qrLogoPlacement String  @default("CENTER") // "CENTER", "HEADER", "BOTH"
   introTitle     String  @default("Merci pour votre visite !")
   introSubtitle  String  @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
   contactEmail   String?
