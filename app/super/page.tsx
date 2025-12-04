@@ -101,7 +101,7 @@ export default function SuperAdminDashboard() {
                             <p className="text-xs text-slate-400">Master Control</p>
                         </div>
                     </div>
-                    <Button variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-slate-800">
+                    <Button variant="ghost" className="text-red-400 hover:text-red-300 hover:bg-slate-800" onClick={() => window.location.href = "/api/auth/signout"}>
                         <LogOut className="h-4 w-4 mr-2" /> Déconnexion
                     </Button>
                 </div>

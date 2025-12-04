@@ -1,34 +1,27 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { jwtVerify } from "jose"
+import { auth } from "@/auth"
 
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 
 export async function middleware(request: NextRequest) {
     const path = request.nextUrl.pathname
 
-    // 1. Protection Super Admin (/super)
+    // 1. Protection Super Admin (/super) - Via NextAuth
     if (path.startsWith("/super")) {
         if (path === "/super/login") {
             return NextResponse.next()
         }
 
-        const token = request.cookies.get("super_admin_session")?.value
-
-        if (!token) {
+        const session = await auth()
+        if (!session) {
             return NextResponse.redirect(new URL("/super/login", request.url))
         }
-
-        try {
-            const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET))
-            if (payload.role !== 'super_admin') throw new Error("Invalid role")
-            return NextResponse.next()
-        } catch (error) {
-            return NextResponse.redirect(new URL("/super/login", request.url))
-        }
+        return NextResponse.next()
     }
 
-    // 2. Protection Admin Restaurant (/admin)
+    // 2. Protection Admin Restaurant (/admin) - Via Custom JWT
     if (path.startsWith("/admin")) {
 
         // Exclure la page de login

@@ -1,17 +1,15 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { SignJWT } from "jose"
-import { cookies } from "next/headers"
+import { auth } from "@/auth"
 
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 
 export async function POST(request: Request) {
     try {
-        // 1. Verify Super Admin Session
-        const cookieStore = await cookies()
-        const superToken = cookieStore.get("super_admin_session")?.value
-
-        if (!superToken) {
+        // 1. Verify Super Admin Session (NextAuth)
+        const session = await auth()
+        if (!session) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
         }
 
