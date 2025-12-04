@@ -49,6 +49,7 @@ export async function GET(req: Request) {
                 primaryColor: restaurant.primaryColor,
                 secondaryColor: restaurant.secondaryColor,
                 adminToken: restaurant.adminToken,
+                address: restaurant.address,
                 createdAt: restaurant.createdAt,
                 stats: {
                     totalParticipations,

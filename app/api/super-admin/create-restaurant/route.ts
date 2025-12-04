@@ -55,6 +55,7 @@ export async function POST(req: Request) {
             instagramHandle,
             tiktokHandle,
             facebookUrl,
+            address,
         } = body
 
         // Validation
@@ -132,6 +133,7 @@ export async function POST(req: Request) {
                 instagramHandle: instagramHandle || null,
                 tiktokHandle: tiktokHandle || null,
                 facebookUrl: facebookUrl || null,
+                address: address || null,
                 adminToken,
                 passwordHash, // Save hashed password
                 gameType: GameType.ROULETTE,

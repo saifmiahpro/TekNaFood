@@ -18,7 +18,11 @@ import {
     ExternalLink,
     Trash2,
     QrCode,
+    Pencil,
+    MapPin,
 } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
 
 interface Restaurant {
     id: string
@@ -28,6 +32,7 @@ interface Restaurant {
     primaryColor: string
     secondaryColor: string
     adminToken: string
+    address?: string | null
     createdAt: string
     stats: {
         totalParticipations: number
@@ -44,6 +49,45 @@ export default function SuperAdminPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [searchQuery, setSearchQuery] = useState("")
+    const [editingRestaurant, setEditingRestaurant] = useState<Restaurant | null>(null)
+    const [editName, setEditName] = useState("")
+    const [editAddress, setEditAddress] = useState("")
+    const [isEditOpen, setIsEditOpen] = useState(false)
+
+    const handleEditClick = (restaurant: Restaurant) => {
+        setEditingRestaurant(restaurant)
+        setEditName(restaurant.name)
+        setEditAddress(restaurant.address || "")
+        setIsEditOpen(true)
+    }
+
+    const handleSaveEdit = async () => {
+        if (!editingRestaurant) return
+
+        try {
+            const res = await fetch("/api/super-admin/update-restaurant", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    id: editingRestaurant.id,
+                    name: editName,
+                    address: editAddress
+                })
+            })
+
+            if (!res.ok) throw new Error("Failed to update")
+
+            // Update local state
+            setRestaurants(restaurants.map(r =>
+                r.id === editingRestaurant.id
+                    ? { ...r, name: editName, address: editAddress }
+                    : r
+            ))
+            setIsEditOpen(false)
+        } catch (error) {
+            alert("Error updating restaurant")
+        }
+    }
 
     useEffect(() => {
         fetchRestaurants()
@@ -277,6 +321,12 @@ export default function SuperAdminPage() {
                                                     <span>•</span>
                                                     <span className="font-mono text-xs">/{restaurant.slug}</span>
                                                 </div>
+                                                {restaurant.address && (
+                                                    <div className="flex items-center gap-1 text-xs text-gray-400 mt-1">
+                                                        <MapPin className="h-3 w-3" />
+                                                        {restaurant.address}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
 
@@ -321,6 +371,17 @@ export default function SuperAdminPage() {
                                                 </Button>
                                             </a>
 
+                                            {/* Edit */}
+                                            <Button
+                                                size="sm"
+                                                variant="outline"
+                                                className="gap-2 bg-white border-blue-200 hover:bg-blue-50 text-blue-700"
+                                                onClick={() => handleEditClick(restaurant)}
+                                            >
+                                                <Pencil className="h-4 w-4 text-blue-700" />
+                                                <span className="font-medium text-blue-700">Edit</span>
+                                            </Button>
+
                                             {/* View Public */}
                                             <a href={`/r/${restaurant.slug}`} target="_blank" rel="noopener noreferrer">
                                                 <Button
@@ -352,6 +413,35 @@ export default function SuperAdminPage() {
                     </div>
                 </div>
             </div>
+            {/* Edit Dialog */}
+            <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Restaurant</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                            <Label>Restaurant Name</Label>
+                            <Input
+                                value={editName}
+                                onChange={(e) => setEditName(e.target.value)}
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Private Address (Super Admin only)</Label>
+                            <Input
+                                value={editAddress}
+                                onChange={(e) => setEditAddress(e.target.value)}
+                                placeholder="123 Main St, City..."
+                            />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setIsEditOpen(false)}>Cancel</Button>
+                        <Button onClick={handleSaveEdit}>Save Changes</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     )
 }

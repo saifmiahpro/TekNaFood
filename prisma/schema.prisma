@@ -33,6 +33,7 @@ model Restaurant {
   introTitle     String  @default("Merci pour votre visite !")
   introSubtitle  String  @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
   contactEmail   String?
+  address        String? // Adresse postale (visible uniquement par Super Admin)
   adminToken     String  @unique // used as ?token= in admin URL
   passwordHash   String? // Pour l'authentification sécurisée (optionnel au début pour migration)
 
