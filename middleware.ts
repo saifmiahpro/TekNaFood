@@ -1,30 +1,32 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { jwtVerify } from 'jose'
+import { NextResponse } from "next/server"
+import type { NextRequest } from "next/server"
+import { jwtVerify } from "jose"
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-key-change-it")
+const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 
 export async function middleware(request: NextRequest) {
-    const path = request.nextUrl.pathname
+    // 1. Définir les routes protégées
+    if (request.nextUrl.pathname.startsWith("/admin")) {
 
-    // Routes protégées
-    const isProtectedPath = path.startsWith('/admin') || path.startsWith('/super-admin') || path.startsWith('/hq')
+        // Exclure la page de login
+        if (request.nextUrl.pathname === "/admin/login") {
+            return NextResponse.next()
+        }
 
-    if (isProtectedPath) {
-        // Vérification de l'authentification JWT
-        const token = request.cookies.get('admin_session')?.value
+        // 2. Vérifier le cookie de session
+        const token = request.cookies.get("admin_session")?.value
 
         if (!token) {
-            return NextResponse.redirect(new URL('/auth/login', request.url))
+            return NextResponse.redirect(new URL("/admin/login", request.url))
         }
 
         try {
-            // Vérifier la signature du token
-            await jwtVerify(token, JWT_SECRET)
+            // 3. Vérifier la validité du token
+            await jwtVerify(token, new TextEncoder().encode(JWT_SECRET))
             return NextResponse.next()
-        } catch (err) {
+        } catch (error) {
             // Token invalide ou expiré
-            return NextResponse.redirect(new URL('/auth/login', request.url))
+            return NextResponse.redirect(new URL("/admin/login", request.url))
         }
     }
 
@@ -32,9 +34,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: [
-        '/admin/:path*',
-        '/super-admin/:path*',
-        '/hq/:path*',
-    ],
+    matcher: ["/admin/:path*"],
 }

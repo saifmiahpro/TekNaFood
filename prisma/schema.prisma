@@ -34,6 +34,7 @@ model Restaurant {
   introSubtitle  String  @default("Laissez-nous un avis honnête puis tentez de gagner une surprise.")
   contactEmail   String?
   adminToken     String  @unique // used as ?token= in admin URL
+  passwordHash   String? // Pour l'authentification sécurisée (optionnel au début pour migration)
 
   // 🆕 Limites de jeu
   maxPlaysPerDay   Int @default(3)  // Combien de fois on peut jouer/jour (toutes plateformes confondues)

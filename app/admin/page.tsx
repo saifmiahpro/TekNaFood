@@ -72,38 +72,47 @@ interface Restaurant {
     }>
 }
 
-function AdminContent() {
-    const searchParams = useSearchParams()
+export default function AdminDashboard() {
     const router = useRouter()
-    const token = searchParams.get("token")
-
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
     const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
+    const [saving, setSaving] = useState(false)
+    const [token, setToken] = useState<string>("") // On garde le token en state pour les appels API existants qui en ont besoin (ex: update-rewards)
     const [activeTab, setActiveTab] = useState("overview")
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const [saving, setSaving] = useState(false)
+
+    // Stats calculées
+    const [uniqueCustomers, setUniqueCustomers] = useState<any[]>([])
 
     useEffect(() => {
-        if (token) {
-            fetchAdminData()
-        } else {
-            setError("Token manquant")
-            setLoading(false)
-        }
-    }, [token])
+        fetchRestaurant()
+    }, [])
 
-    const fetchAdminData = async () => {
+    const fetchRestaurant = async () => {
         try {
-            const res = await fetch(`/api/admin?token=${token}`)
-            if (!res.ok) throw new Error("Erreur de chargement")
+            const res = await fetch(`/api/admin/me`)
+            if (!res.ok) {
+                if (res.status === 401) {
+                    router.push("/admin/login")
+                }
+                return
+            }
             const data = await res.json()
             setRestaurant(data)
-        } catch (err: any) {
-            setError(err.message)
+            setToken(data.adminToken) // On récupère le token depuis la session pour les autres appels
+
+            // Calculer les stats clients uniques
+            processUniqueCustomers(data.participations || [])
+        } catch (error) {
+            console.error("Error fetching restaurant:", error)
         } finally {
             setLoading(false)
         }
+    }
+
+    const handleLogout = async () => {
+        await fetch("/api/auth/logout", { method: "POST" })
+        router.push("/admin/login")
     }
 
     const updateParticipationStatus = async (participationId: string, status: string) => {
@@ -501,8 +510,8 @@ function AdminContent() {
                                                                     setRestaurant({ ...restaurant, rewards: newRewards })
                                                                 }}
                                                                 className={`px-3 py-2 rounded-lg text-xs font-bold transition-all border-2 ${Math.abs(reward.probability * 100 - tier.val) < 1
-                                                                        ? 'border-black ring-1 ring-black ' + tier.color.replace('hover:', '')
-                                                                        : 'border-transparent ' + tier.color
+                                                                    ? 'border-black ring-1 ring-black ' + tier.color.replace('hover:', '')
+                                                                    : 'border-transparent ' + tier.color
                                                                     }`}
                                                             >
                                                                 {tier.label}
@@ -664,6 +673,18 @@ function AdminContent() {
 
                                 {/* Game Limits Section */}
                                 <div className="mb-10">
+                                    <div className="flex justify-between items-center mb-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                                        <div>
+                                            <h1 className="text-3xl font-black text-gray-900 tracking-tight">Admin Dashboard</h1>
+                                            <p className="text-gray-500 font-medium">Gérez votre restaurant {restaurant.name}</p>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <Button variant="outline" onClick={handleLogout} className="text-red-600 hover:bg-red-50 border-red-100">
+                                                <LogOut className="w-4 h-4 mr-2" />
+                                                Déconnexion
+                                            </Button>
+                                        </div>
+                                    </div>
                                     <div className="flex items-center justify-between mb-6">
                                         <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
                                             <Activity className="h-6 w-6 text-purple-600" />
@@ -842,10 +863,4 @@ function StatCard({ label, value, icon, bg, trend }: any) {
     )
 }
 
-export default function AdminPage() {
-    return (
-        <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-white">Chargement...</div>}>
-            <AdminContent />
-        </Suspense>
-    )
-}
+

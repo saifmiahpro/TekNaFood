@@ -1,52 +1,62 @@
-
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { SignJWT } from "jose"
 import bcrypt from "bcryptjs"
 
-const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-secret-key-change-it")
+const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 
-export async function POST(req: Request) {
+export async function POST(request: Request) {
     try {
-        const { username, password } = await req.json()
+        const { adminToken, password } = await request.json()
 
-        // 1. Chercher l'admin en base
-        const admin = await prisma.admin.findUnique({
-            where: { username }
+        if (!adminToken || !password) {
+            return NextResponse.json({ error: "Missing credentials" }, { status: 400 })
+        }
+
+        // 1. Trouver le restaurant via son token (ou on pourrait utiliser l'email/slug)
+        const restaurant = await prisma.restaurant.findUnique({
+            where: { adminToken }
         })
 
-        if (!admin) {
-            return NextResponse.json({ error: "Identifiants invalides" }, { status: 401 })
+        if (!restaurant) {
+            return NextResponse.json({ error: "Restaurant not found" }, { status: 404 })
         }
 
-        // 2. Vérifier le mot de passe haché
-        const isValid = await bcrypt.compare(password, admin.passwordHash)
+        // 2. Vérifier le mot de passe
+        // Note: Si le mot de passe n'est pas encore défini (migration), on peut autoriser temporairement ou forcer la définition
+        if (!restaurant.passwordHash) {
+            return NextResponse.json({ error: "Password not set up yet. Please contact support." }, { status: 403 })
+        }
+
+        const isValid = await bcrypt.compare(password, restaurant.passwordHash)
 
         if (!isValid) {
-            return NextResponse.json({ error: "Identifiants invalides" }, { status: 401 })
+            return NextResponse.json({ error: "Invalid password" }, { status: 401 })
         }
 
-        // 3. Générer le token JWT
-        const token = await new SignJWT({ role: "super-admin", username: admin.username })
-            .setProtectedHeader({ alg: "HS256" })
-            .setIssuedAt()
-            .setExpirationTime("24h")
-            .sign(JWT_SECRET)
+        // 3. Créer le token de session (JWT)
+        const token = await new SignJWT({ restaurantId: restaurant.id, role: 'admin' })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setExpirationTime('24h')
+            .sign(new TextEncoder().encode(JWT_SECRET))
 
+        // 4. Créer la réponse avec le cookie HttpOnly
         const response = NextResponse.json({ success: true })
 
-        response.cookies.set("admin_session", token, {
-            httpOnly: true, // Invisible pour le JS client (Anti-XSS)
-            secure: process.env.NODE_ENV === "production", // HTTPS seulement en prod
-            sameSite: "strict", // Protection CSRF
-            maxAge: 60 * 60 * 24, // 24 heures
-            path: "/",
+        response.cookies.set({
+            name: 'admin_session',
+            value: token,
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            path: '/',
+            maxAge: 60 * 60 * 24 // 24h
         })
 
         return response
 
-    } catch (error: any) {
-        console.error("Login error details:", error)
-        return NextResponse.json({ error: "Erreur serveur: " + error.message }, { status: 500 })
+    } catch (error) {
+        console.error("Login error:", error)
+        return NextResponse.json({ error: "Internal server error" }, { status: 500 })
     }
 }
