@@ -18,7 +18,7 @@ export default function LoginPage() {
                     <form
                         action={async () => {
                             "use server"
-                            await signIn("github", { redirectTo: "/super" })
+                            await signIn("github", { redirectTo: "/api/auth/success" })
                         }}
                     >
                         <Button type="submit" className="w-full bg-white text-black hover:bg-gray-200 font-bold shadow-lg">
