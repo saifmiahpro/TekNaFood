@@ -104,7 +104,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
         <div className="min-h-[100dvh] bg-gray-50 flex flex-col">
             {/* Brand Header - Premium Style */}
             <div
-                className="w-full py-12 px-4 shadow-2xl text-center relative overflow-hidden"
+                className="w-full py-8 px-4 shadow-2xl text-center relative overflow-hidden"
                 style={{
                     backgroundColor: restaurant.primaryColor,
                     borderBottomLeftRadius: '2rem',
@@ -112,9 +112,9 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                 }}
             >
                 <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
-                <div className="relative z-10 flex flex-col items-center justify-center space-y-4">
+                <div className="relative z-10 flex flex-col items-center justify-center space-y-3">
                     {restaurant.logoUrl ? (
-                        <div className="w-24 h-24 bg-white rounded-full p-2 shadow-xl flex items-center justify-center overflow-hidden border-4 border-white/20">
+                        <div className="w-20 h-20 bg-white rounded-full p-1.5 shadow-xl flex items-center justify-center overflow-hidden border-4 border-white/20">
                             <img
                                 src={restaurant.logoUrl}
                                 alt={restaurant.name}
@@ -122,16 +122,16 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                             />
                         </div>
                     ) : (
-                        <div className="w-20 h-20 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-3xl font-bold text-white shadow-inner border border-white/30">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-inner border border-white/30">
                             {restaurant.name.charAt(0)}
                         </div>
                     )}
 
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-black text-white tracking-tight drop-shadow-md">
+                    <div className="space-y-0.5">
+                        <h1 className="text-2xl font-black text-white tracking-tight drop-shadow-md">
                             {restaurant.name}
                         </h1>
-                        <p className="text-white/90 text-sm font-medium uppercase tracking-widest opacity-80">
+                        <p className="text-white/90 text-xs font-medium uppercase tracking-widest opacity-80">
                             Programme de Fidélité
                         </p>
                     </div>

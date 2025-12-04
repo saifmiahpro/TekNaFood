@@ -589,9 +589,11 @@ function AdminContent() {
                                                 className="text-sm cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
                                             />
                                             {restaurant.logoUrl && (
-                                                <p className="text-xs text-green-600 mt-2 flex items-center gap-1">
-                                                    <CheckCircle className="h-3 w-3" /> Logo chargé
-                                                </p>
+                                                <div className="mt-4 p-4 rounded-xl flex items-center justify-center" style={{ backgroundColor: restaurant.primaryColor }}>
+                                                    <div className="w-16 h-16 bg-white rounded-full p-1 shadow-lg flex items-center justify-center overflow-hidden border-2 border-white/20">
+                                                        <img src={restaurant.logoUrl} alt="Logo Preview" className="w-full h-full object-contain" />
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
                                     </div>
