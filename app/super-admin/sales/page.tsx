@@ -98,7 +98,19 @@ export default function SalesModePage() {
                             <div className="flex justify-center mb-4">
                                 <QRCodeSVG value={publicUrl} size={200} />
                             </div>
-                            <p className="text-sm font-mono text-gray-400 break-all">{publicUrl}</p>
+                            <p className="text-sm font-mono text-gray-400 break-all mb-4">{publicUrl}</p>
+
+                            <div className="bg-slate-900 text-white p-4 rounded-lg text-left space-y-2">
+                                <p className="text-xs text-slate-400 uppercase font-bold">Admin Credentials</p>
+                                <div>
+                                    <p className="text-xs text-slate-500">Token (ID)</p>
+                                    <p className="font-mono font-bold text-green-400 select-all">{createdRestaurant.adminToken}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-slate-500">Password</p>
+                                    <p className="font-mono font-bold text-yellow-400 select-all">{createdRestaurant.generatedPassword}</p>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">

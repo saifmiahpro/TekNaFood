@@ -36,7 +36,7 @@ export async function middleware(request: NextRequest) {
             // 3. Vérifier la validité du token
             await jwtVerify(token, new TextEncoder().encode(JWT_SECRET))
             return NextResponse.next()
-        } catch (error) {
+        } catch {
             // Token invalide ou expiré
             return NextResponse.redirect(new URL("/admin/login", request.url))
         }

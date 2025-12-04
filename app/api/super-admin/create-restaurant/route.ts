@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { RestaurantCategory, GameType } from "@prisma/client"
+import bcrypt from "bcryptjs"
 
 import { cookies } from "next/headers"
 import { jwtVerify } from "jose"
@@ -9,6 +10,10 @@ const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-s
 
 function generateRandomToken(): string {
     return `${Math.random().toString(36).substring(2, 15)}-${Math.random().toString(36).substring(2, 15)}`
+}
+
+function generateRandomPassword(): string {
+    return Math.random().toString(36).slice(-8) // 8 char random string
 }
 
 function generateSlug(name: string): string {
@@ -70,8 +75,10 @@ export async function POST(req: Request) {
             counter++
         }
 
-        // Generate admin token
+        // Generate admin token & password
         const adminToken = generateRandomToken()
+        const plainPassword = generateRandomPassword()
+        const passwordHash = await bcrypt.hash(plainPassword, 10)
 
         // Default rewards templates by category
         const rewardTemplates: Record<string, any[]> = {
@@ -126,6 +133,7 @@ export async function POST(req: Request) {
                 tiktokHandle: tiktokHandle || null,
                 facebookUrl: facebookUrl || null,
                 adminToken,
+                passwordHash, // Save hashed password
                 gameType: GameType.ROULETTE,
                 rewards: {
                     create: (rewards && rewards.length > 0) ? rewards : defaultRewards,
@@ -136,7 +144,8 @@ export async function POST(req: Request) {
             },
         })
 
-        return NextResponse.json(restaurant, { status: 201 })
+        // Return restaurant + plain password (only once)
+        return NextResponse.json({ ...restaurant, generatedPassword: plainPassword }, { status: 201 })
     } catch (error) {
         console.error("Restaurant creation error:", error)
         return NextResponse.json({ error: "Internal server error" }, { status: 500 })

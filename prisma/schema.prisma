@@ -136,6 +136,7 @@ model Participation {
   canReplayAt DateTime? // Quand le client peut rejouer (calculé selon replayDelayHours)
 
   @@index([customerEmail, platformAction]) // Pour détecter si déjà participé
+  @@index([restaurantId]) // Optimisation des jointures
 }
 
 enum ParticipationStatus {

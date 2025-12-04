@@ -7,7 +7,7 @@ describe('calculateRewardValidity', () => {
         const mockNow = new Date('2025-12-04T14:30:00')
         const validityDays = 30
 
-        const { validFrom, expiresAt } = calculateRewardValidity(mockNow, validityDays)
+        const { validFrom } = calculateRewardValidity(mockNow, validityDays)
 
         // Expected validFrom: Thursday, Dec 5th, 2025 at 00:00:00
         const expectedValidFrom = new Date('2025-12-05T00:00:00')
