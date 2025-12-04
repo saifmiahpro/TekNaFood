@@ -77,6 +77,7 @@ export default function AdminDashboard() {
     const [restaurant, setRestaurant] = useState<Restaurant | null>(null)
     const [loading, setLoading] = useState(true)
     const [saving, setSaving] = useState(false)
+    const [error, setError] = useState<string | null>(null)
     const [token, setToken] = useState<string>("") // On garde le token en state pour les appels API existants qui en ont besoin (ex: update-rewards)
     const [activeTab, setActiveTab] = useState("overview")
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
                 body: JSON.stringify({ status, token }),
             })
             if (!res.ok) throw new Error("Erreur mise à jour")
-            fetchAdminData()
+            fetchRestaurant()
         } catch (err) {
             alert("Erreur lors de la mise à jour")
         }
@@ -187,10 +188,11 @@ export default function AdminDashboard() {
     }
 
     // Unique Customers Logic
-    const uniqueCustomers = Array.from(new Set(restaurant.participations.map(p => p.customerEmail)))
-        .map(email => {
-            const customerParticipations = restaurant.participations.filter(p => p.customerEmail === email)
-            const lastParticipation = customerParticipations.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
+    const processUniqueCustomers = (participations: any[]) => {
+        const uniqueEmails = Array.from(new Set(participations.map(p => p.customerEmail)))
+        const customers = uniqueEmails.map(email => {
+            const customerParticipations = participations.filter(p => p.customerEmail === email)
+            const lastParticipation = customerParticipations.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0]
             return {
                 email,
                 name: lastParticipation.customerName,
@@ -199,6 +201,8 @@ export default function AdminDashboard() {
                 totalWins: customerParticipations.filter(p => p.reward.isWin).length
             }
         })
+        setUniqueCustomers(customers)
+    }
 
     const handleExportCSV = () => {
         const headers = ["Nom", "Email", "Total Jeux", "Gains", "Dernière Visite"]
