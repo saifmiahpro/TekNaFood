@@ -480,17 +480,26 @@ function AdminContent() {
                                                     />
                                                 </div>
                                                 <div>
-                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Probabilité (%)</Label>
-                                                    <Input
-                                                        type="number"
-                                                        value={(reward.probability * 100).toFixed(0)}
-                                                        onChange={(e) => {
-                                                            const val = parseInt(e.target.value) || 0
-                                                            const newRewards = [...restaurant.rewards]
-                                                            newRewards[index].probability = val / 100
-                                                            setRestaurant({ ...restaurant, rewards: newRewards })
-                                                        }}
-                                                    />
+                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">
+                                                        Chance / Poids
+                                                        <span className="ml-2 text-xs normal-case text-purple-600 font-bold">
+                                                            ({((reward.probability / restaurant.rewards.reduce((sum, r) => sum + r.probability, 0)) * 100).toFixed(1)}%)
+                                                        </span>
+                                                    </Label>
+                                                    <div className="flex items-center gap-2">
+                                                        <Input
+                                                            type="number"
+                                                            min="0"
+                                                            value={(reward.probability * 100).toFixed(0)}
+                                                            onChange={(e) => {
+                                                                const val = parseInt(e.target.value) || 0
+                                                                const newRewards = [...restaurant.rewards]
+                                                                newRewards[index].probability = val / 100
+                                                                setRestaurant({ ...restaurant, rewards: newRewards })
+                                                            }}
+                                                        />
+                                                    </div>
+                                                    <p className="text-[10px] text-gray-400 mt-1">Plus ce chiffre est haut, plus on gagne.</p>
                                                 </div>
                                                 <div>
                                                     <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Type</Label>
