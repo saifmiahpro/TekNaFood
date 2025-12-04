@@ -43,7 +43,9 @@ interface Restaurant {
     maxPlaysPerDay: number
     replayDelayHours: number
     rewardDelayHours: number
+    rewardDelayHours: number
     rewardValidityDays: number
+    qrLogoPlacement?: "CENTER" | "HEADER"
     platformStats?: Array<{
         platformAction: string
         _count: {
@@ -138,7 +140,9 @@ function AdminContent() {
                     maxPlaysPerDay: restaurant.maxPlaysPerDay,
                     replayDelayHours: restaurant.replayDelayHours,
                     rewardDelayHours: restaurant.rewardDelayHours,
-                    rewardValidityDays: restaurant.rewardValidityDays
+                    rewardDelayHours: restaurant.rewardDelayHours,
+                    rewardValidityDays: restaurant.rewardValidityDays,
+                    qrLogoPlacement: restaurant.qrLogoPlacement || "CENTER"
                 }),
             })
             if (!res.ok) throw new Error("Erreur sauvegarde")
@@ -733,6 +737,7 @@ function AdminContent() {
                                             primaryColor={restaurant.primaryColor}
                                             secondaryColor={restaurant.secondaryColor}
                                             logoUrl={restaurant.logoUrl || undefined}
+                                            logoPlacement={restaurant.qrLogoPlacement || "CENTER"}
                                         />
                                     </div>
 

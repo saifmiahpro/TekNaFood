@@ -70,7 +70,8 @@ export async function PATCH(request: Request) {
             maxPlaysPerDay,
             replayDelayHours,
             rewardDelayHours,
-            rewardValidityDays
+            rewardValidityDays,
+            qrLogoPlacement
         } = body
 
         if (!token) {
@@ -91,6 +92,7 @@ export async function PATCH(request: Request) {
                 replayDelayHours: replayDelayHours ? parseInt(replayDelayHours) : undefined,
                 rewardDelayHours: rewardDelayHours ? parseInt(rewardDelayHours) : undefined,
                 rewardValidityDays: rewardValidityDays ? parseInt(rewardValidityDays) : undefined,
+                qrLogoPlacement,
             },
         })
 

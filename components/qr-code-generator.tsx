@@ -19,13 +19,14 @@ export function QRCodeGenerator({
     primaryColor = "#16a34a",
     secondaryColor = "#facc15",
     logoUrl,
-}: QRCodeGeneratorProps) {
+    logoPlacement = "CENTER",
+}: QRCodeGeneratorProps & { logoPlacement?: "CENTER" | "HEADER" }) {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const [qrDataUrl, setQrDataUrl] = useState<string>("")
 
     useEffect(() => {
         generateQRCode()
-    }, [url, primaryColor, secondaryColor, logoUrl])
+    }, [url, primaryColor, secondaryColor, logoUrl, logoPlacement])
 
     const generateQRCode = async () => {
         if (!canvasRef.current) return
@@ -49,6 +50,36 @@ export function QRCodeGenerator({
         ctx.beginPath()
         ctx.ellipse(w / 2, 0, w * 0.8, 150, 0, 0, Math.PI * 2)
         ctx.fill()
+
+        // Draw Logo in Header if selected
+        if (logoUrl && logoPlacement === "HEADER") {
+            const logoImg = new Image()
+            logoImg.src = logoUrl
+            logoImg.crossOrigin = "Anonymous"
+
+            await new Promise((resolve) => {
+                logoImg.onload = resolve
+                logoImg.onerror = resolve
+            })
+
+            const logoSize = 180
+            const logoX = (w - logoSize) / 2
+            const logoY = 40 // Position in the header arc
+
+            // White circle background for logo
+            ctx.fillStyle = "#ffffff"
+            ctx.beginPath()
+            ctx.arc(w / 2, logoY + logoSize / 2, logoSize / 2 + 10, 0, Math.PI * 2)
+            ctx.fill()
+
+            // Draw Logo
+            ctx.save()
+            ctx.beginPath()
+            ctx.arc(w / 2, logoY + logoSize / 2, logoSize / 2, 0, Math.PI * 2)
+            ctx.clip()
+            ctx.drawImage(logoImg, logoX, logoY, logoSize, logoSize)
+            ctx.restore()
+        }
 
         // Main Title - HUGE & CATCHY
         ctx.fillStyle = "#111827" // Gray-900
@@ -94,8 +125,8 @@ export function QRCodeGenerator({
             // Draw QR code
             ctx.drawImage(qrCanvas, qrX, qrY)
 
-            // Draw Logo in Center if exists
-            if (logoUrl) {
+            // Draw Logo in Center if selected
+            if (logoUrl && logoPlacement === "CENTER") {
                 const logoImg = new Image()
                 logoImg.src = logoUrl
                 logoImg.crossOrigin = "Anonymous"
