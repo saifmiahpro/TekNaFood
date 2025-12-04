@@ -300,7 +300,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
                                 </Button>
 
                                 <p className="text-[10px] text-gray-400 mt-3 text-center">
-                                    En jouant, vous acceptez notre <a href="/privacy" target="_blank" className="underline hover:text-gray-600">politique de confidentialité</a>.
+                                    En jouant, vous acceptez notre <a href="/privacy" target="_blank" className="underline hover:text-gray-600">politique de confidentialité</a> et le <a href="/terms" target="_blank" className="underline hover:text-gray-600">règlement du jeu</a>.
                                 </p>
                             </div>
                         </motion.div>
@@ -310,7 +310,7 @@ export default function RestaurantClient({ restaurant }: { restaurant: Restauran
             </main>
 
             <footer className="py-4 md:py-6 text-center text-gray-400 text-[10px] md:text-xs">
-                Propulsé par <span className="font-bold text-gray-500">ReviewSpin</span>
+                Propulsé par <a href="https://tekna.studio" target="_blank" rel="noopener noreferrer" className="font-bold text-gray-500 hover:text-gray-700 transition-colors">Tekna Studio</a>
             </footer>
         </div>
     )
