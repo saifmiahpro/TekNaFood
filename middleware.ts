@@ -5,11 +5,34 @@ import { jwtVerify } from "jose"
 const JWT_SECRET = process.env.JWT_SECRET || "super-secret-jwt-key-change-me"
 
 export async function middleware(request: NextRequest) {
-    // 1. Définir les routes protégées
-    if (request.nextUrl.pathname.startsWith("/admin")) {
+    const path = request.nextUrl.pathname
+
+    // 1. Protection Super Admin (/super)
+    if (path.startsWith("/super")) {
+        if (path === "/super/login") {
+            return NextResponse.next()
+        }
+
+        const token = request.cookies.get("super_admin_session")?.value
+
+        if (!token) {
+            return NextResponse.redirect(new URL("/super/login", request.url))
+        }
+
+        try {
+            const { payload } = await jwtVerify(token, new TextEncoder().encode(JWT_SECRET))
+            if (payload.role !== 'super_admin') throw new Error("Invalid role")
+            return NextResponse.next()
+        } catch (error) {
+            return NextResponse.redirect(new URL("/super/login", request.url))
+        }
+    }
+
+    // 2. Protection Admin Restaurant (/admin)
+    if (path.startsWith("/admin")) {
 
         // Exclure la page de login
-        if (request.nextUrl.pathname === "/admin/login") {
+        if (path === "/admin/login") {
             return NextResponse.next()
         }
 
@@ -34,5 +57,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/admin/:path*"],
+    matcher: ["/admin/:path*", "/super/:path*"],
 }
