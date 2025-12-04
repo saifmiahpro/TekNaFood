@@ -479,27 +479,36 @@ function AdminContent() {
                                                         className="font-medium"
                                                     />
                                                 </div>
-                                                <div>
-                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">
-                                                        Chance / Poids
+                                                <div className="col-span-1 md:col-span-2">
+                                                    <Label className="text-xs text-gray-500 uppercase tracking-wider mb-2 block">
+                                                        Rareté
                                                         <span className="ml-2 text-xs normal-case text-purple-600 font-bold">
-                                                            ({((reward.probability / restaurant.rewards.reduce((sum, r) => sum + r.probability, 0)) * 100).toFixed(1)}%)
+                                                            ({((reward.probability / restaurant.rewards.reduce((sum, r) => sum + r.probability, 0)) * 100).toFixed(1)}% de chance)
                                                         </span>
                                                     </Label>
-                                                    <div className="flex items-center gap-2">
-                                                        <Input
-                                                            type="number"
-                                                            min="0"
-                                                            value={(reward.probability * 100).toFixed(0)}
-                                                            onChange={(e) => {
-                                                                const val = parseInt(e.target.value) || 0
-                                                                const newRewards = [...restaurant.rewards]
-                                                                newRewards[index].probability = val / 100
-                                                                setRestaurant({ ...restaurant, rewards: newRewards })
-                                                            }}
-                                                        />
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {[
+                                                            { label: "Commun", val: 100, color: "bg-gray-100 text-gray-700 hover:bg-gray-200" },
+                                                            { label: "Rare", val: 25, color: "bg-blue-50 text-blue-700 hover:bg-blue-100" },
+                                                            { label: "Très Rare", val: 10, color: "bg-purple-50 text-purple-700 hover:bg-purple-100" },
+                                                            { label: "Légendaire", val: 1, color: "bg-yellow-50 text-yellow-700 hover:bg-yellow-100" }
+                                                        ].map((tier) => (
+                                                            <button
+                                                                key={tier.label}
+                                                                onClick={() => {
+                                                                    const newRewards = [...restaurant.rewards]
+                                                                    newRewards[index].probability = tier.val / 100
+                                                                    setRestaurant({ ...restaurant, rewards: newRewards })
+                                                                }}
+                                                                className={`px-3 py-2 rounded-lg text-xs font-bold transition-all border-2 ${Math.abs(reward.probability * 100 - tier.val) < 1
+                                                                        ? 'border-black ring-1 ring-black ' + tier.color.replace('hover:', '')
+                                                                        : 'border-transparent ' + tier.color
+                                                                    }`}
+                                                            >
+                                                                {tier.label}
+                                                            </button>
+                                                        ))}
                                                     </div>
-                                                    <p className="text-[10px] text-gray-400 mt-1">Plus ce chiffre est haut, plus on gagne.</p>
                                                 </div>
                                                 <div>
                                                     <Label className="text-xs text-gray-500 uppercase tracking-wider mb-1.5 block">Type</Label>
