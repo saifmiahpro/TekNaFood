@@ -375,7 +375,7 @@ export default function PlayPage() {
                                                             </div>
                                                         ) : (
                                                             <>
-                                                                RECEVOIR MON BON PAR EMAIL 📩
+                                                                RECEVOIR PAR EMAIL 📩
                                                             </>
                                                         )}
                                                     </Button>

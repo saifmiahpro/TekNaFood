@@ -83,9 +83,9 @@ export function ActionSelector({
                 if (input.includes('instagram.com') || input.includes('tiktok.com')) return `https://${input}`
 
                 // Sinon c'est un handle
-                const cleanHandle = input.replace('@', '').trim()
-                if (platform === 'instagram') return `https://instagram.com/${cleanHandle}`
-                if (platform === 'tiktok') return `https://tiktok.com/@${cleanHandle}`
+                const cleanHandle = input.replace('@', '').replace('/', '').trim()
+                if (platform === 'instagram') return `https://www.instagram.com/${cleanHandle}/`
+                if (platform === 'tiktok') return `https://www.tiktok.com/@${cleanHandle}`
 
                 return input
             }
