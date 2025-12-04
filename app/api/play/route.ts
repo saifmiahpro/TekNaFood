@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
+import { calculateRewardValidity } from "@/lib/date-utils"
 
 export async function POST(request: Request) {
     try {
@@ -101,15 +102,7 @@ export async function POST(request: Request) {
 
         // Calculate validity dates based on restaurant settings
         const now = new Date()
-
-        // User Request: "pas 24H ca doit etre par date le lendemain"
-        // Logic: Set validFrom to the start of the next day (Midnight)
-        const validFrom = new Date(now)
-        validFrom.setDate(validFrom.getDate() + 1)
-        validFrom.setHours(0, 0, 0, 0) // Midnight tomorrow
-
-        // Expires: ValidFrom + Validity (e.g. 30 days)
-        const expiresAt = new Date(validFrom.getTime() + restaurant.rewardValidityDays * 24 * 60 * 60 * 1000)
+        const { validFrom, expiresAt } = calculateRewardValidity(now, restaurant.rewardValidityDays)
 
         // Create participation record
         const participation = await prisma.participation.create({
